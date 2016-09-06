@@ -20,21 +20,14 @@
 */
 
 #include "ff/combine.h"
-#include "base/prefs.h"
-#include "base/sysfunc.h"
 #include "base/messenger.h"
+#include <math.h>
 
 ATEN_USING_NAMESPACE
 
 // Combination rules
-const char* CombinationRuleKeywords[CombinationRules::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
-const char* CombinationRuleNames[CombinationRules::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]", "Custom Rule 1", "Custom Rule 2", "Custom Rule 3" };
-CombinationRules::CombinationRule CombinationRules::combinationRule(QString s, bool reportError)
-{
-	CombinationRules::CombinationRule cr = (CombinationRules::CombinationRule) enumSearch("combination rule",CombinationRules::nCombinationRules,CombinationRuleKeywords,s);
-	if ((cr == CombinationRules::nCombinationRules) && reportError) enumPrintValid(CombinationRules::nCombinationRules,CombinationRuleKeywords);
-	return cr;
-}
+const char* CombinationRuleKeywords[CombinationRules::nCombinationRules] = { "arithmetic", "geometric" };
+const char* CombinationRuleNames[CombinationRules::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]" };
 const char* CombinationRules::combinationRule(CombinationRule cr)
 {
 	return CombinationRuleKeywords[cr];
@@ -44,35 +37,19 @@ const char* CombinationRules::combinationRuleName(CombinationRule cr)
 	return CombinationRuleNames[cr];
 }
 
-// Regenerate combination rule function trees
-bool CombinationRules::regenerateEquations()
-{
-	Messenger::enter("CombinationRules::regenerateEquations");
-	CombinationRules::CombinationRule cr;
-	QStringList equations;
-	for (int n=0; n<CombinationRules::nCombinationRules; ++n)
-	{
-		cr = (CombinationRules::CombinationRule) n;
-		QString equation;
-		equation.sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", CombinationRules::combinationRule(cr), qPrintable(prefs.combinationRule(cr)));
-		equations << equation;
-	}
-	bool success = combinationRules_.generateFromStringList(equations, "CombinationRules", "Combination Rule", false);
-	Messenger::exit("CombinationRules::regenerateEquations");
-	return success;
-}
-
 // Execute combination rule with parameters specified
 double CombinationRules::combine(CombinationRules::CombinationRule cr, double a, double b)
 {
-	Messenger::enter("CombinationRules::combine");
-	ReturnValue rv;
-	if (!combinationRules_.executeFunction(CombinationRules::combinationRule(cr), rv, "dd", a, b))
+	switch (cr)
 	{
-		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
-		Messenger::exit("CombinationRules::combine");
-		return 0.0;
+		case (CombinationRules::ArithmeticRule):
+			return (a+b)*0.5;
+			break;
+		case (CombinationRules::GeometricRule):
+			return sqrt(a*b);
+			break;
+    default:
+      break;  
 	}
-	Messenger::exit("CombinationRules::combine");
-	return rv.asDouble();
+	return 0.0;
 }

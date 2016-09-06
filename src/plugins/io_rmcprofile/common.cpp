@@ -57,7 +57,7 @@ bool RMCProfileFilePluginCommon::readModel(FilePluginInterface* plugin, FilePars
 	}
 	
 	// Rebond the model
-	if (!plugin->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
+	if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel->calculateBonding(true);
 	
 	return true;
 }

@@ -26,6 +26,7 @@
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
 #include "base/grid.h"
 #include "base/kvmap.h"
 #include "base/forcefieldatom.h"
@@ -40,7 +41,7 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
-class Model;
+/* none */
 
 // File Plugin Standard Import Options
 class FilePluginStandardImportOptions
@@ -49,131 +50,61 @@ class FilePluginStandardImportOptions
 	// Constructor
 	FilePluginStandardImportOptions()
 	{
-		cacheAll_ = false;
-		coordinatesInBohr_ = false;
-		forceRhombohedral_ = false;
-		keepNames_ = false;
-		keepTypes_ = false;
-		keepView_ = false;
-		preventFolding_ = false;
-		preventPacking_ = false;
-		preventRebonding_ = false;
-		zMappingType_ = ElementMap::AutoZMap;
+		// All switches default to 'unset'
+		for (int n=0; n<FilePluginStandardImportOptions::nImportSwitches; ++n) switches_[n] = -1;
+		zMappingType_ = ElementMap::nZMapTypes;
 	}
+	
+
+	/* 
+	 * Switches
+	 */
+	public:
+	// Boolean switches
+	enum ImportSwitch {
+		CacheAllSwitch,			// Whether all trajectory frames are to be cached
+		CoordinatesInBohrSwitch,	// Whether coordinates in file are in Bohr rather than Angstroms
+		ForceRhombohedralSwitch,	// Whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+		InheritStyleSwitch,		// Whether to inherit style of parent model (for trajectory frames)
+		KeepNamesSwitch,		// Whether original atom type names in file should be kept in a names forcefield associated to the model
+		KeepTypesSwitch,		// Whether original atom type names should be converted into forcefield types and fixed to atoms
+		KeepViewSwitch,			// Whether view should not be reset when GUI starts
+		PreventFoldingSwitch,		// Whether folding should be prevented
+		PreventPackingSwitch,		// Whether packing should be prevented
+		PreventRebondingSwitch,		// Whether rebonding should be prevented
+		nImportSwitches
+	};
 
 	private:
-	// Whether all trajectory frames are to be cached
-	bool cacheAll_;
-	// Whether coordinates in file are in Bohr rather than Angstroms
-	bool coordinatesInBohr_;
-	// Whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral_;
-	// Whether original atom type names in file should be kept in a names forcefield associated to the model
-	bool keepNames_;
-	// Whether original atom type names should be converted into forcefield types and fixed to atoms
-	bool keepTypes_;
-	// Whether view should not be reset when GUI starts
-	bool keepView_;
-	// Whether folding should be prevented
-	bool preventFolding_;
-	// Whether packing should be prevented
-	bool preventPacking_;
-	// Whether rebonding should be prevented
-	bool preventRebonding_;
+	// Switch states
+	int switches_[FilePluginStandardImportOptions::nImportSwitches];
+
+	public:
+	// Set switch status
+	void setSwitch(FilePluginStandardImportOptions::ImportSwitch sw, bool status)
+	{
+		switches_[sw] = (status ? 1 : 0);
+	}
+	// Return if switch is set and on
+	bool isSetAndOn(FilePluginStandardImportOptions::ImportSwitch sw) const
+	{
+		return (switches_[sw] == 1);
+	}
+	// Return if switch is off
+	bool isSetAndOff(FilePluginStandardImportOptions::ImportSwitch sw) const
+	{
+		return (switches_[sw] == 0);
+	}
+
+
+	/*
+	 * Specific Values
+	 */
+	private:
 	// Z-mapping to use in atom name conversion
 	ElementMap::ZMapType zMappingType_;
 
 	public:
-	// Set whether all trajectory frames are to be cached
-	void setCacheAll(bool value)
-	{
-		cacheAll_ = value;
-	}
-	// Return whether all trajectory frames are to be cached
-	bool cacheAll() const
-	{
-		return cacheAll_;
-	}
-	// Whether coordinates in file are in Bohr rather than Angstroms
-	void setCoordinatesInBohr(bool value)
-	{
-		coordinatesInBohr_ = value;
-	}
-	// Whether coordinates in file are in Bohr rather than Angstroms
-	bool coordinatesInBohr() const
-	{
-		return coordinatesInBohr_;
-	}
-	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	void setForceRhombohedral(bool b)
-	{
-		forceRhombohedral_ = b;
-	}
-	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral() const
-	{
-		return forceRhombohedral_;
-	}
-	// Set whether original atom type names in file should be kept in a names forcefield associated to the model
-	void setKeepNames(bool value)
-	{
-		keepNames_ = value;
-	}
-	// Return whether original atom type names in file should be kept in a names forcefield associated to the model
-	bool keepNames() const
-	{
-		return keepNames_;
-	}
-	// Set whether original atom type names should be converted into forcefield types and fixed to atoms
-	void setKeepTypes(bool value)
-	{
-		keepTypes_ = value;
-	}
-	// Return whether original atom type names should be converted into forcefield types and fixed to atoms
-	bool keepTypes() const
-	{
-		return keepTypes_;
-	}
-	// Set whether view should not be reset when GUI starts
-	void setKeepView(bool value)
-	{
-		keepView_ = value;
-	}
-	// Return whether view should not be reset when GUI starts
-	bool keepView() const
-	{
-		return keepView_;
-	}
-	// Set whether folding should be prevented
-	void setPreventFolding(bool value)
-	{
-		preventFolding_ = value;
-	}
-	// Return whether folding should be prevented
-	bool preventFolding() const
-	{
-		return preventFolding_;
-	}
-	// Set whether packing should be prevented
-	void setPreventPacking(bool value)
-	{
-		preventPacking_ = value;
-	}
-	// Return whether packing should be prevented
-	bool preventPacking() const
-	{
-		return preventPacking_;
-	}
-	// Set whether rebonding should be prevented
-	void setPreventRebonding(bool value)
-	{
-		preventRebonding_ = value;
-	}
-	// Return whether rebonding should be prevented
-	bool preventRebonding() const
-	{
-		return preventRebonding_;
-	}
 	// Set Z-mapping to use in atom name conversion
 	void setZMappingType(ElementMap::ZMapType zMapType)
 	{
@@ -183,6 +114,21 @@ class FilePluginStandardImportOptions
 	ElementMap::ZMapType zMappingType() const
 	{
 		return zMappingType_;
+	}
+
+
+	/*
+	 * Functions
+	 */
+	public:
+	// Apply settings in supplied object to this one
+	void apply(const FilePluginStandardImportOptions& other)
+	{
+		// Switches
+		for (int n=0; n<nImportSwitches; ++n) if (other.switches_[n] != -1) switches_[n] = other.switches_[n];
+
+		// Specific values
+		if (other.zMappingType_ != ElementMap::nZMapTypes) zMappingType_ = other.zMappingType_;
 	}
 };
 
@@ -229,14 +175,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual FilePluginInterface* duplicate()
 	{
 		FilePluginInterface* copy = makeCopy();
-		copy->setStandardOptions(standardOptions_);
+		copy->applyStandardOptions(standardOptions_);
 		copy->setOptions(pluginOptions_);
 		return copy;
 	}
 
 
 	protected:
-	// File parser object, associated to LineParser
+	// File parser object
 	FileParser fileParser_;
 
 	public:
@@ -330,11 +276,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Trajectory frames created on import
 	RefList<Model,int> createdFrames_;
 	// Grid objects created on import
-	RefList<Grid,int> createdGrids_;
+	List<Grid> createdGrids_;
+	// Forcefield objects create on import
+	List<Forcefield> createdForcefields_;
 	// Parent model for read/write, if any
 	Model* parentModel_;
 	// Target model for read/write, if any
 	Model* targetModel_;
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield_;
 
 	public:
 	// Create new parent model
@@ -393,15 +343,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
 	{
 		// Find element in elements map
-		int el = ElementMap::find(name, standardOptions_.zMappingType());
+		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
 
 		// Add atom
 		Atom* i = model->addAtom(el, r, v, f);
+		i->setData(qPrintable(name));
 
 		// KeepNames and KeepTypes standard options
 		ForcefieldAtom* ffa = NULL;
-		if (standardOptions_.keepNames()) ffa = model->addAtomName(el, name);
-		else if (standardOptions_.keepTypes()) ffa = ElementMap::forcefieldAtom(name);
+		if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch)) ffa = model->addAtomName(el, name);
+		else if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch)) ffa = ElementMap::forcefieldAtom(name);
 		if (ffa != NULL)
 		{
 			i->setType(ffa);
@@ -411,16 +362,49 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return i;
 	}
 	// Create new grid (in specified model)
-	Grid* createGrid(Model* model)
+	Grid* createGrid(Model* model = NULL)
 	{
-		Grid* newGrid = model->addGrid();
-		createdGrids_.add(newGrid);
+		Grid* newGrid = createdGrids_.add();
+		newGrid->setParent(model);
 		return newGrid;
 	}
 	// Return Grid objects created on import
-	RefList<Grid,int> createdGrids()
+	List<Grid>& createdGrids()
 	{
 		return createdGrids_;
+	}
+	// Create new forcefield
+	Forcefield* createForcefield(QString name = QString())
+	{
+		targetForcefield_ = createdForcefields_.add();
+		if (!name.isEmpty()) targetForcefield_->setName(name);
+		return targetForcefield_;
+	}
+	// Discard created forcefield
+	bool discardForcefield(Forcefield* forcefield)
+	{
+		if (createdForcefields_.contains(forcefield))
+		{
+			if (targetForcefield_ == forcefield) targetForcefield_ = NULL;
+			createdForcefields_.remove(forcefield);
+			return true;
+		}
+		Messenger::error("Can't discard forcefield - not owned by the interface.");
+		return false;
+	}
+	// Return parent Forcefield objects created on import
+	List<Forcefield>& createdForcefields()
+	{
+		return createdForcefields_;
+	}
+	// Clear any created data
+	void clearCreatedData()
+	{
+		createdModels_.clear();
+		// Don't need to delete individual frame data, since they should have been removed with their parent model
+		createdFrames_.clear();
+		createdGrids_.clear();
+		createdForcefields_.clear();
 	}
 	// Set parent model
 	void setParentModel(Model* model)
@@ -442,6 +426,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Model* targetModel() const
 	{
 		return targetModel_;
+	}
+	// Set target forcefield
+	void setTargetForcefield(Forcefield* ff)
+	{
+		targetForcefield_ = ff;
+	}
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield() const
+	{
+		return targetForcefield_;
 	}
 
 
@@ -505,6 +499,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual bool importNextPart() = 0;
 	// Skip next partial data chunk
 	virtual bool skipNextPart() = 0;
+	// Set the number of data parts in the file explicitly
+	void setNDataParts(int nParts)
+	{
+		if (nDataParts_ > 0) Messenger::warn("Number of data parts already set / estimated.");
+		nDataParts_ = nParts;
+		nDataPartsEstimated_ = false;
+	}
 	// Import partial data chunk specified
 	bool importPart(int partId)
 	{
@@ -521,21 +522,31 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				bool result = importNextPart();
 				if (result)
 				{
+					// Copy style if requested
+					if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+					{
+						Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+						if (frame) frame->copyAtomStyle(parentModel_);
+					}
+
 					// Add offset for the second datum
 					dataPartOffsets_.add(lineParser_.tellg());
 
-					// Estimate total number of parts
-					// First, get data size from difference between file positions for zeroth and first parts
-					long int partSize = dataPartOffsets_.last() - dataPartOffsets_.first();
-					if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
-					else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
+					// Estimate total number of parts if we have not already been told the number to expect
+					if (nDataParts_ == 0)
+					{
+						// First, get data size from difference between file positions for zeroth and first parts
+						long int partSize = dataPartOffsets_.last() - dataPartOffsets_.first();
+						if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
+						else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
 
-					// Now, skip to end of file to get file size, and estimate number of parts
-					lineParser_.seekg(0, std::ios::end);
-					std::streampos endOfFilePos = lineParser_.tellg();
-					nDataParts_ = (endOfFilePos - dataPartOffsets_.first()) / partSize;
-					nDataPartsEstimated_ = true;
-					lineParser_.seekg( dataPartOffsets_.last());
+						// Now, skip to end of file to get file size, and estimate number of parts
+						lineParser_.seekg(0, std::ios::end);
+						std::streampos endOfFilePos = lineParser_.tellg();
+						nDataParts_ = (endOfFilePos - dataPartOffsets_.first()) / partSize;
+						nDataPartsEstimated_ = true;
+						lineParser_.seekg( dataPartOffsets_.last());
+					}
 				}
 
 				Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - result of initial part read was %i, nOffsets now %i.", result, dataPartOffsets_.nItems());
@@ -560,6 +571,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 			// If successful, add the offset for the next part if this was the last offset we had
 			if (result && ((partId+1) == dataPartOffsets_.nItems())) dataPartOffsets_.add(lineParser_.tellg());
+
+			// Copy style if requested
+			if (result && standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+			{
+				Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+				if (frame) frame->copyAtomStyle(parentModel_);
+			}
+
 			return result;
 		}
 
@@ -580,7 +599,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				Messenger::print("Failed to skip to specified part (%i).", partId);
 				Messenger::print("Last good data read was id %i.", currentId);
 
-				// Update the number of stored parts
+				// Update the number of stored parts to reflect the read error (early termination of the file perhaps?)
 				nDataParts_ = currentId;
 				nDataPartsEstimated_ = false;
 				return false;
@@ -595,6 +614,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		{
 			// Now at start of next data, so store the file position
 			dataPartOffsets_.add(lineParser_.tellg());
+
+			// Copy style if requested
+			if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+			{
+				Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+				if (frame) frame->copyAtomStyle(parentModel_);
+			}
 		}
 		else
 		{
@@ -633,10 +659,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual bool hasExportOptions() = 0;
 	// Show export options dialog
 	virtual bool showExportOptionsDialog() = 0;
-	// Set standard options
-	void setStandardOptions(const FilePluginStandardImportOptions& standardOptions)
+	// Apply standard options
+	void applyStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{
-		standardOptions_ = standardOptions;
+		standardOptions_.apply(standardOptions);
+	}
+	// Set a standard option
+	void setStandardOption(FilePluginStandardImportOptions::ImportSwitch iswitch, bool status)
+	{
+		standardOptions_.setSwitch(iswitch, status);
 	}
 	// Return standard options for plugin
 	const FilePluginStandardImportOptions standardOptions() const

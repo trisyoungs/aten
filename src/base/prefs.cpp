@@ -46,7 +46,7 @@ const char* Prefs::drawStyle(Prefs::DrawStyle i)
 }
 
 // Colour Schemes
-const char* ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Custom" };
+const char* ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Bonds", "Custom" };
 Prefs::ColouringScheme Prefs::colouringScheme(QString s, bool reportError)
 {
 	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
@@ -188,8 +188,7 @@ Prefs::ViewLock Prefs::viewLock(QString s, bool reportError)
 Prefs::Prefs()
 {
 	// Rendering - Style
-	renderStyle_ = Prefs::SphereStyle;
-	colourScheme_ = Prefs::ElementScheme;
+	defaultDrawStyle_ = Prefs::SphereStyle;
 	atomStyleRadius_[Prefs::LineStyle] = 0.15;	// Only used as a selection radius
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;
 	atomStyleRadius_[Prefs::SphereStyle] = 0.35;
@@ -276,17 +275,27 @@ Prefs::Prefs()
 
 	// Colour scales
 	colourScale[0].setName("Charge");
-	colourScale[0].addPoint(0, -1.0, 1.0f, 0.0f, 0.0f);
-	colourScale[0].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[0].addPoint(2, 1.0, 0.0f, 0.0f, 1.0f);
+	colourScale[0].addPoint( -1.0, 1.0f, 0.0f, 0.0f);
+	colourScale[0].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[0].addPoint(1.0, 0.0f, 0.0f, 1.0f);
 	colourScale[1].setName("Velocity");
-	colourScale[1].addPoint(0, -100.0, 1.0f, 0.0f, 0.0f);
-	colourScale[1].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[1].addPoint(2, 100.0, 1.0f, 0.0f, 0.0f);
+	colourScale[1].addPoint(-100.0, 1.0f, 0.0f, 0.0f);
+	colourScale[1].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[1].addPoint(100.0, 1.0f, 0.0f, 0.0f);
 	colourScale[2].setName("Force");
-	colourScale[2].addPoint(0, -1000.0, 1.0f, 0.0f, 0.0f);
-	colourScale[2].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[2].addPoint(2, 1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[2].addPoint(-1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[2].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[2].addPoint(1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[3].setName("Connectivity");
+	colourScale[3].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[3].addPoint(1.0, 1.0f, 0.0f, 0.0f);
+	colourScale[3].addPoint(2.0, 0.0f, 1.0f, 0.0f);
+	colourScale[3].addPoint(3.0, 0.0f, 0.0f, 1.0f);
+	colourScale[3].addPoint(4.0, 0.0f, 1.0f, 1.0f);
+	colourScale[3].addPoint(5.0, 1.0f, 0.0f, 1.0f);
+	colourScale[3].addPoint(6.0, 1.0f, 1.0f, 0.0f);
+	colourScale[3].addPoint(7.0, 0.5f, 0.5f, 0.5f);
+	colourScale[3].addPoint(8.0, 0.0f, 0.0f, 0.0f);
 
 	// General Prefs / Methods
 	maxRingSize_ = 6;
@@ -327,18 +336,14 @@ Prefs::Prefs()
 	vdwCutoff_ = 50.0;
 	elecCutoff_ = 50.0;
 	validEwaldAuto_ = false;
-	combinationRules_[CombinationRules::ArithmeticRule] = "c = (a+b)*0.5";
-	combinationRules_[CombinationRules::GeometricRule] = "c = sqrt(a*b)";
-	combinationRules_[CombinationRules::CustomRule1] = "c = a+b";
-	combinationRules_[CombinationRules::CustomRule2] = "c = a+b";
-	combinationRules_[CombinationRules::CustomRule3] = "c = a+b";
 	partitionGridSize_.set(50,50,50);
 
 	// Rendering Options
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
 	chargeLabelFormat_ = "(%0.3f e)";
-	labelSize_ = 1.5;
+	labelSize_ = 0.2;
+	labelDepthScaling_ = true;
 	mouseMoveFilter_ = 10;
 	renderDashedAromatics_ = true;
 	nModelsPerRow_ = 2;
@@ -371,18 +376,6 @@ bool Prefs::viewRotationGlobe()
 void Prefs::setViewRotationGlobe(bool b)
 {
 	viewRotationGlobe_ = b;
-}
-
-// Set the drawing style of models
-void Prefs::setRenderStyle(Prefs::DrawStyle ds)
-{
-	renderStyle_ = ds;
-}
-
-// Return the current drawing style of models
-Prefs::DrawStyle Prefs::renderStyle() const
-{
-	return renderStyle_;
 }
 
 // Return the current rotation globe size in pixels
@@ -433,17 +426,21 @@ int Prefs::imagePrimitiveQuality() const
 	return imagePrimitiveQuality_;
 }
 
-// Return styled radius of specified atom
-double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
-{
-	Prefs::DrawStyle dstyle;
-	renderStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = renderStyle_;
-	return (dstyle == Prefs::ScaledStyle) ? (ElementMap::atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
-}
-
 /*
  * Rendering - Style
  */
+
+// Set default rendering style for models
+void Prefs::setDefaultDrawStyle(Prefs::DrawStyle ds)
+{
+	defaultDrawStyle_ = ds;
+}
+
+// Return default rendering style for models
+Prefs::DrawStyle Prefs::defaultDrawStyle()
+{
+	return defaultDrawStyle_;
+}
 
 // Sets the specified atom size to the given value
 void Prefs::setAtomStyleRadius(Prefs::DrawStyle ds, double radius)
@@ -454,7 +451,7 @@ void Prefs::setAtomStyleRadius(Prefs::DrawStyle ds, double radius)
 // Return the specified atom size
 GLdouble Prefs::atomStyleRadius(Prefs::DrawStyle ds) const
 {
-	return atomStyleRadius_[(int)ds];
+	return atomStyleRadius_[ds];
 }
 
 // Return atom radii array
@@ -585,18 +582,6 @@ void Prefs::copySpotlightPosition(GLfloat* col)
 	col[1] = (GLfloat) spotlightPosition_[1];
 	col[2] = (GLfloat) spotlightPosition_[2];
 	col[3] = (GLfloat) spotlightPosition_[3];
-}
-
-// Set atom colour scheme
-void Prefs::setColourScheme(Prefs::ColouringScheme cs)
-{
-	colourScheme_ = cs;
-}
-
-// Return atom colour scheme
-Prefs::ColouringScheme Prefs::colourScheme() const
-{
-	return colourScheme_;
 }
 
 // Set line width for normal stick atoms
@@ -1358,24 +1343,6 @@ double Prefs::elecCutoff() const
 	return elecCutoff_;
 }
 
-// Set combination rule equation
-void Prefs::setCombinationRule(CombinationRules::CombinationRule cr, QString rule)
-{
-	combinationRules_[cr] = rule;
-}
-
-// Return combination rule equation
-QString Prefs::combinationRule(CombinationRules::CombinationRule cr) const
-{
-	return combinationRules_[cr];
-}
-
-// Return array of combination rule equations
-QString* Prefs::combinationRules()
-{
-	return combinationRules_;
-}
-
 // Set grid size for PartitioningSchemes
 void Prefs::setPartitionGridSize(Vec3<int> newSize)
 {
@@ -1434,16 +1401,28 @@ QString Prefs::chargeLabelFormat()
 	return chargeLabelFormat_;
 }
 
-// Set the scale of labels in the model
+// Set the scaling factor for labels in the model
 void Prefs::setLabelSize(double size)
 {
 	labelSize_ = size;
 }
 
-// Return the current label scale
+// Return the current label scale factor
 double Prefs::labelSize() const
 {
 	return labelSize_;
+}
+
+// Set whether labels are scaled according to their depth
+void Prefs::setLabelDepthScaling(bool depthScale)
+{
+	labelDepthScaling_ = depthScale;
+}
+
+// Return whether labels are scaled according to their depth
+bool Prefs::labelDepthScaling() const
+{
+	return labelDepthScaling_;
 }
 
 // Return whether to use solid or dashed circles for aromatic ring rendering

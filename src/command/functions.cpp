@@ -81,6 +81,7 @@ void Commands::initPointers()
 	pointers_[GetAtom] = &AtenSpace::Commands::function_GetAtom;
 	pointers_[Hide] = &AtenSpace::Commands::function_Hide;
 	pointers_[RecolourAtoms] = &AtenSpace::Commands::function_RecolourAtoms;
+	pointers_[ReMap] = &AtenSpace::Commands::function_ReMap;
 	pointers_[SetCoords] = &AtenSpace::Commands::function_SetCoords;
 	pointers_[SetCharge] = &AtenSpace::Commands::function_SetCharge;
 	pointers_[SetElement] = &AtenSpace::Commands::function_SetElement;
@@ -242,7 +243,6 @@ void Commands::initPointers()
 	pointers_[GenerateBond] = &AtenSpace::Commands::function_GenerateBond;
 	pointers_[GenerateTorsion] = &AtenSpace::Commands::function_GenerateTorsion;
 	pointers_[GenerateVdw] = &AtenSpace::Commands::function_GenerateVdw;
-	pointers_[GetCombinationRule] = &AtenSpace::Commands::function_GetCombinationRule;
 	pointers_[GetFF] = &AtenSpace::Commands::function_GetFF;
 	pointers_[InterDef] = &AtenSpace::Commands::function_InterDef;
 	pointers_[LoadFF] = &AtenSpace::Commands::function_LoadFF;
@@ -252,7 +252,6 @@ void Commands::initPointers()
 	pointers_[PrintType] = &AtenSpace::Commands::function_PrintType;
 	pointers_[RecreateExpression] = &AtenSpace::Commands::function_RecreateExpression;
 	pointers_[SaveExpression] = &AtenSpace::Commands::function_SaveExpression;
-	pointers_[SetCombinationRule] = &AtenSpace::Commands::function_SetCombinationRule;
 	pointers_[TorsionDef] = &AtenSpace::Commands::function_TorsionDef;
 	pointers_[TypeDef] = &AtenSpace::Commands::function_TypeDef;
 	pointers_[TypeModel] = &AtenSpace::Commands::function_TypeModel;
@@ -412,8 +411,10 @@ void Commands::initPointers()
 
 	// Select Commands
 	pointers_[DeSelect] = &AtenSpace::Commands::function_DeSelect;
+	pointers_[DeSelectAll] = &AtenSpace::Commands::function_SelectNone;			// Synonym for SelectNone
 	pointers_[DeSelectCode] = &AtenSpace::Commands::function_DeSelectCode;
 	pointers_[DeSelectFormatted] = &AtenSpace::Commands::function_DeSelectFormatted;
+	pointers_[DeSelectName] = &AtenSpace::Commands::function_DeSelectName;
 	pointers_[DeSelectType] = &AtenSpace::Commands::function_DeSelectType;
 	pointers_[Expand] = &AtenSpace::Commands::function_Expand;
 	pointers_[Invert] = &AtenSpace::Commands::function_Invert;
@@ -428,6 +429,7 @@ void Commands::initPointers()
 	pointers_[SelectLine] = &AtenSpace::Commands::function_SelectLine;
 	pointers_[SelectMiller] = &AtenSpace::Commands::function_SelectMiller;
 	pointers_[SelectMolecule] = &AtenSpace::Commands::function_SelectMolecule;
+	pointers_[SelectName] = &AtenSpace::Commands::function_SelectName;
 	pointers_[SelectNone] = &AtenSpace::Commands::function_SelectNone;
 	pointers_[SelectOverlaps] = &AtenSpace::Commands::function_SelectOverlaps;
 	pointers_[SelectOutsideCell] = &AtenSpace::Commands::function_SelectOutsideCell;

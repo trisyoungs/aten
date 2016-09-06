@@ -46,7 +46,7 @@ void Aten::exportModels()
 {
 	Messenger::enter("Aten::exportModels");
 	QFileInfo fileInfo;
-	QString filename;
+	QString newFilename;
 
 	// Loop over loaded models
 	for (Model* m = models_.first(); m != NULL; m = m->next)
@@ -56,16 +56,17 @@ void Aten::exportModels()
 
 		// Generate new filename for model, with new suffix
 		fileInfo.setFile(m->filename());
-		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportModelPlugin_->extensions().first();
+		newFilename = fileInfo.dir().absoluteFilePath(fileInfo.baseName() + "." + exportModelPlugin_->extensions().first());
 
+		QFileInfo newFileInfo(newFilename);
 		// Make sure that the new filename is not the same as the old filename
-		if (filename == m->filename())
+		if (fileInfo == newFileInfo)
 		{
-			Messenger::print("Export filename generated is identical to the original (%s) - not converted.", qPrintable(filename));
+			Messenger::print("Exported file would overwrite the original (%s) - not converted.", qPrintable(m->filename()));
 			continue;
 		}
 
-		if (exportModel(m, filename, exportModelPlugin_, FilePluginStandardImportOptions(), exportModelPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportModelPlugin_->name()));
+		if (exportModel(m, newFilename, exportModelPlugin_, FilePluginStandardImportOptions(), exportModelPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(newFilename), qPrintable(exportModelPlugin_->name()));
 		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
 		m->enableUndoRedo();
 	}

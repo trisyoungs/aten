@@ -534,6 +534,8 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					Messenger::print("Free (irregular) grid data cannot be accessed with the 'data' function.");
 					result = false;
 					break;
+        default:
+          break;  
 			}
 			break;
 		case (GridVariable::Initialise):

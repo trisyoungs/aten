@@ -1,6 +1,6 @@
 BISON_TARGET(TextPrimitiveParser textprimitive_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/textprimitive_grammar.cc)
 
-add_library(render
+add_library(render STATIC
   ${BISON_TextPrimitiveParser_OUTPUTS}
   fontinstance.h
   primitive.h

@@ -414,7 +414,7 @@ RefListItem<Task,int>* Messenger::tasks()
 void Messenger::cancelAllTasks()
 {
 	// Set canceled status of all tasks
-	for (RefListItem<Task,int>* ri = tasks_.first(); ri!= NULL; ri = ri->next)
+	for (RefListItem<Task,int>* ri = tasks_.first(); ri != NULL; ri = ri->next)
 	{
 		Task* task = ri->item;
 		task->cancel();
@@ -505,4 +505,6 @@ void Messenger::terminateTask(Task* task)
 		if (atenProgress_) atenProgress_->updateAndShow();
 		else if (printToConsole_) showCLIProgress();
 	}
+
+	delete task;
 }

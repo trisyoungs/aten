@@ -90,14 +90,15 @@ FilePluginStandardImportOptions AtenOpenModel::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
-	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
-	options.setForceRhombohedral(ui.ForceRhombohedralCheck->isChecked());
-	options.setKeepNames(ui.KeepNamesCheck->isChecked());
-	options.setKeepTypes(ui.KeepTypesCheck->isChecked());
-	options.setKeepView(ui.KeepViewCheck->isChecked());
-	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
-	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
-	options.setPreventPacking(ui.PreventPackingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::CoordinatesInBohrSwitch, ui.BohrCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::ForceRhombohedralSwitch, ui.ForceRhombohedralCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, ui.KeepNamesCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::KeepTypesSwitch, ui.KeepTypesCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::KeepViewSwitch, ui.KeepViewCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, ui.PreventRebondingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, ui.PreventFoldingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, ui.PreventPackingCheck->isChecked());
+
 	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 
 	return options;
@@ -122,6 +123,14 @@ void AtenOpenModel::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	// Set zmapping combo
-	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
+	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));
+	ui.ForceRhombohedralCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::ForceRhombohedralSwitch));
+	ui.KeepNamesCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch));
+	ui.KeepTypesCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch));
+	ui.KeepViewCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepViewSwitch));
+	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch));
+	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch));
+	ui.PreventPackingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventPackingSwitch));
+
+	if (plugin->standardOptions().zMappingType() != ElementMap::nZMapTypes) ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

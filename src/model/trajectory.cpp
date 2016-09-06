@@ -31,6 +31,12 @@ void Model::setTrajectoryPlugin(FilePluginInterface* plugin)
 	trajectoryPlugin_ = plugin;
 }
 
+// Return the plugin for the trajectory
+FilePluginInterface* Model::trajectoryPlugin()
+{
+	return trajectoryPlugin_;
+}
+
 // Return whether a trajectory for this model exists
 bool Model::hasTrajectory() const
 {
@@ -267,9 +273,17 @@ void Model::setTrajectoryPropagateParentStyle(bool b)
 void Model::trajectoryCopyAtomStyle(Model* source)
 {
 	Messenger::enter("Model::trajectoryCopyAtomStyle");
+
 	if (source == NULL)
 	{
 		Messenger::print("Internal Error: NULL model pointer passed to Model::trajectoryCopyAtomStyle.");
+		Messenger::exit("Model::trajectoryCopyAtomStyle");
+		return;
+	}
+
+	if (type_ != Model::ParentModelType)
+	{
+		Messenger::print("Internal Error: Not a parent model (in trajectoryCopyAtomStyle).");
 		Messenger::exit("Model::trajectoryCopyAtomStyle");
 		return;
 	}

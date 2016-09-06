@@ -471,6 +471,8 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsPositive_;
 	// Repeat cells to draw in negative xyz directions
 	Vec3<int> repeatCellsNegative_;
+	// View origin
+	Vec3<double> viewOrigin_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -519,6 +521,10 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsNegative() const;
 	// Set common view matrix to that of this model
 	void setCommonViewMatrixFromLocal();
+	// Set view origin
+	void setViewOrigin(Vec3<double> origin);
+	// Return view origin, or cell origin if no view origin is defined
+	Vec3<double> viewOriginOrCellOrigin();
 
 
 	/*
@@ -622,7 +628,7 @@ class Model : public ListItem<Model>
 	// Return the unique type specified
 	RefListItem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine);
+	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression
@@ -860,6 +866,8 @@ class Model : public ListItem<Model>
 	void clearTrajectory();
 	// Set the plugin for the trajectory
 	void setTrajectoryPlugin(FilePluginInterface* plugin);
+	// Return the plugin for the trajectory
+	FilePluginInterface* trajectoryPlugin();
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
 	// Return pointer to trajectory frames
@@ -1116,6 +1124,8 @@ class Model : public ListItem<Model>
 	Grid* grid(int id);
 	// Add new surface
 	Grid* addGrid();
+	// Take ownership of existing grid
+	void ownGrid(Grid* grid);
 	// Remove surface
 	void removeGrid(Grid* s);
 	// Update grid axis ordering based on current view
@@ -1216,8 +1226,22 @@ class Model : public ListItem<Model>
 	RenderGroup renderGroup_;
 	// Logpoint at which renderGroup_ was last created
 	int renderGroupPoint_;
+	// Style to render model in
+	Prefs::DrawStyle drawStyle_;
+	// Atom colouring style
+	Prefs::ColouringScheme colourScheme_;
 
 	public:
+	// Set style to render model in
+	void setDrawStyle(Prefs::DrawStyle ds);
+	// Return style to render model in
+	Prefs::DrawStyle drawStyle();
+	// Return the styled radius of an atom calculated from the element and draw style
+	double styleRadius(Prefs::DrawStyle ds, int el) const;
+	// Set atom colouring style
+	void setColourScheme(Prefs::ColouringScheme cs);
+	// Return atom colouring style
+	Prefs::ColouringScheme colourScheme();
 	// Set rendering source
 	void setRenderSource(RenderSource rs);
 	// Return rendering source

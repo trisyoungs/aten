@@ -200,7 +200,6 @@ void Model::adjustZoom(bool zoomin)
 // Reset View
 void Model::resetView(int contextWidth, int contextHeight)
 {
-	// Reset the modelview matrix and the camera
 	Messenger::enter("Model::resetView");
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
@@ -210,11 +209,14 @@ void Model::resetView(int contextWidth, int contextHeight)
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
 
+	// Reset view origin before we do anything else
+	viewOrigin_.zero();
+
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		rad = prefs.styleRadius(i->style(), i->element());
+		rad = styleRadius(i->style(), i->element());
 		rabs = i->r().abs();
 		if (rabs.x > extremes.x) extremes.x = rabs.x + rad;
 		if (rabs.y > extremes.y) extremes.y = rabs.y + rad;
@@ -319,7 +321,8 @@ Vec3<double>& Model::modelToWorld(Vec3<double>& modelr, Vec4<double>* screenr, d
 
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	vmat = modelViewMatrix();
-	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	Vec3<double> translation = -viewOriginOrCellOrigin();
+	vmat.applyTranslation(translation);
 	temp = vmat * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 
@@ -357,7 +360,8 @@ Vec3<double>& Model::screenToModel(int x, int y, double z)
 	
 	// Grab transformation matrix, apply cell centre correction, and invert
 	Matrix itransform = modelViewMatrix_;
-	itransform.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	Vec3<double> translation = -viewOriginOrCellOrigin();
+	itransform.applyTranslation(translation);
 	itransform.invert();
 	
 	// Mirror y-coordinate
@@ -419,5 +423,18 @@ Vec3<int> Model::repeatCellsNegative() const
 void Model::setCommonViewMatrixFromLocal()
 {
 	prefs.setCommonViewMatrix(parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+}
+
+// Set view origin
+void Model::setViewOrigin(Vec3<double> origin)
+{
+	viewOrigin_ = origin;
+}
+
+// Return view origin, or cell origin if no view origin is defined
+Vec3<double> Model::viewOriginOrCellOrigin()
+{
+	if (viewOrigin_.magnitude() > 1.0e-4) return viewOrigin_;
+	else return cell_.centre();
 }
 

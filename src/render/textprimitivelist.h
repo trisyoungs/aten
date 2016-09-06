@@ -51,7 +51,7 @@ class TextPrimitiveList
 	// Add primitive to list
 	void add(QString text, Vec3<double> anchorPoint, double textSize, TextPrimitive::TextAnchor anchorPosition, Vec3<double> globalAdjustment, bool flat);
 	// Render all primitives in list
-	void renderAll(const Matrix& viewMatrix, const Matrix& viewMatrixInverse, double baseFontSize);
+	void renderAll(const Matrix& viewMatrix, const Matrix& viewMatrixInverse, double sizeScale, bool depthScaling);
 };
 
 ATEN_END_NAMESPACE

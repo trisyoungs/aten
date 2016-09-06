@@ -45,11 +45,13 @@ LineStyle::LineStyle(const LineStyle& source)
 }
 
 // Assignment operator
-void LineStyle::operator=(const LineStyle& source)
+LineStyle& LineStyle::operator=(const LineStyle& source)
 {
 	width_ = source.width_;
 	stipple_ = source.stipple_;
 	colour_ = source.colour_;
+
+	return *this;
 }
 
 /*

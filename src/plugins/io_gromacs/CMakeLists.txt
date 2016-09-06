@@ -8,6 +8,9 @@ add_library(gromacs MODULE
   gromacs_funcs.cpp
   ${gromacs_MOC_SRCS}
 )
+target_link_libraries(gromacs
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(gromacs PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

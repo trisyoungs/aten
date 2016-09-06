@@ -486,15 +486,15 @@ const char* Atom::data()
 }
 
 // Set data for atom
-void Atom::setData(const char* s)
+void Atom::setData(const char* data)
 {
 	// Delete any old data and set new
 	if (data_ != NULL) delete[] data_;
 	data_ = NULL;
-	int len = strlen(s);
+	int len = strlen(data);
 	if (len == 0) return;
 	data_ = new char[len+1];
-	strcpy(data_, s);
+	strcpy(data_, data);
 }
 
 // Clear temporary integer (or selected bit)

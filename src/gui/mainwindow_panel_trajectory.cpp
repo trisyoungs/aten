@@ -62,6 +62,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 		ui.TrajectoryControlFrameSlider->setValue(parentModel->trajectoryFrameIndex()+1);
 		ui.TrajectoryControlFrameSpin->setRange(1, parentModel->nTrajectoryFrames());
 		ui.TrajectoryControlFrameSpin->setValue(parentModel->trajectoryFrameIndex()+1);
+		ui.TrajectoryStyleInheritButton->setCheckable((!parentModel->isTrajectoryCached()) && parentModel->trajectoryPlugin());
 	}
 
 	Messenger::exit("AtenWindow::updateTrajectoryPanel");
@@ -87,15 +88,15 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 	stopTrajectoryPlayback();
 
 	// Get current model
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
 	if (openTrajectoryDialog_.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openTrajectoryDialog_.selectedFilenames();
 		FilePluginInterface* plugin = openTrajectoryDialog_.selectedPlugin();
-		aten_.importTrajectory(currentModel, filesToLoad.at(0), plugin, openTrajectoryDialog_.standardImportOptions());
+		aten_.importTrajectory(parentModel, filesToLoad.at(0), plugin, openTrajectoryDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTargets);
 	}
@@ -107,10 +108,10 @@ void AtenWindow::on_TrajectoryManageRemoveButton_clicked(bool checked)
 	stopTrajectoryPlayback();
 
 	// Get current model
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 	
-	currentModel->clearTrajectory();
+	parentModel->clearTrajectory();
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -121,10 +122,10 @@ void AtenWindow::on_TrajectoryManageFramesButton_clicked(bool checked)
 	if (refreshing_) return;
 
 	// Get current model
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	currentModel->setRenderSource(checked ? Model::TrajectorySource : Model::ModelSource);
+	parentModel->setRenderSource(checked ? Model::TrajectorySource : Model::ModelSource);
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -136,10 +137,10 @@ void AtenWindow::on_TrajectoryManageFramesButton_clicked(bool checked)
 // Skip to first frame in trajectory
 void AtenWindow::on_TrajectoryControlFirstButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	currentModel->seekFirstTrajectoryFrame();
+	parentModel->seekFirstTrajectoryFrame();
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -147,10 +148,10 @@ void AtenWindow::on_TrajectoryControlFirstButton_clicked(bool checked)
 // Skip to previous frame in trajectory
 void AtenWindow::on_TrajectoryControlPreviousButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	currentModel->seekPreviousTrajectoryFrame();
+	parentModel->seekPreviousTrajectoryFrame();
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -176,10 +177,10 @@ void AtenWindow::on_TrajectoryControlPlayButton_clicked(bool checked)
 // Skip to next frame in trajectory
 void AtenWindow::on_TrajectoryControlNextButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	currentModel->seekNextTrajectoryFrame();
+	parentModel->seekNextTrajectoryFrame();
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -187,10 +188,10 @@ void AtenWindow::on_TrajectoryControlNextButton_clicked(bool checked)
 // Skip to last frame in trajectory
 void AtenWindow::on_TrajectoryControlLastButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	currentModel->seekLastTrajectoryFrame();
+	parentModel->seekLastTrajectoryFrame();
 
 	updateWidgets(AtenWindow::AllTargets);
 }
@@ -199,11 +200,11 @@ void AtenWindow::on_TrajectoryControlFrameSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
-	currentModel->seekTrajectoryFrame(value-1);
+	parentModel->seekTrajectoryFrame(value-1);
 
 	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
@@ -212,11 +213,11 @@ void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
 {
 	if (refreshing_) return;
 
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
-	currentModel->seekTrajectoryFrame(position-1);
+	parentModel->seekTrajectoryFrame(position-1);
 
 	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
@@ -227,37 +228,51 @@ void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
 
 void AtenWindow::on_TrajectoryStyleInheritButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
-	if (currentModel->nTrajectoryFrames() == 0) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
+	if (parentModel->nTrajectoryFrames() == 0) return;
 
-	currentModel->trajectoryCopyAtomStyle(currentModel);
+	// Exactly what we do here depends on if the trajectory is cached or not
+	if (parentModel->isTrajectoryCached())
+	{
+		// It is cached, so apply the parent model's style to all the cached frames
+		parentModel->trajectoryCopyAtomStyle(parentModel);
+	}
+	else
+	{
+		// Not cached - which means the button is checkable
+		if (parentModel->trajectoryPlugin()) parentModel->trajectoryPlugin()->setStandardOption(FilePluginStandardImportOptions::InheritStyleSwitch, checked);
+
+		// If checked, apply the style to the current frame - if not, reload it
+		if (checked) parentModel->trajectoryCurrentFrame()->setDrawStyle(prefs.defaultDrawStyle());
+		else parentModel->trajectoryCopyAtomStyle(parentModel);
+	}
 
 	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_TrajectoryStylePropagateButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	Model* frame = currentModel->trajectoryCurrentFrame();
+	Model* frame = parentModel->trajectoryCurrentFrame();
 	if (frame == NULL) return;
 
-	currentModel->trajectoryCopyAtomStyle(frame);
+	parentModel->trajectoryCopyAtomStyle(frame);
 
 	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_TrajectoryStylePromoteButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModel();
-	if (!currentModel) return;
+	Model* parentModel = aten_.currentModel();
+	if (!parentModel) return;
 
-	Model* frame = currentModel->trajectoryCurrentFrame();
+	Model* frame = parentModel->trajectoryCurrentFrame();
 	if (frame == NULL) return;
 
-	currentModel->copyAtomStyle(frame);
+	parentModel->copyAtomStyle(frame);
 
 	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }

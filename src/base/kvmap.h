@@ -60,7 +60,7 @@ class KVMap
 	// Constructor / Destructor
 	KVMap();
 	// Assignment Operator
-	void operator=(const KVMap& source);
+	KVMap& operator=(const KVMap& source);
 	// Copy Constructor
 	KVMap(const KVMap& source);
 

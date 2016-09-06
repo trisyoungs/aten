@@ -1,0 +1,124 @@
+/*
+        *** DL_POLY_2 Trajectory Plugin
+        *** src/plugins/io_dlpoly/history2.hui
+        Copyright T. Youngs 2016-2016
+        Copyright A.M. Elena 2016-2016
+
+        This file is part of Aten.
+    
+        Aten is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or 
+        (at your option) any later version.
+                               
+        Aten is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_DLP2TRAJECTORYPLUGIN_H
+#define ATEN_DLP2TRAJECTORYPLUGIN_H
+
+#include "plugins/interfaces/fileplugin.h"
+#include <QStringList>
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations
+/* none */
+
+// DLP4 Trajectory Import Plugin
+class DLP2TrajectoryPlugin : public QObject, public FilePluginInterface
+{
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
+	Q_INTERFACES(AtenSpace::FilePluginInterface)
+
+
+	/*
+	 * Core
+	 */
+	public:
+	// Constructor
+	DLP2TrajectoryPlugin();
+	// Destructor
+	~DLP2TrajectoryPlugin();
+	// Return a copy of the plugin object
+	FilePluginInterface* makeCopy();
+
+
+	/*
+	 * Definition
+	 */
+	public:
+	// Return category of plugin
+	PluginTypes::FilePluginCategory category() const;
+	// Return name of plugin
+	QString name() const;
+	// Return nickname of plugin
+	QString nickname() const;
+	// Return description (long name) of plugin
+	QString description() const;
+	// Return related file extensions
+	QStringList extensions() const;
+	// Return exact names
+	QStringList exactNames() const;
+
+
+	/*
+	 * Input / Output
+	 */
+	public:
+	// Return whether this plugin can import data
+	bool canImport();
+	// Import data via the supplied parser
+	bool importData();
+	// Return whether this plugin can export data
+	bool canExport();
+	// Export data via the supplied parser
+	bool exportData();
+	// Import next partial data chunk
+	bool importNextPart();
+	// Skip next partial data chunk
+	bool skipNextPart();
+
+
+	/*
+	 * Additional Functions / Data
+	 */
+	public:
+	// Return whether the plugin has import options
+	bool hasImportOptions();
+	// Show import options dialog
+	bool showImportOptionsDialog();
+	// Return whether the plugin has export options
+	bool hasExportOptions();
+	// Show export options dialog
+	bool showExportOptionsDialog();
+
+
+	/*
+	 * Local Variables
+	 */
+	private:
+	// Whether trajectory is unformatted
+	bool unformatted_;
+	// Whether trajectory has a header
+	bool hasHeader_;
+	// Size of integer (in bytes) for unformatted trajectories
+	int integerSize_;
+	// Size of real (in bytes) for unformatted trajectories
+	int realSize_;
+	// Atom names read from unformatted trajectory header
+	QStringList unformattedAtomNames_;
+	// Atom charges read from unformatted trajectory header
+	Array<double> unformattedCharges_;
+};
+
+ATEN_END_NAMESPACE
+
+#endif

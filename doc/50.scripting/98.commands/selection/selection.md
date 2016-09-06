@@ -54,6 +54,22 @@ deselects the first, second, and fifth atoms, as well as the eighth atom and all
 
 ---
 
+## deSelectAll <a id="deselectall"></a>
+
+_Syntax:_
+
+**void** **deSelectAll** ( )
+
+Deselect all atoms in the current model.
+
+For example:
+
+```aten
+deSelectAll();
+```
+
+---
+
 ## deSelectCode <a id="deselectcode"></a>
 
 _Syntax:_
@@ -87,6 +103,24 @@ deSelectF("%i-%i", i, i+10);
 ```
 
 deselects atom ids 10 to 20 inclusive.
+
+---
+
+## deSelectName <a id="deselectname"></a>
+
+_Syntax:_
+
+**int** **deSelectName** ( **string** _name_ )
+
+Deselect all atoms in the current model whose assigned type names (not equivalent names) match the supplied string. The string may contain wildcards ('*').
+
+For example:
+
+```aten
+deSelectName("O*");
+```
+
+will deselect all atoms whose assigned type names begin with 'O'.
 
 ---
 
@@ -322,6 +356,24 @@ selectMolecule(5);
 ```
 
 selects the bound fragment in which atom number 5 exists.
+
+---
+
+## selectName <a id="selectname"></a>
+
+_Syntax:_
+
+**int** **selectName** ( **string** _name_ )
+
+Selects all atoms in the current model whose assigned type names (not equivalent names) match the supplied string. The string may contain wildcards ('*').
+
+For example:
+
+```aten
+selectName("O*");
+```
+
+will select all atoms whose assigned type names begin with 'O'.
 
 ---
 

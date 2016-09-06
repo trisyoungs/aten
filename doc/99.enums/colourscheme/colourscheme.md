@@ -17,6 +17,7 @@ Available atomic colouring schemes are:
 | **element** | Atoms and connected bonds are coloured according to their element |
 | **force** | Atoms and connected bonds are coloured according to the force acting on the atom |
 | **velocity** | Atoms and connected bonds are coloured according to the velocities of the atoms |
+| **bonds** | Atoms and connected bonds are coloured according to the number of bonds to the atom |
 | **custom** | Atoms and connected bonds are coloured according to the custom colours set on individual atoms |
 
 

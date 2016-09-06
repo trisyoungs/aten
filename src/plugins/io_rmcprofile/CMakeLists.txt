@@ -15,6 +15,9 @@ add_library(rmcp3 MODULE
   ${rmcp3_MOC_SRCS}
   ${rmcp3_UIS_H}
 )
+target_link_libraries(rmcp3
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(rmcp3 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -56,6 +59,9 @@ add_library(rmcp6 MODULE
   common.cpp
   ${rmcp6_MOC_SRCS}
 )
+target_link_libraries(rmcp6
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(rmcp6 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -85,6 +91,9 @@ add_library(rmcp6bonds MODULE
   rmcp6bonds_funcs.cpp
   common.cpp
   ${rmcp6bonds_MOC_SRCS}
+)
+target_link_libraries(rmcp6bonds
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(rmcp6bonds PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

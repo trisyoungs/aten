@@ -51,7 +51,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	static SurfaceStyle surfaceStyle(QString s);
 	static const char* surfaceStyle(Grid::SurfaceStyle ss);
 	// Assignment operator
-	void operator=(Grid& source);
+	Grid& operator=(Grid& source);
 
 
 	/*

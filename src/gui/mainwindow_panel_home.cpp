@@ -21,11 +21,10 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-// #include "gui/selectfilter.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "gui/openmodel.h"
-#include "model/undostate.h"
+#include "undo/undostate.h"
 #include <QFileDialog>
 
 // Static local variables
@@ -73,8 +72,8 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());
 	ui.HomeViewCorrectGridsButton->setChecked(prefs.correctTransparentGrids());
 	ui.HomeViewLockButton->setChecked(prefs.viewLock() == Prefs::FullLock);
-	TMenuButton::setGroupButtonChecked("ViewStyles", Prefs::drawStyle(prefs.renderStyle()));
-	TMenuButton::setGroupButtonChecked("ColourSchemes", Prefs::colouringScheme(prefs.colourScheme()));
+	if (sourceModel) TMenuButton::setGroupButtonChecked("ViewStyles", sourceModel->drawStyle());
+	if (sourceModel) TMenuButton::setGroupButtonChecked("ColourSchemes", sourceModel->colourScheme());
 
 	Messenger::exit("AtenWindow::updateHomePanel");
 }
@@ -284,8 +283,12 @@ void AtenWindow::on_HomeAppearanceLineButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::LineStyle);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model drawing style");
+	currentModel->setDrawStyle(Prefs::LineStyle);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -294,8 +297,12 @@ void AtenWindow::on_HomeAppearanceTubeButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::TubeStyle);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model drawing style");
+	currentModel->setDrawStyle(Prefs::TubeStyle);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -304,8 +311,12 @@ void AtenWindow::on_HomeAppearanceSphereButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::SphereStyle);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model drawing style");
+	currentModel->setDrawStyle(Prefs::SphereStyle);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -314,8 +325,12 @@ void AtenWindow::on_HomeAppearanceScaledButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::ScaledStyle);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model drawing style");
+	currentModel->setDrawStyle(Prefs::ScaledStyle);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -324,8 +339,12 @@ void AtenWindow::on_HomeAppearanceOwnStyleButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::OwnStyle);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model drawing style");
+	currentModel->setDrawStyle(Prefs::OwnStyle);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -334,8 +353,12 @@ void AtenWindow::on_HomeAppearanceElementButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setColourScheme(Prefs::ElementScheme);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::ElementScheme);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -344,8 +367,12 @@ void AtenWindow::on_HomeAppearanceChargeButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::ChargeScheme);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -354,8 +381,12 @@ void AtenWindow::on_HomeAppearanceForceButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setColourScheme(Prefs::ForceScheme);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::ForceScheme);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -364,8 +395,26 @@ void AtenWindow::on_HomeAppearanceVelocityButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setColourScheme(Prefs::VelocityScheme);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::VelocityScheme);
+	currentModel->endUndoState();
+
+	updateWidgets();
+}
+
+void AtenWindow::on_HomeAppearanceBondsButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::BondsScheme);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }
@@ -374,8 +423,12 @@ void AtenWindow::on_HomeAppearanceOwnColourButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setColourScheme(Prefs::OwnScheme);
-	aten_.globalLogChange(Log::Style);
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->beginUndoState("Change model colour scheme");
+	currentModel->setColourScheme(Prefs::OwnScheme);
+	currentModel->endUndoState();
 
 	updateWidgets();
 }

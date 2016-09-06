@@ -42,7 +42,9 @@ void AtenWindow::updateCellPanel(Model* sourceModel)
 	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	// Miller
-	ui.CellMillerDefineButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellMillerHSpin->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellMillerKSpin->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellMillerLSpin->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	ui.CellMillerSelectButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 
 	Messenger::exit("AtenWindow::updateCellPanel");
@@ -91,9 +93,31 @@ void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
  * Miller
  */
 
+void AtenWindow::on_CellMillerShowButton_clicked(bool checked)
+{
+	updateWidgets();
+}
+
+void AtenWindow::on_CellMillerHSpin_valueChanged(int value)
+{
+	updateWidgets();
+}
+
+void AtenWindow::on_CellMillerKSpin_valueChanged(int value)
+{
+	updateWidgets();
+}
+
+void AtenWindow::on_CellMillerLSpin_valueChanged(int value)
+{
+	updateWidgets();
+}
+
 void AtenWindow::on_CellMillerSelectButton_clicked(bool checked)
 {
-	// ATEN2 TODO
+	CommandNode::run(Commands::SelectMiller, "iii", ui.CellMillerHSpin->value(), ui.CellMillerKSpin->value(), ui.CellMillerLSpin->value());
+
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*

@@ -1,11 +1,9 @@
-add_library(model
+add_library(model STATIC
   bundle.h
   clipboard.h
   fragment.h
   fragmentgroup.h
   model.h
-  undoevent.h
-  undostate.h
   atom.cpp 
   bond.cpp 
   build.cpp 
@@ -35,8 +33,6 @@ add_library(model
   transform.cpp 
   typing.cpp 
   undo.cpp 
-  undoevent.cpp
-  undostate.cpp
   view.cpp
   zmatrix.cpp
 )

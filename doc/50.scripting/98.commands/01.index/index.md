@@ -141,9 +141,11 @@ header_class: alt
 
 [deSelect](/aten/docs/scripting/commands/selection#deselect)
 
-[deSelectF](/aten/docs/scripting/commands/selection#deselectf)
+[deSelectAll](/aten/docs/scripting/commands/selection#deselectall)
 
-[deSelectFor](/aten/docs/scripting/commands/selection#deselectfor)
+[deSelectCode](/aten/docs/scripting/commands/selection#deselectcode)
+
+[deSelectF](/aten/docs/scripting/commands/selection#deselectf)
 
 [deSelectType](/aten/docs/scripting/commands/selection#deselecttype)
 
@@ -586,11 +588,11 @@ header_class: alt
 
 [select](/aten/docs/scripting/commands/selection#select)
 
+[selectCode](/aten/docs/scripting/commands/selection#selectcode)
+
 [selectF](/aten/docs/scripting/commands/selection#selectf)
 
 [selectFFType](/aten/docs/scripting/commands/selection#selectfftype)
-
-[selectFor](/aten/docs/scripting/commands/selection#selectfor)
 
 [selectInsideCell](/aten/docs/scripting/commands/selection#selectinsidecell)
 
@@ -608,7 +610,7 @@ header_class: alt
 
 [selectMolecule](/aten/docs/scripting/commands/selection#selectmolecule)
 
-[selectNone](/aten/docs/scripting/commands/selection#selectnone)
+[selectNone](/aten/docs/scripting/commands/selection#deselectall)
 
 [selectOutsideCell](/aten/docs/scripting/commands/selection#selectoutsidecell)
 

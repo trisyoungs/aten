@@ -9,4 +9,35 @@ add_subdirectory(methods)
 add_subdirectory(model)
 add_subdirectory(main)
 add_subdirectory(render)
+add_subdirectory(undo)
 add_subdirectory(plugins)
+
+if(WIN32)
+add_library(aten SHARED libaten.cpp)
+target_link_libraries(aten PRIVATE
+	"-Wl,--whole-archive"
+	messenger
+	fourierdata
+	treegui
+	gui
+	base
+	sg
+	math
+	command
+	parser
+	ff
+	methods
+	model
+	undo
+	main
+	render
+	plugins
+	"-Wl,--no-whole-archive"
+	Qt5::Widgets
+	Qt5::Core
+	${FTGL_LIBRARIES}
+	${OPENGL_LIBRARIES}
+	${FREETYPE_LIBRARIES}
+	${READLINE_LIBRARIES}
+)
+endif(WIN32)

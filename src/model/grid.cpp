@@ -24,25 +24,25 @@
 
 ATEN_USING_NAMESPACE
 
-// Return list of surfaces
+// Return list of grids
 Grid* Model::grids() const
 {
 	return grids_.first();
 }
 
-// Return number of surfaces loaded
+// Return number of grids loaded
 int Model::nGrids() const
 {
 	return grids_.nItems();
 }
 
-// Return specified surface
+// Return specified grid
 Grid* Model::grid(int id)
 {
 	return grids_[id];
 }
 
-// Add new surface
+// Add new grid
 Grid* Model::addGrid()
 {
 	Grid* grid = grids_.add();
@@ -50,7 +50,14 @@ Grid* Model::addGrid()
 	return grid;
 }
 
-// Remove surface
+// Take ownership of existing grid
+void Model::ownGrid(Grid* grid)
+{
+	grids_.own(grid);
+	grid->setParent(this);
+}
+
+// Remove grid
 void Model::removeGrid(Grid* xgrid)
 {
 	grids_.remove(xgrid);

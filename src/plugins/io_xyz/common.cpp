@@ -57,7 +57,7 @@ bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* plugin, FileParser& 
 	}
 	
 	// Rebond the model
-	if (!plugin->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
+	if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel->calculateBonding(true);
 	
 	return true;
 }

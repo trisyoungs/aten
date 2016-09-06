@@ -52,9 +52,9 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	// Setup view for model, in the supplied viewport
 	source->setupView(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
 
-	// Set initial transformation matrix, including any translation occurring from cell...
+	// Set initial transformation matrix, including any translation occurring from cell or viewOrigin...
 	modelTransformationMatrix_ = source->modelViewMatrix();
-	modelTransformationMatrix_.applyTranslation(-source->cell().centre());
+	modelTransformationMatrix_.applyTranslation(-source->viewOriginOrCellOrigin());
 	
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -106,10 +106,11 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		colour[2] = 0.0f;
 		colour[3] = 1.0f;
 
-		// Set current view matrix to account for model rotation, cell axes size, and translation to cell LLC
+		// Set current view matrix to account for model rotation, cell axes size, and translation to view origin
 		Matrix A = source->modelViewMatrix() * source->cell().axes();
 		glLoadMatrixd(A.matrix());
-		glTranslated(-0.5, -0.5, -0.5);
+		Vec3<double> translation = source->cell().inverse() * source->viewOriginOrCellOrigin();
+		glTranslated(-translation.x, -translation.y, -translation.z);
 
 		// Draw a wire cube for the cell
 		glColor4fv(colour);

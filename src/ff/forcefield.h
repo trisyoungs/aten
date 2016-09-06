@@ -100,7 +100,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Get the atomtype specified by the ffid number passed
 	ForcefieldAtom* findType(int id);
 	// Find the named atomtype
-	ForcefieldAtom* findType(QString name);
+	ForcefieldAtom* findType(QString name, int element = -1);
 	// Returns the ForcefieldAtom with the typeId provided
 	ForcefieldAtom* findByTypeId(int id, ForcefieldAtom* excluding = NULL);
 	// Return number of type defines in forcefield

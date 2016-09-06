@@ -23,6 +23,7 @@
 #define ATEN_FORCEFIELDBOUND_H
 
 #include "ff/forms.h"
+#include "base/prefs.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -75,8 +76,10 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	bool setForm(QString form);
 	// Set the parameter data specified
 	void setParameter(int i, double d);
-	// Return parameter data specifiedz
+	// Return parameter data specified
 	double parameter(int i) const;
+	// Return parameter data specified, converted into specified units (if it is an energetic parameter)
+	double convertedParameter(int i, Prefs::EnergyUnit units) const;
 	// Return pointer to parameter array
 	double* parameters();
 	// Return the atom type 'n'

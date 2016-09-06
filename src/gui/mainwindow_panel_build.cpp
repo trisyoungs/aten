@@ -35,17 +35,17 @@ void AtenWindow::updateBuildPanel(Model* sourceModel)
 
 void AtenWindow::on_BuildSelectAtomsButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::SelectAction);
+	setSelectedMode(UserAction::SelectAction, checked);
 }
 
 void AtenWindow::on_BuildSelectBoundButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::SelectBoundAction);
+	setSelectedMode(UserAction::SelectBoundAction, checked);
 }
 
 void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::SelectElementAction);
+	setSelectedMode(UserAction::SelectElementAction, checked);
 }
 
 /*
@@ -54,32 +54,32 @@ void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 
 void AtenWindow::on_BuildDrawDrawButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawAtomsAction);
+	setSelectedMode(UserAction::DrawAtomsAction, checked);
 }
 
 void AtenWindow::on_BuildDrawFragmentButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawFragmentsAction);
+	setSelectedMode(UserAction::DrawFragmentsAction, checked);
 }
 
 void AtenWindow::on_BuildDrawDeleteButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawDeleteAction);
+	setSelectedMode(UserAction::DrawDeleteAction, checked);
 }
 
 void AtenWindow::on_BuildDrawTransmuteButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawTransmuteAction);
+	setSelectedMode(UserAction::DrawTransmuteAction, checked);
 }
 
 void AtenWindow::on_BuildDrawAddHButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawAddHydrogenAction);
+	setSelectedMode(UserAction::DrawAddHydrogenAction, checked);
 }
 
 void AtenWindow::on_BuildDrawGrowButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::DrawGrowAtomsAction);
+	setSelectedMode(UserAction::DrawGrowAtomsAction, checked);
 }
 
 /*

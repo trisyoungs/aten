@@ -1,4 +1,4 @@
-add_library(math
+add_library(math STATIC
   cuboid.cpp
   doubleexp.cpp
   mathfunc.cpp

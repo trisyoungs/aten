@@ -1,4 +1,4 @@
-add_library(main
+add_library(main STATIC
   aten.h
   cli.h 
   version.h 

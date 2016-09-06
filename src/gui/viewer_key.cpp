@@ -67,27 +67,29 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 		}
 	}
 	
-	int n;
-	
 	switch (event->key())
 	{
 		case (Qt::Key_Left):
-			source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
+			if (keyModifier_[Prefs::CtrlKey]) source->adjustCamera(-5.0, 0.0, 0.0);
+			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = true;
 			ignore = false;
 			break;
 		case (Qt::Key_Right):
-			source->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
+			if (keyModifier_[Prefs::CtrlKey]) source->adjustCamera(5.0, 0.0, 0.0);
+			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
 			refresh = true;
 			ignore = false;
 			break;
 		case (Qt::Key_Up):
-			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
+			if (keyModifier_[Prefs::CtrlKey]) source->adjustCamera(0.0, -5.0, 0.0);
+			else source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
 			refresh = true;
 			ignore = false;
 			break;
 		case (Qt::Key_Down):
-			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
+			if (keyModifier_[Prefs::CtrlKey]) source->adjustCamera(0.0, 5.0, 0.0);
+			else source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
 			refresh = true;
 			ignore = false;
 			break;
@@ -96,20 +98,6 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			refresh = true;
 			ignore = false;
 			break;
-		// Cycle render / colour styles
-		case (Qt::Key_F6):
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				n = (prefs.colourScheme() + 1)%Prefs::nColouringSchemes;
-				prefs.setColourScheme((Prefs::ColouringScheme) n);
-			}
-			else
-			{
-				n = (prefs.renderStyle() + 1)%Prefs::nDrawStyles;
-				prefs.setRenderStyle((Prefs::DrawStyle) n);
-			}
-			atenWindow_->updateWidgets();
-			ignore = false;
 		default:
 			break;
 	}

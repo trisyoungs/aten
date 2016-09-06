@@ -36,17 +36,17 @@ void AtenWindow::updateCalculatePanel(Model* sourceModel)
 
 void AtenWindow::on_CalculateMeasureDistanceButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::MeasureDistanceAction);
+	setSelectedMode(UserAction::MeasureDistanceAction, checked);
 }
 
 void AtenWindow::on_CalculateMeasureAngleButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::MeasureAngleAction);
+	setSelectedMode(UserAction::MeasureAngleAction, checked);
 }
 
 void AtenWindow::on_CalculateMeasureTorsionButton_clicked(bool checked)
 {
-	if (checked) setSelectedMode(UserAction::MeasureTorsionAction);
+	setSelectedMode(UserAction::MeasureTorsionAction, checked);
 }
 
 void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)
@@ -64,6 +64,59 @@ void AtenWindow::on_CalculateMeasureListButton_clicked(bool checked)
 	if (!currentModel) return;
 
 	currentModel->listMeasurements();
+
+	// Update display
+	updateWidgets();
+}
+
+/*
+ * Charge
+ */
+
+void AtenWindow::on_CalculateChargeTotalButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	double total = 0.0;
+	if (currentModel->nSelected() == 0)
+	{
+		for (Atom* i = currentModel->atoms(); i != NULL; i = i->next) total += i->charge();
+		Messenger::print("Total charge in model = %f e.", total);
+	}
+	else
+	{
+		for (RefListItem<Atom,int>* ri = currentModel->selection(); ri != NULL; ri = ri->next) total += ri->item->charge();
+		Messenger::print("Total charge in selection (%i atoms) = %f e.", currentModel->nSelected(), total);
+	}
+
+	// Update display
+	updateWidgets();
+}
+
+/*
+ * Geometry
+ */
+
+void AtenWindow::on_CalculateGeometryCentreButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	// Get the centre of geometry of the current selection and, if the model is periodic, fold it into the unit cell
+	Vec3<double> cog = currentModel->selectionCentreOfGeometry();
+	if (currentModel->isPeriodic()) cog = currentModel->cell().fold(cog);
+	Messenger::print("Geometric centre of current selection (%i atoms) is { %f %f %f }.", currentModel->nSelected(), cog.x, cog.y, cog.z);
+
+	// Create dummy atom at the position?
+	ReturnValue rv;
+	ui.CalculateGeometryCentreButton->callPopupMethod("addDummy", rv);
+	if (rv.asBool())
+	{
+		currentModel->beginUndoState("Add dummy atom at selection's centre of geometry");
+		currentModel->addAtom(0, cog);
+		currentModel->endUndoState();
+	}
 
 	// Update display
 	updateWidgets();

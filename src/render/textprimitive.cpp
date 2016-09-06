@@ -163,10 +163,11 @@ void TextPrimitive::boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRigh
 }
 
 // Render primitive
-void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double baseFontSize)
+void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double sizeScale, bool depthScaling)
 {
 	// Calculate scaling factor for font
-	double scale = FontInstance::fontBaseHeight() * scalingFactor_ * textSize_ / baseFontSize;
+	double scale = FontInstance::fontBaseHeight() * scalingFactor_ * textSize_ * sizeScale;
+	if (depthScaling) scale *= -viewMatrix.element(14);
 
 	// Construct our basic matrix
 	Matrix textMatrix = viewMatrix;
@@ -180,7 +181,7 @@ void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatri
 	textMatrix.applyScaling(scale, scale, scale);
 	// -- Account for text anchor position
 	textMatrix.applyTranslation(-anchorOffset_);
-
+	
 	// Draw bounding box for whole TextFragment if requested
 	if (outline_)
 	{
@@ -199,7 +200,6 @@ void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatri
 	Matrix fragmentMatrix;
 	for (TextFragment* fragment = fragments_.first(); fragment != NULL; fragment = fragment->next)
 	{
-
 		// Draw bounding boxes around each fragment if requested
 		if (outline_)
 		{

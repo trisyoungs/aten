@@ -174,18 +174,11 @@ class AtenPrefs : public QDialog
 	/*
 	 * Colourscales page
 	 */
-	private:
-	void updateScalePointsList();
-
 	private slots:
 	void on_ScaleList_currentRowChanged(int id);
-	void on_ScalePointsTable_cellChanged(int row, int col);
-	void on_ScalePointsTable_cellDoubleClicked(int row, int column);
-	void on_AddPointButton_clicked(bool checked);
-	void on_RemovePointButton_clicked(bool checked);
 	void on_ScaleList_itemClicked(QListWidgetItem* item);
 	void on_ScaleList_itemDoubleClicked(QListWidgetItem* item);
-
+	void colourScaleChanged();
 
 	/*
 	 * Energy / FF Page

@@ -228,8 +228,10 @@ bool CIFModelPlugin::importData()
 					break;
 				case (CIFModelPlugin::SymmetrySpacegroupNameHM):
 				case (CIFModelPlugin::SymmetrySpacegroupNameHMAlt):
-					targetModel()->cell().setSpacegroup(fileParser_.argc(1), standardOptions_.forceRhombohedral());
+					targetModel()->cell().setSpacegroup(fileParser_.argc(1), standardOptions_.isSetAndOn(FilePluginStandardImportOptions::ForceRhombohedralSwitch));
 					break;
+        default:
+          break;  
 			}
 		}
 	}
@@ -245,13 +247,13 @@ bool CIFModelPlugin::importData()
 	}
 
 	// Pack model
-	if (!standardOptions_.preventPacking()) targetModel()->pack();
+	if (!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventPackingSwitch)) targetModel()->pack();
 
 	// Fold model
-	if (!standardOptions_.preventFolding()) targetModel()->foldAllMolecules();
+	if (!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch)) targetModel()->foldAllAtoms();
 
 	// Rebond model
-	if (!standardOptions_.preventRebonding()) targetModel()->calculateBonding(true);
+	if (!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel()->calculateBonding(true);
 
 	return true;
 }

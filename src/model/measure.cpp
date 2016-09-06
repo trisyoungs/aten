@@ -21,8 +21,8 @@
 
 #include "model/model.h"
 #include "base/measurement.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/measurement_creation.h"
+#include "undo/undostate.h"
 
 ATEN_USING_NAMESPACE
 
@@ -179,7 +179,7 @@ void Model::removeMeasurement(Measurement* me)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		MeasurementEvent* newchange = new MeasurementEvent;
+		MeasurementCreationEvent* newchange = new MeasurementCreationEvent;
 		Atom** atoms = me->atoms();
 		switch (type)
 		{
@@ -299,7 +299,7 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		MeasurementEvent* newchange = new MeasurementEvent;
+		MeasurementCreationEvent* newchange = new MeasurementCreationEvent;
 		switch (gt)
 		{
 			case (Measurement::DistanceMeasurement):

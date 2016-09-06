@@ -2,13 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aten"
-#define MyAppVersion "2.0.1"
+#define MyAppVersion "2.1.3"
 #define MyAppPublisher "Tristan Youngs"
 #define MyAppURL "http://www.projectaten.net/"
 #define MyAppExeName "Aten.exe"
 
 ; Locations of bin directories of Qt, GnuWin(32), and MinGW(32)
-#define QtDir "C:\Qt\5.4.1\qtbase"
+#define QtDir "C:\Qt\5.6.0\qtbase"
 #define GnuWinDir "C:\GnuWin32"
 #define MinGWDir "C:\MinGW32"
 
@@ -28,7 +28,7 @@ DefaultDirName={pf}\Aten2
 DefaultGroupName={#MyAppName}
 LicenseFile=..\..\COPYING
 OutputDir=..\..\
-OutputBaseFilename=Aten-2.0.1
+OutputBaseFilename=Aten-2.1.3
 SetupIconFile=Aten.ico
 Compression=lzma
 SolidCompression=yes
@@ -42,6 +42,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\build\data\plugins\*"; DestDir: "{app}\plugins"; Flags: ignoreversion
+Source: "..\..\build\lib\libaten.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "{#GnuWinDir}\bin\freetype6.dll"; DestDir: "{app}\bin"

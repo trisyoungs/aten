@@ -171,7 +171,7 @@ template <class T> class List
 	 */
 	public:
 	// Assignment operator
-	void operator=(const List<T>& source);
+	List<T>& operator=(const List<T>& source);
 	// Element access operator
 	T* operator[](int);
 
@@ -875,7 +875,7 @@ template <class T> void List<T>::swapByIndex(int id1, int id2)
 /*!
  * \brief Assignment operator =
  */
-template <class T> void List<T>::operator=(const List<T>& source)
+template <class T> List<T>& List<T>::operator=(const List<T>& source)
 {
 	// Clear any current data in the list...
 	clear();
@@ -892,6 +892,8 @@ template <class T> void List<T>::operator=(const List<T>& source)
 
 	// Don't deep-copy the static list, just flag that it must be regenerated if required.
 	regenerate_ = 1;
+
+	return *this;
 }
 
 /*!
@@ -921,7 +923,7 @@ template <class T, class P> class ParentList : public List<T>
 		return newitem;
 	}
 	// Override the assignment operator
-	void operator=(const ParentList<T,P>& source)
+	ParentList<T,P>& operator=(const ParentList<T,P>& source)
 	{
 		// Clear any current data in the list...
 		List<T>::clear();
@@ -935,8 +937,11 @@ template <class T, class P> class ParentList : public List<T>
 			newitem->next = NULL;
 			List<T>::own(newitem);
 		}
+
 		// Don't deep-copy the static list, just flag that it must be regenerated if required.
 		List<T>::regenerate_ = 1;
+
+		return *this;
 	}
 };
 

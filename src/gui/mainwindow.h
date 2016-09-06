@@ -34,10 +34,12 @@
 #include "gui/disorderwizard.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
+#include "gui/openexpression.h"
 #include "gui/opengrid.h"
 #include "gui/openmodel.h"
 #include "gui/opentrajectory.h"
 #include "gui/progress.h"
+#include "gui/saveexpression.h"
 #include "gui/savemodel.h"
 #include "gui/zmatrix.h"
 #include "templates/reflist.h"
@@ -127,6 +129,8 @@ class AtenWindow : public QMainWindow
 	 * File Dialogs
 	 */
 	private:
+	// Expression import dialog
+	AtenOpenExpression openExpressionDialog_;
 	// Grid import dialog
 	AtenOpenGrid openGridDialog_;
 	// Model import dialog
@@ -135,10 +139,14 @@ class AtenWindow : public QMainWindow
 	AtenOpenTrajectory openTrajectoryDialog_;
 	// Model export dialog
 	AtenSaveModel saveModelDialog_;
+	// Expression export dialog
+	AtenSaveExpression saveExpressionDialog_;
 
 	public:
 	// Return model export dialog
 	AtenSaveModel& saveModelDialog();
+	// Return expression export dialog
+	AtenSaveExpression& saveExpressionDialog();
 
 
 	/*
@@ -162,9 +170,14 @@ class AtenWindow : public QMainWindow
 	void contextMenuSetAtomStyle(bool checked);
 	void contextMenuSetAtomLabel(bool checked);
 	void contextMenuProbeAtom(bool checked);
+	void contextMenuSetViewOrigin(bool checked);
 	void contextMenuCreateFragment(bool checked);
 	void contextMenuSelectElement(bool checked);
+	void contextMenuSelectSimilar(bool checked);
 	void contextMenuSelectFragment(bool checked);
+	void contextMenuTypeSetName(bool checked);
+	void contextMenuReMap(bool checked);
+	void contextMenuColourChanged(QColor colour);
 	void createGlyph();
 
 	public:
@@ -205,6 +218,7 @@ class AtenWindow : public QMainWindow
 	void on_HomeAppearanceChargeButton_clicked(bool checked);
 	void on_HomeAppearanceForceButton_clicked(bool checked);
 	void on_HomeAppearanceVelocityButton_clicked(bool checked);
+	void on_HomeAppearanceBondsButton_clicked(bool checked);
 	void on_HomeAppearanceOwnColourButton_clicked(bool checked);
 	void on_HomeAppearancePerspectiveButton_clicked(bool checked);
 	void on_HomeAppearanceShowAllButton_clicked(bool checked);
@@ -261,6 +275,10 @@ class AtenWindow : public QMainWindow
 	void on_CellTransformReplicateButton_clicked(bool checked);
 	void on_CellTransformScaleButton_clicked(bool checked);
 	// Miller
+	void on_CellMillerShowButton_clicked(bool checked);
+	void on_CellMillerHSpin_valueChanged(int value);
+	void on_CellMillerKSpin_valueChanged(int value);
+	void on_CellMillerLSpin_valueChanged(int value);
 	void on_CellMillerSelectButton_clicked(bool checked);
 	// Fold
 	void on_CellFoldAtomsButton_clicked(bool checked);
@@ -281,6 +299,10 @@ class AtenWindow : public QMainWindow
 	void on_CalculateMeasureTorsionButton_clicked(bool checked);
 	void on_CalculateMeasureClearButton_clicked(bool checked);
 	void on_CalculateMeasureListButton_clicked(bool checked);
+	// Charge
+	void on_CalculateChargeTotalButton_clicked(bool checked);
+	// Geometry
+	void on_CalculateGeometryCentreButton_clicked(bool checked);
 
 
 	/*
@@ -405,7 +427,7 @@ class AtenWindow : public QMainWindow
 	// Update select panel
 	void updateSelectPanel(Model* sourceModel);
 	// Enum for selection auto target type
-	enum SelectTargetType { AutoSelectType, RangeSelectType, NETASelectType, LoopSelectType, nSelectTargetTypes };
+	enum SelectTargetType { AutoSelectType, RangeSelectType, NETASelectType, LoopSelectType, NameSelectType, nSelectTargetTypes };
 	// Last auto-determined selection type
 	SelectTargetType lastSelectionType_;
 
@@ -445,6 +467,7 @@ class AtenWindow : public QMainWindow
 	// Position
 	void on_SelectionPositionFixButton_clicked(bool checked);
 	void on_SelectionPositionFreeButton_clicked(bool checked);
+	void on_SelectionPositionSetViewOriginButton_clicked(bool checked);
 
 
 	/*
@@ -671,6 +694,8 @@ class AtenWindow : public QMainWindow
 	void useSelectedMode();
 	// Sets the currently selected interact mode
 	void setSelectedMode(UserAction::Action ua);
+	// Sets the currently selected interact mode, and corrects source button checked status
+	void setSelectedMode(UserAction::Action ua, bool buttonChecked);
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode

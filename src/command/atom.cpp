@@ -38,6 +38,7 @@ bool Commands::function_AtomStyle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if (i == NULL) return false;
 		obj.rs()->beginUndoState("Style individual atom");
 		obj.rs()->atomSetStyle(i, ds);
+		obj.rs()->setDrawStyle(Prefs::OwnStyle);
 		obj.rs()->endUndoState();
 	}
 	else
@@ -143,6 +144,36 @@ bool Commands::function_RecolourAtoms(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.rs()->beginUndoState("Reset custom colour of %i atoms", obj.rs()->nSelected());
 	obj.rs()->selectionResetColour();
 	obj.rs()->endUndoState();
+	rv.reset();
+	return true;
+}
+
+// ReMap selected atoms
+bool Commands::function_ReMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
+	ElementMap::ZMapType zm = ElementMap::zMapType(c->argc(0), true);
+	if (zm != ElementMap::nZMapTypes)
+	{
+		obj.rs()->beginUndoState("Re-map element types of %i atoms", obj.rs()->nSelected());
+		for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+		{
+			Atom* i = ri->item;
+
+			// First, check data() for the atom
+			if (i->data() == NULL)
+			{
+				Messenger::warn("Can't re-map element for atom %i since it is missing the required data.", i->id()+1);
+				continue;
+			}
+
+			// Do the name->element conversion according to the specified style
+			int element = ElementMap::find(i->data(), zm);
+			obj.rs()->transmuteAtom(i, element);
+		}
+		obj.rs()->endUndoState();
+	}
 	rv.reset();
 	return true;
 }

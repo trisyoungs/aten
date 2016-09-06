@@ -50,9 +50,11 @@ void Choice::resolve(bool defaultvalue)
  */
 
 // Assignment (enum)
-void Choice::operator=(Choice::ChoiceType ct)
+Choice& Choice::operator=(Choice::ChoiceType ct)
 {
 	choice_ = ct;
+
+	return *this;
 }
 
 // Equality (Choice)

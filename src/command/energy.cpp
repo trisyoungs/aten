@@ -70,7 +70,7 @@ bool Commands::function_FrameEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv
 	double energy;
 	bool success;
 
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield())) return false;
 	energy = obj.m->totalEnergy(obj.rs(), success);
 	rv.set(energy);
 
@@ -84,7 +84,7 @@ bool Commands::function_ModelEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv
 	double energy;
 	bool success;
 	
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield())) return false;
 	energy = obj.m->totalEnergy(obj.m, success);
 	rv.set(energy);
 

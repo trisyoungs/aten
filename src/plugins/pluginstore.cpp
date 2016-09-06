@@ -1,7 +1,7 @@
 /*
         *** Plugin Store
         *** src/plugins/pluginstore.cpp
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
     

@@ -44,8 +44,12 @@ class ColourScale : public ListItem<ColourScale>
 	public:
 	// Constructor
 	ColourScale();
-	// Operator==
-	bool operator==(const ColourScale& other);
+	// Copy Constructor
+	ColourScale(const ColourScale& source);
+	// Assignment Operator
+	ColourScale& operator=(const ColourScale& source);
+	// Equivalence Operator
+	bool operator==(const ColourScale& source);
 
 
 	/*
@@ -99,21 +103,31 @@ class ColourScale : public ListItem<ColourScale>
 	// Calculate colour deltas for current list of points
 	void calculateDeltas();
 	// Add new point to colourscale
-	ColourScalePoint* addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
-	// Add new point to end of colourscale
-	ColourScalePoint* addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
+	ColourScalePoint* addPoint(double value, double r, double g, double b, double a = 1.0f);
+	// Add new point to colourscale
+	ColourScalePoint* addPoint(double value, QColor colour);
 	// Set colour and value data for point
-	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = true, bool setcol = true);
-	// Set only value for point
-	void setPointValue(int position, double value);
-	// Set only colour for point
-	void setPointColour(int position, double r, double g, double b, double a = 1.0f);
-	// Remove old point from colourscale
+	void setPoint(int position, double value, double r = 0.0, double g = 0.0, double b = 0.0, double a = 0.0, bool modifyValue = true, bool modifyColour = false);
+	// Set colour and value data for point
+	void setPoint(ColourScalePoint* point, double value, double r = 0.0, double g = 0.0, double b = 0.0, double a = 0.0, bool modifyValue = true, bool modifyColour = false);
+	// Set value for point
+	void setValue(int position, double value);
+	// Set value for point
+	void setValue(ColourScalePoint* point, double value);
+	// Set colour for point
+	void setColour(int position, double r, double g, double b, double a = 1.0f);
+	// Set colour for point
+	void setColour(ColourScalePoint* point, QColor colour);
+	// Remove point from colourscale
 	void removePoint(int position);
+	// Remove point from colourscale
+	void removePoint(ColourScalePoint* point);
 	// Get colour associated with value supplied
 	void colour(double value, GLfloat* target);
 	// Get colour associated with value supplied
 	void colour(double value, Vec4<GLfloat>& target);
+	// Get colour as QColor
+	QColor colourAsQColor(double value);
 	// Adjust range of scale to encompass point supplied
 	void adjustRange(double value);
 

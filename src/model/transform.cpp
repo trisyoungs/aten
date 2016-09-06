@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/atom_translate.h"
+#include "undo/undostate.h"
 
 ATEN_USING_NAMESPACE
 
@@ -71,12 +71,12 @@ void Model::finalizeTransform(RefList< Atom,Vec3<double> >& rOriginal, const cha
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)
 	{
-		TranslateEvent* newchange;
+		AtomTranslateEvent* newchange;
 		Vec3<double> delta;
 		for (RefListItem< Atom,Vec3<double> >* ri = rOriginal.first(); ri != NULL; ri = ri->next)
 		{
 			delta = ri->item->r() - ri->data;
-			newchange = new TranslateEvent;
+			newchange = new AtomTranslateEvent;
 			newchange->set(ri->item->id(), delta);
 			recordingState_->addEvent(newchange);
 		}
@@ -106,7 +106,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
 		newr = inverse.transform(newr);
-		ri->item->r() = newr + cell_.centre();
+		ri->item->r() = newr + viewOriginOrCellOrigin();
 	}
 
 	// Update model measurements
@@ -162,7 +162,7 @@ void Model::rotateSelectionZaxis(double dz)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
 		newr = inverse.transform(newr);
-		ri->item->r() = newr + cell_.centre();
+		ri->item->r() = newr + viewOriginOrCellOrigin();
 	}
 	
 	// Update model measurements
@@ -185,7 +185,7 @@ void Model::translateSelectionWorld(const Vec3<double>& v, bool markonly)
 	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = modelToWorld(ri->item->r()) + v;
-		newr = inverse * newr + cell_.centre();
+		newr = inverse * newr + viewOriginOrCellOrigin();
 		positionAtom(ri->item, newr);
 	}
 

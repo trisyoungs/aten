@@ -16,6 +16,9 @@ add_library(pdb MODULE
   ${pdb_MOC_SRCS}
   ${pdb_UIS_H}
 )
+target_link_libraries(pdb
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(pdb PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

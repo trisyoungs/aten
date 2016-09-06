@@ -132,7 +132,7 @@ Grid::~Grid()
 }
 
 // Assignment operator
-void Grid::operator=(Grid& source)
+Grid& Grid::operator=(Grid& source)
 {
 	// Copy PODs directly
 	type_ = source.type_;
@@ -195,6 +195,8 @@ void Grid::operator=(Grid& source)
 	}
 	name_ = source.name_;
 	filename_ = source.filename_;
+
+	return *this;
 }
 
 /*

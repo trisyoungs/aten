@@ -46,6 +46,44 @@ DoubleExp::DoubleExp(double mantissa, int exponent)
 	recalculate();
 }
 
+/*
+ * Operators
+ */
+
+// Assignment operator
+DoubleExp& DoubleExp::operator=(double d)
+{
+	set(d);
+
+	return *this;
+}
+
+// Equality Operator
+bool DoubleExp::operator==(const double other)
+{
+	// Create temporary DoubleExp from the other value
+	DoubleExp otherValue(other);
+	if (otherValue.exponent_ != exponent_) return false;
+	if (fabs(otherValue.mantissa_ - mantissa_) > 1.0e-8) return false;
+
+	return true;
+}
+
+// Inequality Operator
+bool DoubleExp::operator!=(const double other)
+{
+	// Create temporary DoubleExp from the other value
+	DoubleExp otherValue(other);
+	if (otherValue.exponent_ != exponent_) return true;
+	if (fabs(otherValue.mantissa_ - mantissa_) > 1.0e-8) return true;
+
+	return false;
+}
+
+/*
+ * Functions
+ */
+
 // Recalculate value
 void DoubleExp::recalculate()
 {
@@ -133,12 +171,6 @@ void DoubleExp::setExponent(int exponent)
 int DoubleExp::exponent() const
 {
 	return exponent_;
-}
-
-// Assignment from single value
-void DoubleExp::operator=(double d)
-{
-	set(d);
 }
 
 /*

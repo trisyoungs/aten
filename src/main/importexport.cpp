@@ -40,9 +40,9 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 		m->setPlugin(plugin);
 
 		// Do various necessary calculations
-		if (plugin->standardOptions().coordinatesInBohr()) m->bohrToAngstrom();
+		if (plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch)) m->bohrToAngstrom();
 		m->renumberAtoms();
-		if (!plugin->standardOptions().keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
+		if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepViewSwitch)) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
 		m->calculateMass();
 		m->selectNone();
 
@@ -83,19 +83,35 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 	}
 
 	// Grids
-	RefList<Grid,int> createdGrids = plugin->createdGrids();
-	for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
+	while (plugin->createdGrids().first())
 	{
-		Grid* grid = ri->item;
-		if (!grid) continue;
+		Grid* grid = plugin->createdGrids().takeFirst();
 
 		// Set source filename and plugin interface used
-		if (plugin->standardOptions().coordinatesInBohr()) grid->bohrToAngstrom();
+		if (plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch)) grid->bohrToAngstrom();
 		grid->setFilename(filename);
 		grid->setPlugin(plugin);
 
+		// If the model pointer is set in the Grid, make sure the Model knows about it!
+		// If not, add it to the current model.
+		if (grid->parent()) grid->parent()->ownGrid(grid);
+		else current_.rs()->ownGrid(grid);
+
 		// Set current object
 		current_.g = grid;
+	}
+
+	// Forcefields
+	while (plugin->createdForcefields().first())
+	{
+		Forcefield* ff = plugin->createdForcefields().takeFirst();
+
+		// Set source filename and plugin interface used
+		ff->setFilename(filename);
+// 		ff->setPlugin(plugin);
+
+		// Pass the model pointer to Aten 
+		ownForcefield(ff);
 	}
 }
 
@@ -144,7 +160,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	{
 		// Create an instance of the plugin, and open an input file and set options
 		FilePluginInterface* pluginInterface = plugin->createInstance();
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(current_.m);
 		pluginInterface->setTargetModel(current_.rs());
@@ -224,7 +240,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 			Messenger::exit("Aten::exportModel");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(sourceModel);
 		if (pluginInterface->exportData())
@@ -287,7 +303,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 			Messenger::exit("Aten::importGrid");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(targetModel->parent() ? targetModel->parent() : targetModel);
 		pluginInterface->setTargetModel(targetModel);
@@ -335,7 +351,7 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 			Messenger::exit("Aten::importTrajectory");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(targetModel);
 
@@ -379,26 +395,25 @@ bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FileP
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
-		LineParser parser;
-		parser.openInput(filename);
-		if (!parser.isFileGoodForReading())
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openInput(filename))
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(filename));
 			Messenger::exit("Aten::importExpression");
 			return false;
 		}
-
-		FilePluginInterface* pluginInterface = plugin->createInstance();
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
-		FileParser fileParser(parser);
-		if (pluginInterface->importData())
+
+		if (!pluginInterface->importData())
 		{
+			result = false;
+			Messenger::error("Failed to import forcefield/expression.");
+		}
+		else
+		{
+			processImportedObjects(pluginInterface, filename);
 			result = true;
 		}
-
-		parser.closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
@@ -407,8 +422,83 @@ bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FileP
 }
 
 // Export expression
-bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::exportExpression(Model* sourceModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
-	// ATEN2 TODO ENDOFFILTERS
+	Messenger::enter("Aten::exportExpression");
+
+	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ExpressionFilePlugin) || (!plugin->canExport()))
+	{
+		// Need to raise the save model dialog to get a valid name and/or plugin
+		if (atenWindow_->shown() && atenWindow_->saveExpressionDialog().execute(pluginStore_.logPoint(), filename, plugin))
+		{
+			filename = atenWindow_->saveExpressionDialog().selectedFilenames().at(0);
+
+			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
+			if (atenWindow_->saveExpressionDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, filename);
+			else plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
+
+			if (!plugin)
+			{
+				QMessageBox::critical(atenWindow_, "Export Failed", "Export format could not be determined.\nCheck the file extension, or explicitly select a type.");
+				Messenger::print("Expression for model '%s' not saved.\n", qPrintable(sourceModel->name()));
+				Messenger::exit("Aten::exportExpression");
+				return false;
+			}
+		}
+	}
+
+	// Now do we have a valid filename and plugin?
+	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ExpressionFilePlugin) && (plugin->canExport()))
+	{
+		// Temporarily disable undo/redo for the model
+		sourceModel->disableUndoRedo();
+
+		// Turn on export type mapping
+		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
+
+		// Create an instance of the plugin, and set options and the output file
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openOutput(filename))
+		{
+			Messenger::exit("Aten::exportExpression");
+			return false;
+		}
+		pluginInterface->applyStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(sourceModel);
+		if (pluginInterface->exportData())
+		{
+			// Set the model's (potentially new) filename and plugin
+			sourceModel->setFilename(filename);
+			sourceModel->setPlugin(pluginInterface);
+			sourceModel->updateSavePoint();
+
+			// Done - tidy up
+			pluginInterface->closeFiles();
+
+			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(sourceModel->name()), qPrintable(filename), qPrintable(pluginInterface->name()));
+		}
+		else
+		{
+			sourceModel->enableUndoRedo();
+
+			Messenger::print("Failed to save model '%s'.", qPrintable(sourceModel->name()));
+			Messenger::exit("Aten::exportExpression");
+			return false;
+		}
+
+		typeExportMapping_ = false;
+
+		sourceModel->enableUndoRedo();
+	}
+	else
+	{
+		Messenger::print("Model '%s' not saved.\n", qPrintable(sourceModel->name()));
+		Messenger::exit("Aten::exportExpression");
+		return false;
+	}
+	
+	Messenger::exit("Aten::exportExpression");
+
 	return true;
 }

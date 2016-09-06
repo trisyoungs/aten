@@ -31,8 +31,11 @@ DLP4ModelPlugin::DLP4ModelPlugin()
 {
 	// Setup plugin options
 	pluginOptions_.add("shiftCell", "true");
-	pluginOptions_.add("levcfg","0");
-	pluginOptions_.add("useTypeNames", "false");
+	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, true);
 }
 
 // Destructor
@@ -81,7 +84,7 @@ QString DLP4ModelPlugin::description() const
 // Related file extensions
 QStringList DLP4ModelPlugin::extensions() const
 {
-    return QStringList() << "CONFIG";
+    return QStringList() << "CONFIG" << "REVCON";
 }
 
 // Exact names

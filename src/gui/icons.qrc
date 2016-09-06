@@ -92,6 +92,7 @@
     <file>icons/colourscheme_element.png</file>
     <file>icons/colourscheme_force.png</file>
     <file>icons/colourscheme_own.png</file>
+    <file>icons/colourscheme_bonds.png</file>
     <file>icons/colourscheme_velocity.png</file>
   </qresource>
   <qresource prefix="/atomgeometry">
@@ -106,8 +107,10 @@
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
     <file>icons/basic_abc.svg</file>
+    <file>icons/basic_sum.svg</file>
     <file>icons/basic_cellcentre.svg</file>
     <file>icons/basic_list.svg</file>
+    <file>icons/basic_labels.svg</file>
     <file>icons/basic_off.svg</file>
     <file>icons/basic_on.svg</file>
     <file>icons/basic_edit.svg</file>
@@ -179,6 +182,8 @@
   <qresource prefix="/calculate">
     <file>icons/calculate_angle.svg</file>
     <file>icons/calculate_distance.svg</file>
+    <file>icons/calculate_cog.svg</file>
+    <file>icons/calculate_com.svg</file>
     <file>icons/calculate_anglesel.svg</file>
     <file>icons/calculate_distancesel.svg</file>
     <file>icons/calculate_torsionsel.svg</file>

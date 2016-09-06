@@ -8,6 +8,9 @@ add_library(dlputilspdens MODULE
   pdens_funcs.cpp
   ${pdens_MOC_SRCS}
 )
+target_link_libraries(dlputilspdens
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(dlputilspdens PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -23,6 +26,9 @@ QT5_WRAP_CPP(surface_MOC_SRCS ${surface_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR
 add_library(dlputilssurface MODULE
   surface_funcs.cpp
   ${surface_MOC_SRCS}
+)
+target_link_libraries(dlputilssurface
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(dlputilssurface PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

@@ -37,7 +37,7 @@ void Model::createNamesForcefield()
 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", qPrintable(name_));
 	Messenger::print("Creating atom names forcefield for model '%s'.", qPrintable(name_));
 	namesForcefield_ = new Forcefield;
-	namesForcefield_->setName(QString("Names kept from model ")+name_);
+	namesForcefield_->setName(QString("Atom names for model ")+name_);
 }
 
 // Return the forcefield containing original atom names for the model
@@ -50,12 +50,14 @@ Forcefield* Model::namesForcefield() const
 ForcefieldAtom* Model::addAtomName(int el, QString name)
 {
 	if (namesForcefield_ == NULL) createNamesForcefield();
+
 	// Search for this typename in the ff
-	ForcefieldAtom* ffa = namesForcefield_->findType(name);
+	ForcefieldAtom* ffa = namesForcefield_->findType(name, el);
 	if (ffa == NULL)
 	{
 		ffa = namesForcefield_->addType();
 		ffa->setName(name);
+		ffa->setElement(el);
 		ffa->neta()->setCharacterElement(el);
 	}
 	return ffa;
@@ -141,7 +143,7 @@ void Model::setForcefield(Forcefield* newff)
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine)
+bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	Messenger::enter("Model::createExpression");
@@ -292,7 +294,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			crflags = VdwFunctions::functionData[ffa->vdwForm()].combinationRules;
 			for (i=0; i<VdwFunctions::functionData[ffa->vdwForm()].nParameters; ++i)
 			{
-				pp->setData(i, combine.combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
+				pp->setData(i, CombinationRules::combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
 // 				printf("combined Parameter is %f, original = %f,%f\n", CombinationRules::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));
 			}
 

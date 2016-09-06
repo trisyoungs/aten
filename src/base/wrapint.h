@@ -58,7 +58,7 @@ class WrapInt
 	 */
 	public:
 	// Assignment
-	void operator=(int i);
+	WrapInt& operator=(int i);
 	// Binary addition
 	int operator+(int i);
 	// Binary subtraction

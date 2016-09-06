@@ -81,6 +81,17 @@ void AtenWindow::setSelectedMode(UserAction::Action ua)
 	Messenger::exit("AtenWindow::setSelectedMode");
 }
 
+// Sets the currently selected interact mode, and corrects source button checked status
+void AtenWindow::setSelectedMode(UserAction::Action ua, bool buttonChecked)
+{
+	// If the button is checked, set the current mode to that suppled.
+	// Otherwise, set the button down status again (re-set the mode) if this mode is already selected.
+	// This is to overcome issues with QShortcuts connecting the 'click()' method of the TMenuButtons,
+	// which toggles the checked status instead of just keeping the button checked.
+	if (buttonChecked) setSelectedMode(ua);
+	else if (selectedMode_ == ua) setSelectedMode(ua);
+}
+
 // Set the active mode to the current user mode
 void AtenWindow::useSelectedMode()
 {
@@ -326,8 +337,8 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			if (clickedAtom_ != NULL)
 			{
 				radius = (rMouseDown-rMouseUp).magnitude();
-				targetModel->modelToWorld(clickedAtom_->r(), &screenr, prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element()));
-				radius /= screenr.w * prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element());
+				targetModel->modelToWorld(clickedAtom_->r(), &screenr, targetModel->styleRadius(clickedAtom_->style(), clickedAtom_->element()));
+				radius /= screenr.w * targetModel->styleRadius(clickedAtom_->style(), clickedAtom_->element());
 				targetModel->selectRadial(clickedAtom_, radius);
 			}
 			targetModel->endUndoState();

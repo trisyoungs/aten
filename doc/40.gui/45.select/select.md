@@ -49,6 +49,7 @@ The specified atom **Target** may be one of the following:
 + A [NETA](/aten/docs/forcefields/neta) description of an atom (in which case the element should be specified using the element selection button)
 + An atom index or element, or a range thereof
 + A code snippet
++ Atom type name, optionally containing wildcards (note that this mode cannot be automatically determined, and must be chosen explicitly)
 
 These are explained in more detail below.
 
@@ -113,5 +114,10 @@ i.rx > 0.0;
 ```
 (i.rz < 4.0 && i.element > C);
 ```
+
 ...targets all atoms whose z coordinate is lesss than 4.0 Angstroms **and** that are nitrogens or heavier.
+
+### Type Name Selection
+
+Selects atoms based on their assigned type name (not their equivalent name). Wildcards ('*') may be used in the name matching.
 

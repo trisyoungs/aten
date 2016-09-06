@@ -76,9 +76,9 @@ class Bundle
 	// Clear pointers
 	void clear();
 	// Check for null pointers
-	bool isNull(int) const;
+	bool isNull(int ptrs) const;
 	// Check and notify of null pointers
-	bool notifyNull(int) const;
+	bool notifyNull(int ptrs) const;
 };
 
 ATEN_END_NAMESPACE

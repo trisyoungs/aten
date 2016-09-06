@@ -3,6 +3,7 @@
 # Meta-Objects
 SET(gui_MOC_HDRS
   aboutplugins.h
+  colourdialog.h
   disorderoptions.h
   disorderwizard.h
   exportfilm.h
@@ -10,8 +11,8 @@ SET(gui_MOC_HDRS
   ffeditor.h
   fileselectorwidget.h
   glyphs.h
-  layoutlist.h
   mainwindow.h
+  openexpression.h
   opengrid.h
   openmodel.h
   opentrajectory.h
@@ -40,12 +41,15 @@ SET(gui_MOC_HDRS
   popupforcefieldsminimise.h
   popupforcefieldsopen.h
   popupforcefieldstest.h
+  popupgeometrycentre.h
+  popupgridcolour.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridset.h
   popupgridshift.h
   popupgridstyle.h
   popupgridsopen.h
+  popuplabeloptions.h
   popupmeasureangle.h
   popupmeasureclear.h
   popupmeasuredistance.h
@@ -69,6 +73,7 @@ SET(gui_MOC_HDRS
   popupviewstyle.h
   prefs.h
   progress.h
+  saveexpression.h
   savemodel.h
   selectpattern.h
   selectvariable.h
@@ -76,15 +81,15 @@ SET(gui_MOC_HDRS
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
+  tcolourscaleeditor.hui
   tcolourwheel.hui
+  tcolourwidget.hui
   tdoublespindelegate.hui
   tdynamiclayout.hui
   tdynamicwidget.hui
   texponentialspin.hui
-  textratreewidgetitem.h
   tintegerspindelegate.hui
   tmenubutton.hui
-  tmenubuttongroup.h
   tpopupwidget.hui
   trecentfiles.hui
   ttablewidget.hui
@@ -102,6 +107,7 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 # User Interface Files
 SET(gui_UIS
   aboutplugins.ui
+  colourdialog.ui
   disorderoptions.ui
   disorderwizard.ui
   exportfilm.ui
@@ -109,6 +115,7 @@ SET(gui_UIS
   ffeditor.ui
   glyphs.ui
   mainwindow.ui
+  openexpression.ui
   opengrid.ui
   openmodel.ui
   opentrajectory.ui
@@ -137,12 +144,15 @@ SET(gui_UIS
   popupforcefieldsminimise.ui
   popupforcefieldsopen.ui
   popupforcefieldstest.ui
+  popupgeometrycentre.ui
+  popupgridcolour.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridset.ui
   popupgridshift.ui
   popupgridstyle.ui
   popupgridsopen.ui
+  popuplabeloptions.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
@@ -166,6 +176,7 @@ SET(gui_UIS
   popupviewstyle.ui
   prefs.ui
   progress.ui
+  saveexpression.ui
   savemodel.ui
   selectpattern.ui
   selectvariable.ui
@@ -187,6 +198,7 @@ set(gui_SRCS
   useractions.h
   useractions.cpp
   aboutplugins_funcs.cpp
+  colourdialog_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
   exportfilm_funcs.cpp
@@ -219,6 +231,7 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  openexpression_funcs.cpp
   opengrid_funcs.cpp
   openmodel_funcs.cpp
   opentrajectory_funcs.cpp
@@ -247,12 +260,15 @@ set(gui_SRCS
   popupforcefieldsminimise_funcs.cpp
   popupforcefieldsopen_funcs.cpp
   popupforcefieldstest_funcs.cpp
+  popupgeometrycentre_funcs.cpp
+  popupgridcolour_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridset_funcs.cpp
   popupgridshift_funcs.cpp
   popupgridstyle_funcs.cpp
   popupgridsopen_funcs.cpp
+  popuplabeloptions_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
@@ -276,6 +292,7 @@ set(gui_SRCS
   popupviewstyle_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
+  saveexpression_funcs.cpp
   savemodel_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
@@ -288,15 +305,17 @@ set(gui_SRCS
   viewer_offscreen.cpp
   viewer_scene.cpp
   viewer_useractions.cpp
+  tcolourscaleeditor_funcs.cpp
   tcolourwheel_funcs.cpp
+  tcolourwidget_funcs.cpp
   tdynamiclayout_funcs.cpp
   tdynamicwidget_funcs.cpp
-  tmenubutton_funcs.cpp
-  tmenubuttongroup.cpp
-  tpopupwidget_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
+  tmenubutton_funcs.cpp
+  tmenubuttongroup.cpp
+  tpopupwidget_funcs.cpp
   ttabwidget_funcs.cpp
   trecentfiles_funcs.cpp
   textratreewidgetitem_funcs.cpp
@@ -313,7 +332,7 @@ set(gui_RES_QRC
 QT5_ADD_RESOURCES(gui_RES ${gui_RES_QRC})
 
 # Target 'gui'
-add_library(gui
+add_library(gui STATIC
   ${gui_RES}
   ${gui_UIS_H}
   ${gui_SRCS}
@@ -327,7 +346,7 @@ target_include_directories(gui PRIVATE
 )
 
 # Target 'treegui'
-add_library(treegui
+add_library(treegui STATIC
   ${treegui_UIS_H}
   ${treegui_MOC_SRCS}
   treegui_funcs.cpp

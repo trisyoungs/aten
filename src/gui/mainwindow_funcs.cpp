@@ -26,7 +26,6 @@
 #include "gui/tdoublespindelegate.hui"
 #include "model/model.h"
 #include "model/clipboard.h"
-#include "model/undostate.h"
 #include "parser/commandnode.h"
 #include <QtWidgets/QFileDialog>
 #include <QKeyEvent>
@@ -46,7 +45,6 @@
 #include "gui/popupcellangles.h"
 #include "gui/popupcelllengths.h"
 #include "gui/popupcellmatrix.h"
-#include "gui/popupcellmiller.h"
 #include "gui/popupcellreplicate.h"
 #include "gui/popupcellscale.h"
 #include "gui/popupcolour.h"
@@ -59,12 +57,15 @@
 #include "gui/popupforcefieldsassign.h"
 #include "gui/popupforcefieldsminimise.h"
 #include "gui/popupforcefieldsopen.h"
+#include "gui/popupgeometrycentre.h"
+#include "gui/popupgridcolour.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridset.h"
 #include "gui/popupgridshift.h"
 #include "gui/popupgridstyle.h"
 #include "gui/popupgridsopen.h"
+#include "gui/popuplabeloptions.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
@@ -92,9 +93,11 @@
 
 // Constructor
 AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this),
+	openExpressionDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ExpressionFilePlugin)),
 	openGridDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::GridFilePlugin)),
 	openModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin)),
 	openTrajectoryDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin)),
+	saveExpressionDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ExpressionFilePlugin)),
 	saveModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin))
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
@@ -196,6 +199,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.HomeAppearanceChargeButton->setGroup("ColourSchemes", Prefs::ChargeScheme);
 	ui.HomeAppearanceForceButton->setGroup("ColourSchemes", Prefs::ForceScheme);
 	ui.HomeAppearanceVelocityButton->setGroup("ColourSchemes", Prefs::VelocityScheme);
+	ui.HomeAppearanceBondsButton->setGroup("ColourSchemes", Prefs::BondsScheme);
 	ui.HomeAppearanceOwnColourButton->setGroup("ColourSchemes", Prefs::OwnScheme);
 	// -- View Panel (Control)
 	ui.HomeViewResetButton->setPopupWidget(new ResetViewPopup(*this, ui.HomeViewResetButton));
@@ -232,8 +236,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// -- Cell Panel (Transform)
 	ui.CellTransformReplicateButton->setPopupWidget(new CellReplicatePopup(*this, ui.CellTransformReplicateButton));
 	ui.CellTransformScaleButton->setPopupWidget(new CellScalePopup(*this, ui.CellTransformScaleButton));
-	// -- Cell Panel (Miller)
-	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
 	// -- Calculate Panel (Measure)
 	ui.CalculateMeasureDistanceButton->setGroup("UserActions", UserAction::MeasureDistanceAction);
@@ -243,6 +245,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.CalculateMeasureTorsionButton->setGroup("UserActions", UserAction::MeasureTorsionAction);
 	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
 
+	// -- Calculate Panel (Geometry)
+	ui.CalculateGeometryCentreButton->setPopupWidget(new GeometryCentrePopup(*this, ui.CalculateGeometryCentreButton));
+	
 	// -- Transform Panel (Set)
 	ui.TransformGeometryDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformGeometryDistanceButton));
 	ui.TransformGeometryAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformGeometryAngleButton));
@@ -266,11 +271,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsDefineOriginButton->setPopupWidget(new GridOriginPopup(*this, ui.GridsDefineOriginButton), true);
 	// -- Grids Panel (Primary Surface)
 	ui.GridsPrimarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsPrimarySetButton, true), true);
-	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
+	ui.GridsPrimaryColourButton->setPopupWidget(new GridColourPopup(*this, ui.GridsPrimaryColourButton, true), true);
 	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
 	// -- Grids Panel (Secondary Surface)
 	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, false), true);
-	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
+	ui.GridsSecondaryColourButton->setPopupWidget(new GridColourPopup(*this, ui.GridsSecondaryColourButton, false), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 	// -- Grids Panel (Transform)
 	ui.GridsTransformTranslateButton->setPopupWidget(new GridShiftPopup(*this, ui.GridsTransformTranslateButton), true);
@@ -295,13 +300,18 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.ToolsPoresDrillButton->setPopupWidget(new PoresDrillPopup(*this, ui.ToolsPoresDrillButton), true);
 	ui.ToolsPoresSchemeButton->setPopupWidget(new PoresSchemePopup(*this, ui.ToolsPoresSchemeButton, aten_.poresPartitioningScheme()), true);
 
+	// -- Right Side Panel
+	ui.LabelOptionsButton->setPopupWidget(new LabelOptionsPopup(*this, ui.LabelOptionsButton), true);
+	ui.LabelOptionsButton->setPopupLocation(TMenuButton::PopupOnLeft);
+
 	// Setup Shortcuts
 	QShortcut* shortcut;
-	// -- Model List
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up), this, 0, 0, Qt::ApplicationShortcut);
+	// Model List
+	shortcut = new QShortcut(QKeySequence(Qt::Key_PageUp), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsPreviousButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::Key_PageDown), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsNextButton, SLOT(click()));
+
 	// Home Panel (File)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
@@ -313,6 +323,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveAsButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileCloseButton, SLOT(click()));
+
 	// Home Panel (Edit)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditCopyButton, SLOT(click()));
@@ -326,6 +337,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditUndoButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditRedoButton, SLOT(click()));
+
 	// Home Panel (Style)
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F1), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceLineButton, SLOT(click()));
@@ -346,19 +358,54 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceVelocityButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F5), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceBondsButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F6), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceOwnColourButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceShowAllButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_V), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearancePerspectiveButton, SLOT(click()));
+
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F8), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewHBondsButton, SLOT(click()));
+
+	// Build Panel (Select)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildSelectBoundButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildSelectElementButton, SLOT(click()));
+
+	// Build Panel (Draw)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_D), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawDrawButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_L), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawDeleteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_T), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawTransmuteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawAddHButton, SLOT(click()));
+
+	// Cell Panel (Define)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_P), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellDefinePeriodicButton, SLOT(click()));
+
 	// Cell Panel (Fold)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.CellFoldAtomsButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.CellFoldMoleculesButton, SLOT(click()));
+
+	// Calculate Panel (Measure)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_2), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureDistanceButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_3), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureAngleButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_4), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureTorsionButton, SLOT(click()));
+
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
@@ -366,12 +413,15 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+
 	// Selection Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectionAppearanceHideButton, SLOT(click()));
+
 	// Transform Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_0), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));
+
 	// Main Window
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
@@ -379,6 +429,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), this, SLOT(recreateGridsForView()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(snapshotCurrentView()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_NumberSign), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectionPositionSetViewOriginButton, SLOT(click()));
 
 	// Create Context Menu
 	createContextMenu();
@@ -445,7 +497,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	for (Model* m = aten.models(); m != NULL; m = m->next)
 	{
 		if (!m->plugin()) continue;
-		if (!m->plugin()->standardOptions().keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+		if (!m->plugin()->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepViewSwitch)) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 	}
 
 	// Refresh everything
@@ -505,6 +557,12 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 AtenSaveModel& AtenWindow::saveModelDialog()
 {
 	return saveModelDialog_;
+}
+
+// Return expression export dialog
+AtenSaveExpression& AtenWindow::saveExpressionDialog()
+{
+	return saveExpressionDialog_;
 }
 
 /*

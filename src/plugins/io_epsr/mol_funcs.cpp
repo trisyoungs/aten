@@ -231,7 +231,6 @@ bool EPSRMolModelPlugin::exportData()
 				Atom* k = rjk->item->partner(j);
 				ForcefieldAtom* ffi = i->type();
 				ForcefieldAtom* ffk = k->type();
-				printf("Angle %i-%i-%i\n", i->id(), j->id(), k->id());
 
 				QString typeI = ffi ? ffi->name() : ElementMap::symbol(i->element());
 				QString typeK = ffk ? ffk->name() : ElementMap::symbol(k->element());

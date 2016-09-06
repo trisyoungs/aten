@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/atom_select.h"
+#include "undo/undostate.h"
 #include "base/neta_parser.h"
 #include "base/pattern.h"
 
@@ -271,7 +271,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent* newchange = new SelectEvent;
+				AtomSelectEvent* newchange = new AtomSelectEvent;
 				newchange->set(true, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -308,7 +308,7 @@ void Model::deselectAtom(Atom* i, bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent* newchange = new SelectEvent;
+				AtomSelectEvent* newchange = new AtomSelectEvent;
 				newchange->set(false, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -427,7 +427,7 @@ void Model::selectAll(bool markonly)
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					SelectEvent* newchange = new SelectEvent;
+					AtomSelectEvent* newchange = new AtomSelectEvent;
 					newchange->set(true, i->id());
 					recordingState_->addEvent(newchange);
 				}
@@ -462,7 +462,7 @@ void Model::selectNone(bool markonly)
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					SelectEvent* newchange = new SelectEvent;
+					AtomSelectEvent* newchange = new AtomSelectEvent;
 					newchange->set(false, i->id());
 					recordingState_->addEvent(newchange);
 				}
@@ -491,7 +491,7 @@ Atom* Model::atomOnScreen(double x1, double y1)
 		if (i->isHidden()) continue;
 
 		// Get draw style for atom - if stick, 
-		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i->style(), i->element()));
+		wr = -modelToWorld(i->r(), &sr, styleRadius(i->style(), i->element()));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -822,7 +822,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 			{
 				// Get COG of molecule
 				pos = cell_.realToFrac(p->calculateCog(m));
-				if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				if ((pos.x >= 0) && (pos.x <= 1) && (pos.y >= 0) && (pos.y <= 1) && (pos.z >= 0) && (pos.z <= 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
 				id += p->nAtoms();
 			}
 		}
@@ -832,7 +832,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			pos = cell_.realToFrac(i->r());
-			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
+			if ((pos.x >= 0) && (pos.x <= 1) && (pos.y >= 0) && (pos.y <= 1) && (pos.z >= 0) && (pos.z <= 1)) selectAtom(i, markonly);
 		}
 	}
 	Messenger::exit("Model::selectInsideCell");
@@ -871,26 +871,32 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 }
 
 // Perform a Miller 'selection' on the cell contents
-void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
+void Model::selectMiller(int h, int k, int l, bool inside, bool markOnly)
 {
 	Messenger::enter("Model::selectMiller");
+
 	if (cell_.type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't use Miller planes on a non-periodic model.");
 		Messenger::exit("Model::selectMiller");
 		return;
 	}
-	double c, d;
-	Vec3<double> hkl(h == 0 ? 0 : 1.0/h, k == 0 ? 0 : 1.0/k, l == 0 ? 0 : 1.0/l), r;
+
+	// Determine the Miller planes for the hkl provided
+	Plane firstPlane, secondPlane;
+	cell_.millerPlanes(h, k, l, firstPlane, secondPlane);
+
+	// The normals for the defined planes always point away from the cell centre.
+	// Grab the centroids of the defining Miller planes, and use the dp of the atom position (relative to the centres)
+	// with the plane normals to decide where the atom is
+	Vec3<double> centroid1 = firstPlane.centroid(), centroid2 = secondPlane.centroid();
+	Vec3<double> normal1 = firstPlane.normal(), normal2 = secondPlane.normal();
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		r = cell_.realToFrac(i->r());
-		c = r.dp(hkl);
-		r.set(1-r.x,1-r.y,1-r.z);
-		d = r.dp(hkl);
-		if (inside) { if ((c > 1.0) && (d > 1.0)) selectAtom(i, markonly); }
-		else if ((c < 1.0) || (d < 1.0)) selectAtom(i, markonly);
+		// Test dot product of atom position (minus centre) with normals - if either is positive, select it
+		if (((i->r()-centroid1).dp(normal1) > 0.0) || ((i->r()-centroid2).dp(normal2) > 0.0)) selectAtom(i, markOnly);
 	}
+
 	Messenger::exit("Model::selectMiller");
 }
 

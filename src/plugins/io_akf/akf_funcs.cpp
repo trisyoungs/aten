@@ -52,7 +52,7 @@ QString AKFModelPlugin::akfGlyphKeyword(AKFGlyphKeyword keyword)
 
 // Grid Keyword Enum
 QStringList AKFGridKeywords = QStringList() << "axes" << "data" << "endgrid" << "origin";
-AKFModelPlugin::AKFGridKeyword akfGridKeyword(QString s)
+AKFModelPlugin::AKFGridKeyword AKFModelPlugin::akfGridKeyword(QString s)
 {
 	QString lowerQuery = s.toLower();
 	for (int i=0; i< AKFGridKeywords.count(); ++i) if (lowerQuery == AKFGridKeywords.at(i)) return (AKFModelPlugin::AKFGridKeyword) i;
@@ -167,6 +167,11 @@ bool AKFModelPlugin::importData()
 				if (fileParser_.hasArg(7)) i->setStyle(Prefs::drawStyle(fileParser_.argc(7)));
 				if (fileParser_.hasArg(11)) i->setColour(fileParser_.argd(8), fileParser_.argd(9), fileParser_.argd(10), fileParser_.argd(11));
 				if (fileParser_.hasArg(12)) i->setPositionFixed(fileParser_.argb(12));
+				if (fileParser_.hasArg(13) && (fileParser_.argc(13) != "*"))
+				{
+					ForcefieldAtom* ffa = targetModel->addAtomName(i->element(), fileParser_.argc(13));
+					i->setType(ffa);
+				}
 				break;
 			case (AKFModelPlugin::BondKeyword):
 				targetModel->bondAtoms(fileParser_.argi(1)-1, fileParser_.argi(2)-1, Bond::bondType(fileParser_.argc(3)));
@@ -292,7 +297,7 @@ bool AKFModelPlugin::exportData()
 	if (!fileParser_.writeLine("title  '" + sourceModel->name() + "'")) return false;
 
 	// Atom data
-	for (Atom* i = sourceModel->atoms(); i != NULL; i = i->next) if (!fileParser_.writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i", i->id()+1, ElementMap::symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge(), Prefs::drawStyle(i->style()), i->colour()[0], i->colour()[1], i->colour()[2], i->colour()[3], i->isPositionFixed() )) return false;
+	for (Atom* i = sourceModel->atoms(); i != NULL; i = i->next) if (!fileParser_.writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i %s", i->id()+1, ElementMap::symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge(), Prefs::drawStyle(i->style()), i->colour()[0], i->colour()[1], i->colour()[2], i->colour()[3], i->isPositionFixed(), i->type() ? qPrintable(i->type()->name()) : "*")) return false;
 
 	// Bond data
 	for (Bond* b = sourceModel->bonds(); b != NULL; b = b->next) if (!fileParser_.writeLineF("bond   %i %i %s", b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()))) return false;

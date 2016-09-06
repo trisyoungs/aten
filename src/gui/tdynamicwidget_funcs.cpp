@@ -62,12 +62,26 @@ void TDynamicWidget::beginSpaceSaving()
 			continue;
 		}
 
+		// Is this a QGridLayout?
+		QGridLayout* gridLayout = qobject_cast<QGridLayout*>(layout);
+
 		// Create new dynamic layout for this widget
 		TDynamicLayout* dynamicLayout = new TDynamicLayout(layout->margin(), layout->spacing(), layout->spacing());
 
-		// Transfer widgets to new dynamic layout
+		// Transfer widgets to new dynamic layout - for grid layouts be careful to preserve widget layout order
 		QLayoutItem* item;
-		while (item = layout->takeAt(0)) dynamicLayout->addItem(item);
+		if (gridLayout)
+		{
+			for (int column = 0; column < gridLayout->columnCount(); ++column)
+				for (int row = 0; row < gridLayout->rowCount(); ++row)
+				{
+					item = gridLayout->itemAtPosition(row, column);
+					if (!item) continue;
+					int itemIndex = gridLayout->indexOf(item->widget());
+					dynamicLayout->addItem(gridLayout->takeAt(itemIndex));
+				}
+		}
+		else while ((item = layout->takeAt(0))) dynamicLayout->addItem(item);
 
 		// Delete the old layout, and apply the new one
 		delete layout;

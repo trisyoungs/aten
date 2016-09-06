@@ -1,4 +1,4 @@
-add_library(command
+add_library(command STATIC
 analyse.cpp
 atom.cpp
 bonds.cpp

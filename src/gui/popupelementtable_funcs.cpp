@@ -60,8 +60,11 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		button->setPalette(palette);
 		button->setStyleSheet(QString("background-color:%1; color:%2;").arg(background.name(QColor::HexRgb), foreground.name(QColor::HexRgb)));
 		button->update();
-		
+
 		QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(ElementButton_clicked(bool)));
+
+		// If the group number is -1 then this element has no meaning and its button should be invisible
+		if (ElementMap::group(n) == -1) button->setVisible(false);
 	}
 
 
@@ -81,9 +84,6 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		label->setText(QString::number(n));
 		gl->addWidget(label, n, 0);
 	}
-
-	// XX
-	gl->addWidget(elementButtons_[0],1,19);
 
 	// H, He
 	gl->addWidget(elementButtons_[1],1,1);
@@ -134,6 +134,10 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		gl->addWidget(elementButtons_[z+n],9,3+n);
 		gl->addWidget(elementButtons_[z+n+32],10,3+n);
 	}
+
+	// Special atoms
+	gl->addWidget(elementButtons_[0],1,19);
+	gl->addWidget(elementButtons_[120],2,19);
 
 	setLayout(gl);
 }

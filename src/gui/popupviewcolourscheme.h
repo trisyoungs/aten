@@ -74,6 +74,7 @@ class ViewColourSchemePopup : public TPopupWidget
 	void on_ChargeButton_clicked(bool checked);
 	void on_ForceButton_clicked(bool checked);
 	void on_VelocityButton_clicked(bool checked);
+	void on_BondsButton_clicked(bool checked);
 	void on_OwnButton_clicked(bool checked);
 };
 

@@ -42,8 +42,8 @@ void TextPrimitiveList::add(QString text, Vec3<double> anchorPoint, double textS
 }
 
 // Render all primitives in list
-void TextPrimitiveList::renderAll(const Matrix& viewMatrix, const Matrix& viewMatrixInverse, double baseFontSize)
+void TextPrimitiveList::renderAll(const Matrix& viewMatrix, const Matrix& viewMatrixInverse, double sizeScale, bool depthScaling)
 {
-	for (TextPrimitive* primitive = textPrimitives_.first(); primitive != NULL; primitive = primitive->next) primitive->render(viewMatrix, viewMatrixInverse, baseFontSize);
+	for (TextPrimitive* primitive = textPrimitives_.first(); primitive != NULL; primitive = primitive->next) primitive->render(viewMatrix, viewMatrixInverse, sizeScale, depthScaling);
 }
 

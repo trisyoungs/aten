@@ -334,6 +334,8 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* nod
 					if (id == TorsionFunctions::functionData[ptr->data()->torsionForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
+        default:
+          break;  
 			}
 			break;
 

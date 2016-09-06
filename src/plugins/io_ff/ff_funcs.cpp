@@ -50,7 +50,7 @@ FilePluginInterface* AtenExpressionPlugin::makeCopy()
 // Return category of plugin
 PluginTypes::FilePluginCategory AtenExpressionPlugin::category() const
 {
-	return PluginTypes::ModelFilePlugin;
+	return PluginTypes::ExpressionFilePlugin;
 }
 
 // Name of plugin
@@ -68,7 +68,7 @@ QString AtenExpressionPlugin::nickname() const
 // Description (long name) of plugin
 QString AtenExpressionPlugin::description() const
 {
-	return QString("Import for Aten format forcefield files");
+	return QString("Import/Export for Aten format forcefield files");
 }
 
 // Related file extensions
@@ -90,13 +90,21 @@ QStringList AtenExpressionPlugin::exactNames() const
 // Return whether this plugin can import data
 bool AtenExpressionPlugin::canImport()
 {
-	return false;
+	return true;
 }
 
 // Import data from the specified file
 bool AtenExpressionPlugin::importData()
 {
-	return false;
+	// Create a new forcefield, and call its load() method
+	Forcefield* ff = createForcefield();
+	if (!ff->load(fileParser_.filename()))
+	{
+		discardForcefield(ff);
+		return false;
+	}
+
+	return true;
 }
 
 // Return whether this plugin can export data
@@ -105,18 +113,9 @@ bool AtenExpressionPlugin::canExport()
 	return true;
 }
 
-// Export data to the speffied file
+// Export data to the specified file
 bool AtenExpressionPlugin::exportData()
 {
-	// Variable declaration
-// 	Pattern p;
-// 	Atom i;
-// 	FFBound b;
-// 	FFAtom fi;
-// 	double escale = 1.0, vscale = 1.0;
-// 	int uselj = true, n, nconstraints, nfailed[3] = 0, nub, hasub;
-// 	string forms, currentform;
-
 	// Write header
 	if (!fileParser_.writeLine("name \"" + targetModel()->name() + "\"")) return false;
 	if (!fileParser_.writeLineF("units %s", Prefs::energyUnit(prefs.energyUnit()))) return false;

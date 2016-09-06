@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undostate.h"
-#include "model/undoevent.h"
+#include "undo/undostate.h"
+#include "undo/model_rename.h"
 #include "methods/calculable.h"
 #include "base/site.h"
 #include "base/grid.h"
@@ -45,6 +45,8 @@ Model::Model() : ListItem<Model>()
 	renderFromVibration_ = false;
 	repeatCellsNegative_.set(0,0,0);
 	repeatCellsPositive_.set(0,0,0);
+	colourScheme_ = Prefs::ElementScheme;
+	drawStyle_ = prefs.defaultDrawStyle();
 
 	// Properties
 	name_ = "NewModel";

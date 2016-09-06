@@ -65,8 +65,8 @@ bool Fragment::setMasterModel(Model* m)
 
 	// Create icon
 	// Store current rendering style so we can reset afterwards
-	Prefs::DrawStyle oldDrawStyle = prefs.renderStyle();
-	prefs.setRenderStyle(Prefs::SphereStyle);
+	Prefs::DrawStyle oldDrawStyle = masterModel_->drawStyle();
+	masterModel_->setDrawStyle(Prefs::SphereStyle);
 
 	// Centre model at 0,0,0 here...
 	masterModel_->selectAll();
@@ -84,7 +84,7 @@ bool Fragment::setMasterModel(Model* m)
 	anchoredModel_.markAll();
 
 	// Reset rendering style
-	prefs.setRenderStyle(oldDrawStyle);
+	masterModel_->setDrawStyle(oldDrawStyle);
 
 	Messenger::exit("Fragment::setMasterModel");
 	return true;

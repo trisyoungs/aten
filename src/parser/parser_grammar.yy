@@ -49,7 +49,7 @@ QString variableName;
 %token <functionId> FUNCCALL
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
-%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK ATEN_NEW
+%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK ATEN_NEW ATEN_EOF
 %nonassoc ATEN_ELSE
 
 /* Higher line number == Higher precedence */
@@ -92,6 +92,9 @@ program:
 		}
 	| block						{
 		if (($1 != NULL) && (!CommandParser::tree()->addStatement($1))) YYABORT;
+		}
+	| ATEN_EOF					{
+		YYACCEPT;
 		}
 	;
 

@@ -157,11 +157,11 @@ class LineParser
 	// Skip a number of characters from the input stream
 	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
-	int getInteger(int nbytes = 0);
+	bool getInteger(int& value, int nbytes = 0);
 	// Fill an array of integer values from reading of an (unformatted) input file
 	int getIntegerArray(int* array, int count);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
-	double getDouble(int nbytes = 0);
+	double getDouble(double& value, int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file
 	int getDoubleArray(double* array, int count);
 	// Write partial line to file

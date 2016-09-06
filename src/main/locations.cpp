@@ -68,10 +68,10 @@ void Aten::setDirectories()
 
 	// User's home directory
 #ifdef _WIN32
-	if (getenv("USERPROFILE") != '\0') homeDir_ = getenv("USERPROFILE");
+	if (getenv("USERPROFILE") != NULL ) homeDir_ = getenv("USERPROFILE");
 	else homeDir_ = "C:\\";
 #else
-	if (getenv("HOME") != '\0') homeDir_ = getenv("HOME");	
+	if (getenv("HOME") != NULL) homeDir_ = getenv("HOME");	
 	else homeDir_ = "/tmp";
 #endif
 
@@ -88,7 +88,7 @@ void Aten::setDirectories()
 	// Construct a list of possible paths for the data/ directory, including the current value of dataDir_
 	QStringList dataDirPaths;
 	if (dataDir_ != QDir()) dataDirPaths << dataDir_.path();
-	else if (getenv("ATENDATA") != '\0') dataDirPaths << getenv("ATENDATA");
+	else if (getenv("ATENDATA") != NULL) dataDirPaths << getenv("ATENDATA");
 	dataDirPaths << QApplication::applicationDirPath() + "/../share/aten";
 	dataDirPaths << QApplication::applicationDirPath() + "/../SharedSupport";
 	dataDirPaths << QApplication::applicationDirPath() + "/..";
@@ -114,7 +114,7 @@ void Aten::setDirectories()
 	// Construct a list of possible paths for the plugins directory, including the current value of pluginsDir_
 	QStringList pluginDirPaths;
 	if (pluginDir_ != QDir()) pluginDirPaths << pluginDir_.path();
-	else if (getenv("ATENPLUGINS") != '\0') pluginDirPaths << getenv("ATENPLUGINS");
+	else if (getenv("ATENPLUGINS") != NULL) pluginDirPaths << getenv("ATENPLUGINS");
 	pluginDirPaths << QApplication::applicationDirPath() + "/../share/aten/plugins";
 	pluginDirPaths << QApplication::applicationDirPath() + "/../SharedSupport/plugins";
 	pluginDirPaths << QApplication::applicationDirPath() + "/../plugins";

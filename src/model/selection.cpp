@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/atom_shift.h"
+#include "undo/undostate.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 #include "base/neta.h"
@@ -61,7 +61,7 @@ void Model::shiftAtomUp(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent* newchange = new IdShiftEvent;
+		AtomShiftEvent* newchange = new AtomShiftEvent;
 		newchange->set(oldid, -1);
 		recordingState_->addEvent(newchange);
 	}
@@ -98,7 +98,7 @@ void Model::shiftAtomDown(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent* newchange = new IdShiftEvent;
+		AtomShiftEvent* newchange = new AtomShiftEvent;
 		newchange->set(oldid, 1);
 		recordingState_->addEvent(newchange);
 	}
@@ -126,7 +126,7 @@ void Model::moveAtomAfter(Atom* i, Atom* reference)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent* newchange = new IdShiftEvent;
+		AtomShiftEvent* newchange = new AtomShiftEvent;
 		newchange->set(oldid, shift);
 		recordingState_->addEvent(newchange);
 	}
@@ -204,6 +204,10 @@ void Model::selectionSetFixed(bool fixed)
 void Model::selectionSetColour(double r, double g, double b, double a)
 {
 	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
+
+	// Make sure current colourScheme is 'own'
+	setColourScheme(Prefs::OwnScheme);
+	
 	logChange(Log::Style);
 }
 
@@ -218,6 +222,9 @@ void Model::selectionResetColour()
 void Model::selectionSetStyle(Prefs::DrawStyle ds)
 {
 	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) if (ri->item->isSelected()) atomSetStyle(ri->item, ds);
+
+	// Make sure current drawStyle is 'own'
+	setDrawStyle(Prefs::OwnStyle);
 }
 
 // Select bound and selected atoms from the current atom

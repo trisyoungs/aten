@@ -55,7 +55,6 @@ void AtenWindow::on_SelectionAppearanceColourButton_clicked(bool checked)
 	// Apply the selected style to the current atom selection
 	bool success;
 	CommandNode::run(Commands::ColourAtoms, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
-	if (prefs.colourScheme() != Prefs::OwnScheme) ui.HomeAppearanceOwnColourButton->click();
 
 	updateWidgets();
 }
@@ -137,3 +136,13 @@ void AtenWindow::on_SelectionPositionFreeButton_clicked(bool checked)
 
 	updateWidgets();
 }
+
+void AtenWindow::on_SelectionPositionSetViewOriginButton_clicked(bool checked)
+{
+	Model* viewTarget = aten_.currentModelOrFrame();
+
+	viewTarget->setViewOrigin(viewTarget->selectionCentreOfGeometry());
+
+	updateWidgets();
+}
+

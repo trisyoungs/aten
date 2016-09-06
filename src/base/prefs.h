@@ -24,6 +24,7 @@
 
 #include "ff/forms.h"
 #include "math/doubleexp.h"
+#include "math/matrix.h"
 #include "base/elementmap.h"
 #include "base/colourscale.h"
 #include "base/choice.h"
@@ -77,7 +78,7 @@ class Prefs
 	static DrawStyle drawStyle(QString s, bool reportError = false);
 	static const char* drawStyle(DrawStyle);	
 	// Atom colouring scheme
-	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, OwnScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, BondsScheme, OwnScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(QString s, bool reportError = false);
 	static const char* colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry
@@ -106,8 +107,6 @@ class Prefs
 	bool viewRotationGlobe_;
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int globeSize_;
-	// Rendering style of models
-	Prefs::DrawStyle renderStyle_;
 	// General quality of primitives
 	int primitiveQuality_;
 	// Whether to use separate primitive quality for saved images
@@ -120,12 +119,6 @@ class Prefs
 	bool viewRotationGlobe();
 	// Set whether to draw rotation globe
 	void setViewRotationGlobe(bool b);
-	// Return the styled radius of an atom calculated from the element and draw style
-	double styleRadius(Prefs::DrawStyle ds, int el) const;
-	// Set the drawing style of models
-	void setRenderStyle(Prefs::DrawStyle ds);
-	// Return the current drawing style of models
-	Prefs::DrawStyle renderStyle() const;
 	// Return the current rotation globe size in pixels
 	int globeSize() const;
 	// Set the current rotation globe size in pixels
@@ -148,8 +141,8 @@ class Prefs
 	 * Rendering - Style
 	 */
 	private:
-	// Atom colouring style
-	Prefs::ColouringScheme colourScheme_;
+	// Default rendering style for models
+	Prefs::DrawStyle defaultDrawStyle_;
 	// Atom sizes / radii
 	GLdouble atomStyleRadius_[Prefs::nDrawStyles];
 	// Bond radii
@@ -172,6 +165,10 @@ class Prefs
 	double stickLineSelectedWidth_;
 
 	public:
+	// Set default rendering style for models
+	void setDefaultDrawStyle(Prefs::DrawStyle ds);
+	// Return default rendering style for models
+	Prefs::DrawStyle defaultDrawStyle();
 	// Sets the specified atom size to the given value
 	void setAtomStyleRadius(Prefs::DrawStyle ds, double radius);
 	// Return the specified atom radius
@@ -214,10 +211,6 @@ class Prefs
 	double* spotlightPosition();
 	// Return spotlight position in provided array
 	void copySpotlightPosition(GLfloat* col);
-	// Set atom colour scheme
-	void setColourScheme(Prefs::ColouringScheme sc);
-	// Return atom colour scheme
-	Prefs::ColouringScheme colourScheme() const;
 	// Set number of segments in colour scale
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
@@ -244,6 +237,8 @@ class Prefs
 	QString chargeLabelFormat_;
 	// Relative size for text labels, in percentage of view height
 	double labelSize_;
+	// Whether labels are scaled according to their depth
+	bool labelDepthScaling_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
 	// Mouse move event filter rate
@@ -274,10 +269,14 @@ class Prefs
 	void setChargeLabelFormat(QString cFormat);
 	// Return C-style format for charge label values
 	QString chargeLabelFormat();
-	// Set the pointsize of labels in the model
+	// Set the scaling factor for labels in the model
 	void setLabelSize(double size);
-	// Return the current label pointsize
+	// Return the current label scale factor
 	double labelSize() const;
+	// Set whether labels are scaled according to their depth
+	void setLabelDepthScaling(bool depthScale);
+	// Return whether labels are scaled according to their depth
+	bool labelDepthScaling() const; 
 	// Return whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics();
 	// Set  whether to use solid or dashed circles for aromatic ring rendering
@@ -656,8 +655,6 @@ class Prefs
 	double vdwCutoff_, elecCutoff_;
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
-	// Combination rule equations
-	QString combinationRules_[CombinationRules::nCombinationRules];
 	// Grid size for PartitioningSchemes
 	Vec3<int> partitionGridSize_;
 
@@ -702,12 +699,6 @@ class Prefs
 	void setElecCutoff(double d);
 	// Return the electrostatic cutoff radius
 	double elecCutoff() const;
-	// Set combination rule equation
-	void setCombinationRule(CombinationRules::CombinationRule cr, QString equation);
-	// Return combination rule equation
-	QString combinationRule(CombinationRules::CombinationRule cr) const;
-	// Return array of combination rule equations
-	QString* combinationRules();
 	// Set grid size for PartitioningSchemes
 	void setPartitionGridSize(Vec3<int> newSize);
 	// Set grid size for PartitioningSchemes (element)

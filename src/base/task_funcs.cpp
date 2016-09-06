@@ -24,6 +24,7 @@
 #include <QTextStream>
 #include <stdarg.h>
 #include <stdio.h>
+#include <QStringList>
 
 // Constructor
 Task::Task()
@@ -153,7 +154,10 @@ void Task::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
 	commandFinished_ = true;
 	commandFailed_ = (exitStatus != QProcess::NormalExit);
-	Messenger::print(Messenger::Verbose, "Command finished with exitCode = %i, status = %i\n", exitCode, exitStatus);
+
+	if (commandOutputAvailable()) printLineToMessages();
+
+	Messenger::print("Command finished with exitCode = %i, status = %i\n", exitCode, exitStatus);
 }
 
 // Initialise and execute specified command
@@ -220,7 +224,7 @@ bool Task::commandOutputAvailable()
 	{
 		// Is some old output already available?
 		if (!commandStdOutput_.isEmpty()) return true;
-		commandStdOutput_ = readAllStandardOutput();
+		commandStdOutput_ = readAllStandardOutput() + readAllStandardError();
 		if (!commandStdOutput_.isEmpty()) return true;
 		return false;
 	}

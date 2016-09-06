@@ -4,7 +4,7 @@ AC_PREREQ(2.60)
 
 
 # Set program name, version and source directory
-m4_define([ATEN_VERSION],[2.0.1])
+m4_define([ATEN_VERSION],[2.1.3])
 AC_INIT([aten], ATEN_VERSION)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -156,29 +156,30 @@ src/methods/Makefile
 src/parser/Makefile
 src/model/Makefile
 src/render/Makefile
+src/undo/Makefile
 src/plugins/Makefile
 src/plugins/interfaces/Makefile
 src/plugins/io_akf/Makefile
 src/plugins/io_cif/Makefile
-src/plugins/io_csd/Makefile
 src/plugins/io_cube/Makefile
 src/plugins/io_dlpoly/Makefile
 src/plugins/io_dlputils/Makefile
 src/plugins/io_epsr/Makefile
-src/plugins/io_espresso/Makefile
 src/plugins/io_ff/Makefile
-src/plugins/io_gamess/Makefile
-src/plugins/io_gaussian/Makefile
 src/plugins/io_gromacs/Makefile
 src/plugins/io_mdlmol/Makefile
 src/plugins/io_mopac/Makefile
 src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
 src/plugins/io_rmcprofile/Makefile
-src/plugins/io_siesta/Makefile
 src/plugins/io_sybylmol2/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )
+#src/plugins/io_csd/Makefile
+#src/plugins/io_espresso/Makefile
+#src/plugins/io_gamess/Makefile
+#src/plugins/io_gaussian/Makefile
+#src/plugins/io_siesta/Makefile

@@ -20,8 +20,16 @@
 */
 
 #include "model/model.h"
-#include "model/undostate.h"
-#include "model/undoevent.h"
+#include "undo/undostate.h"
+#include "undo/atom_creation.h"
+#include "undo/atom_charge.h"
+#include "undo/atom_colour.h"
+#include "undo/atom_hide.h"
+#include "undo/atom_fix.h"
+#include "undo/atom_style.h"
+#include "undo/atom_swap.h"
+#include "undo/atom_translate.h"
+#include "undo/atom_transmute.h"
 #include "base/atom.h"
 #include "base/pattern.h"
 #include "base/forcefieldatom.h"
@@ -54,10 +62,11 @@ Atom* Model::addAtom(short int newel, Vec3<double> r, Vec3<double> v, Vec3<doubl
 	newatom->f() = f;
 	increaseMass(newel);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		AtomEvent* newchange = new AtomEvent;
+		AtomCreationEvent* newchange = new AtomCreationEvent;
 		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
@@ -78,10 +87,11 @@ Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 	newatom->r() = pos;
 	increaseMass(newel);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		AtomEvent* newchange = new AtomEvent;
+		AtomCreationEvent* newchange = new AtomCreationEvent;
 		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
@@ -109,7 +119,7 @@ Atom* Model::addCopy(Atom* source)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		AtomEvent* newchange = new AtomEvent;
+		AtomCreationEvent* newchange = new AtomCreationEvent;
 		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
@@ -133,7 +143,7 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		AtomEvent* newchange = new AtomEvent;
+		AtomCreationEvent* newchange = new AtomCreationEvent;
 		newchange->set(true,newatom);
 		recordingState_->addEvent(newchange);
 	}
@@ -146,19 +156,22 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 void Model::removeAtom(Atom* xatom, bool noupdate)
 {
 	Messenger::enter("Model::removeAtom");
-	// Delete a specific atom (passed as xatom)
+
+	// Adjust the atomic mass of the model
 	reduceMass(xatom->element());
-// 	if (!noupdate) calculateDensity();
+
 	// Renumber the ids of all atoms in the list after this one
 	if (!noupdate) for (Atom* i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+
 	// Deselect and unmark if necessary
 	if (xatom->isSelected()) deselectAtom(xatom);
 	if (xatom->isSelected(true)) deselectAtom(xatom, true);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		AtomEvent* newchange = new AtomEvent;
+		AtomCreationEvent* newchange = new AtomCreationEvent;
 		newchange->set(false,xatom);
 		recordingState_->addEvent(newchange);
 	}
@@ -172,12 +185,13 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 {
 	Messenger::enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
-	// also check those lists for this atom and remove it.
+	// also check those lists for this atom before removing it.
 	if (xatom == NULL) Messenger::print("No atom to delete.");
 	else
 	{
 		// Remove measurements
 		removeMeasurements(xatom);
+
 		// Delete All Bonds To Specific Atom
 		RefListItem<Bond,int>* bref = xatom->bonds();
 		while (bref != NULL)
@@ -188,6 +202,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();
 		}
+
 		// For all glyphs involving this atom, set the current coordinates
 		int i;
 		for (Glyph* g = glyphs_.first(); g != NULL; g = g->next)
@@ -215,10 +230,11 @@ void Model::transmuteAtom(Atom* i, short int el)
 			i->setElement(el);
 			increaseMass(i->element());
 			logChange(Log::Structure);
+
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				TransmuteEvent* newchange = new TransmuteEvent;
+				AtomTransmuteEvent* newchange = new AtomTransmuteEvent;
 				newchange->set(i->id(),oldel,el);
 				recordingState_->addEvent(newchange);
 			}
@@ -297,7 +313,7 @@ void Model::atomSetHidden(Atom* i, bool hidden)
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			HideEvent* newchange = new HideEvent;
+			AtomHideEvent* newchange = new AtomHideEvent;
 			newchange->set(hidden, i->id());
 			recordingState_->addEvent(newchange);
 		}
@@ -311,10 +327,11 @@ void Model::atomSetFixed(Atom* i, bool fixed)
 	{
 		i->setPositionFixed(fixed);
 		logChange(Log::Style);
+
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			FixFreeEvent* newchange = new FixFreeEvent;
+			AtomFixEvent* newchange = new AtomFixEvent;
 			newchange->set(fixed, i->id());
 			recordingState_->addEvent(newchange);
 		}
@@ -327,10 +344,11 @@ void Model::atomSetCharge(Atom* target, double q)
 	double oldcharge = target->charge();
 	target->setCharge(q);
 	logChange(Log::Coordinates);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		ChargeEvent* newchange = new ChargeEvent;
+		AtomChargeEvent* newchange = new AtomChargeEvent;
 		newchange->set(target->id(), oldcharge, q);
 		recordingState_->addEvent(newchange);
 	}
@@ -342,11 +360,12 @@ void Model::atomSetColour(Atom* i, double r, double g, double b, double a)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		ColourEvent* newchange = new ColourEvent;
+		AtomColourEvent* newchange = new AtomColourEvent;
 		double* oldcol = i->colour();
 		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], r, g, b, a);
 		recordingState_->addEvent(newchange);
 	}
+
 	// Now set the colour....
 	i->setColour(r, g, b, a);
 	logChange(Log::Style);
@@ -362,7 +381,7 @@ void Model::atomResetColour(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		ColourEvent* newchange = new ColourEvent;
+		AtomColourEvent* newchange = new AtomColourEvent;
 		double* oldColour = i->colour();
 		newchange->set(i->id(), oldColour[0], oldColour[1], oldColour[2], oldColour[3], newColour[0], newColour[1], newColour[2], newColour[3]);
 		recordingState_->addEvent(newchange);
@@ -376,18 +395,19 @@ void Model::atomResetColour(Atom* i)
 // Set style of individual atom
 void Model::atomSetStyle(Atom* i, Prefs::DrawStyle ds)
 {
-	// Sets all atoms currently selected to have the drawing style specified
-	Prefs::DrawStyle oldStyle = i->style();
-	i->setStyle(ds);
-	logChange(Log::Style);
+	// Check current style
+	if (i->style() == ds) return;
 
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		StyleEvent* newchange = new StyleEvent;
-		newchange->set(i->id(), oldStyle, ds);
+		AtomStyleEvent* newchange = new AtomStyleEvent;
+		newchange->set(i->id(), i->style(), ds);
 		recordingState_->addEvent(newchange);
 	}
+
+	i->setStyle(ds);
+	logChange(Log::Style);
 }
 
 // Print coordinates of all atoms
@@ -412,7 +432,7 @@ void Model::translateAtom(Atom* target, Vec3<double> delta)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		TranslateEvent* newchange = new TranslateEvent;
+		AtomTranslateEvent* newchange = new AtomTranslateEvent;
 		newchange->set(target->id(), delta);
 		recordingState_->addEvent(newchange);
 	}
@@ -429,7 +449,7 @@ void Model::positionAtom(Atom* target, Vec3<double> newr)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		TranslateEvent* newchange = new TranslateEvent;
+		AtomTranslateEvent* newchange = new AtomTranslateEvent;
 		newchange->set(target->id(), delta);
 		recordingState_->addEvent(newchange);
 	}
@@ -482,7 +502,7 @@ double Model::forcefieldMass() const
 void Model::reduceMass(int element)
 {
 	mass_ -= ElementMap::atomicMass(element);
-	if (mass_ < 0.0) mass_ = 0.0;
+	if (fabs(mass_) < 1.0e-5) mass_ = 0.0;
 	if (element == 0) --nUnknownAtoms_;
 }
 
@@ -518,21 +538,30 @@ int Model::nUnknownAtoms() const
 void Model::copyAtomStyle(Model* source)
 {
 	Messenger::enter("Model::copyAtomStyle");
+
 	if (source == NULL)
 	{
 		Messenger::print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()");
 		Messenger::exit("Model::copyAtomStyle");
 	}
+
 	// Perform only one check - that the number of atoms is the same
 	if (source->nAtoms() != atoms_.nItems())
 	{
-		Messenger::print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)", source->nAtoms(), atoms_.nItems());
-		Messenger::exit("Model::copyParentStyle");
+		Messenger::print("Error: Can't copy parent model's atom style because it has a different number of atoms (%i cf %i)", source->nAtoms(), atoms_.nItems());
+		Messenger::exit("Model::copyAtomStyle");
 	}
+	
 	// Do the loop
 	Atom** ii = source->atomArray(), **jj = atomArray();
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
+
+	// Copy atom style and colour scheme
+	setDrawStyle(source->drawStyle());
+	setColourScheme(source->colourScheme());
+
 	logChange(Log::Style);
+
 	Messenger::exit("Model::copyAtomStyle");
 }
 
@@ -581,7 +610,7 @@ void Model::swapAtoms(Atom* i, Atom* j)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdSwapEvent* newchange = new IdSwapEvent;
+		AtomSwapEvent* newchange = new AtomSwapEvent;
 		newchange->set(i->id(), j->id());
 		recordingState_->addEvent(newchange);
 	}

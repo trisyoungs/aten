@@ -129,6 +129,7 @@ class Commands
 		GetAtom,
 		Hide,
 		RecolourAtoms,
+		ReMap,
 		SetCharge,
 		SetCoords,
 		SetElement,
@@ -283,7 +284,6 @@ class Commands
 		GenerateBond,
 		GenerateTorsion,
 		GenerateVdw,
-		GetCombinationRule,
 		GetFF,
 		InterDef,
 		LoadFF,
@@ -293,7 +293,6 @@ class Commands
 		PrintType,
 		RecreateExpression,
 		SaveExpression,
-		SetCombinationRule,
 		TorsionDef,
 		TypeDef,
 		TypeModel,
@@ -453,8 +452,10 @@ class Commands
 
 		// Select Commands
 		DeSelect,
+		DeSelectAll,
 		DeSelectCode,
 		DeSelectFormatted,
+		DeSelectName,
 		DeSelectType,
 		Expand,
 		Invert,
@@ -469,6 +470,7 @@ class Commands
 		SelectLine,
 		SelectMiller,
 		SelectMolecule,
+		SelectName,
 		SelectNone,
 		SelectOverlaps,
 		SelectOutsideCell,
@@ -595,6 +597,7 @@ class Commands
 	bool function_GetAtom(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Hide(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_RecolourAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_ReMap(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetCoords(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetCharge(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetElement(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -738,7 +741,6 @@ class Commands
 	bool function_GenerateBond(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateVdw(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GetFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_InterDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LoadFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -748,7 +750,6 @@ class Commands
 	bool function_PrintType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TorsionDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TypeDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TypeModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -894,8 +895,10 @@ class Commands
 	bool function_RunScript(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Select Commands
 	bool function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_DeSelectAll(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_DeSelectName(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Expand(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Invert(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -911,6 +914,7 @@ class Commands
 	bool function_SelectNone(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectMiller(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectMolecule(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SelectName(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectOutsideCell(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectOverlaps(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectPattern(CommandNode* c, Bundle& obj, ReturnValue& rv);

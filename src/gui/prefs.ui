@@ -2553,7 +2553,7 @@
         <widget class="QListWidget" name="ScaleList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>1</horstretch>
+           <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
@@ -2567,72 +2567,22 @@
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="currentRow">
-          <number>0</number>
+          <number>-1</number>
          </property>
-         <item>
-          <property name="text">
-           <string>1. Charge</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>2. Velocity</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>3. Force</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>4. Scale 4</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>5. Scale 5</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>6. Scale 6</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>7. Scale 7</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>8. Scale 8</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>9. Scale 9</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>10. Scale 10</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PointsGroup">
+        <widget class="QGroupBox" name="ScaleGroup">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>2</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Points</string>
+          <string>Scale</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_15">
           <property name="spacing">
            <number>4</number>
           </property>
@@ -2649,48 +2599,15 @@
            <number>4</number>
           </property>
           <item>
-           <widget class="QTableWidget" name="ScalePointsTable">
-            <property name="editTriggers">
-             <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+           <widget class="TColourScaleEditor" name="ScaleEditor" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <property name="showGrid">
-             <bool>false</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string>Value</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Colour</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="AddPointButton">
-            <property name="text">
-             <string>Add Point</string>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="RemovePointButton">
-            <property name="text">
-             <string>Remove Point</string>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
+            <property name="contextMenuPolicy">
+             <enum>Qt::CustomContextMenu</enum>
             </property>
            </widget>
           </item>
@@ -2794,7 +2711,7 @@
              <number>2</number>
             </property>
             <item>
-             <layout class="QGridLayout" name="gridLayout">
+             <layout class="QGridLayout" name="gridLayout5">
               <item row="0" column="0">
                <widget class="QLabel" name="label_2">
                 <property name="text">
@@ -3212,6 +3129,12 @@
    <class>TMenuButton</class>
    <extends>QToolButton</extends>
    <header>gui/tmenubutton.hui</header>
+  </customwidget>
+  <customwidget>
+   <class>TColourScaleEditor</class>
+   <extends>QWidget</extends>
+   <header>gui/tcolourscaleeditor.hui</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

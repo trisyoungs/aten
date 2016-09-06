@@ -3,8 +3,8 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "2")
-set(VERSION_MINOR "0")
-set(VERSION_PATCH "1")
+set(VERSION_MINOR "1")
+set(VERSION_PATCH "3")
 
 set(CMAKE_BUILD_TYPE "Release")
 
@@ -51,15 +51,21 @@ CMAKE_POLICY(SET CMP0020 NEW)
 if(WIN32)
   set (target_name Aten)
 
+  # Request C++11 Standard Support (Required for Qt 5.7)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
   # Adjust external include directories
   include_directories(
     ${FTGL_INCLUDE_DIRS}
     ${GLEXT_INCLUDE_DIRS}
   )
 
-  # Request dynamic lookup of symbols in shared library objects
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -undefined dynamic_lookup")
+  # Set plugin link libraries
+  SET(PLUGIN_LINK_LIBS
+    aten
+    Qt5::Widgets
+    Qt5::Core
+  )
 
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
@@ -118,11 +124,16 @@ target_include_directories(${target_name} PRIVATE
 )
 
 # Perform final link
-set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
-target_link_libraries( ${target_name}
-    messenger gui parser treegui command methods render model math main fourierdata ff base sg
-    ${ATEN_LINK_LIBS}
-    )
+if(WIN32)
+  set(ATEN_LINK_LIBS
+    aten
+    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+else(WIN32)
+  set(ATEN_LINK_LIBS
+    messenger gui parser treegui command methods render model undo math main fourierdata ff base sg
+    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+endif(WIN32)
+target_link_libraries( ${target_name} ${ATEN_LINK_LIBS})
 
 # Install target for unix
 if(UNIX AND NOT APPLE)
@@ -132,8 +143,8 @@ if(UNIX AND NOT APPLE)
         DESTINATION share/aten)
   install(FILES ${PROJECT_BINARY_DIR}/Aten.desktop
         DESTINATION share/applications)
-  foreach(i ff filters fftesting fragments partitions scripts test includes external)
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${i}
+  foreach(dir ff fftesting fragments partitions scripts test external)  # 'includes' removed 02/08/16
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${dir}
           DESTINATION share/aten)
-  endforeach(i)
+  endforeach(dir)
 endif(UNIX AND NOT APPLE)

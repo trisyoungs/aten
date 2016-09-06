@@ -201,11 +201,14 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 	switch (geometry)
 	{
 		case (Atom::NoGeometry):
+      break;
 		case (Atom::UnboundGeometry):
 			Messenger::print("Unsuitable atom geometry (%s) given to Model::growAtom", Atom::atomGeometry(geometry));
 			Messenger::exit("Atom::nextBondVector");
 			return false;
 			break;
+    default:
+      break;
 	}
 	
 	// Only try to find a new bond if we have free bonds to add...
@@ -363,6 +366,8 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 						}
 					}
 					break;
+        default:
+          break;  
 			}
 			break;
 		// Four bonds already present
@@ -419,6 +424,8 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 			}
 			vector = -vector;
 			break;
+    default:
+      break;
 	}
 
 	// Normalise vector

@@ -39,7 +39,7 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 	Atom** atoms, *i;
 	ForcefieldAtom* ffa;
 	QStringList labelStrings;
-	Prefs::DrawStyle style, globalstyle = prefs.renderStyle();
+	Prefs::DrawStyle style, drawStyle = source->drawStyle();
 	prefs.copyColour(prefs.currentForegroundColour(), colour);
 
 	// Atom labels
@@ -72,7 +72,7 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		if (labels&(1 << Atom::ChargeLabel)) labelStrings << QString().sprintf(qPrintable(prefs.chargeLabelFormat()), i->charge());
 
 		// Add text object
-		style = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
+		style = (drawStyle == Prefs::OwnStyle ? i->style() : drawStyle);
 		atomSize = (style == Prefs::ScaledStyle ? prefs.atomStyleRadius(style) * ElementMap::atomicRadius(i->element()) : prefs.atomStyleRadius(style)) * 1.05;
 		addText(labelStrings.join(" "), i->r(), 0.25, TextPrimitive::CentralAnchor, Vec3<double>(0.0, 0.0, atomSize), true);
 	}

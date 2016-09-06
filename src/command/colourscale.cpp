@@ -36,7 +36,7 @@ bool Commands::function_AddPoint(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Colour scale %i is out of range.",id+1);
 		return false;
 	}
-	prefs.colourScale[id].addPointAtEnd(c->argd(1), c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
+	prefs.colourScale[id].addPoint(c->argd(1), c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
 	rv.reset();
 	return true;
 }
@@ -161,7 +161,7 @@ bool Commands::function_SetPointColour(CommandNode* c, Bundle& obj, ReturnValue&
 		Messenger::print("Colour scale %i is out of range.", id+1);
 		return false;
 	}
-	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
+	prefs.colourScale[id].setColour(c->argi(1)-1, c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
 	rv.reset();
 	return true;
 }
@@ -176,7 +176,7 @@ bool Commands::function_SetPointValue(CommandNode* c, Bundle& obj, ReturnValue& 
 		Messenger::print("Colour scale %i is out of range.", id+1);
 		return false;
 	}
-	prefs.colourScale[id].setPointValue(c->argi(1)-1, c->argd(2));
+	prefs.colourScale[id].setValue(c->argi(1)-1, c->argd(2));
 	rv.reset();
 	return true;
 }

@@ -1,5 +1,5 @@
 /*
-        *** Common functions for DL_POLY_4 plugins
+        *** Common functions for DL_POLY plugins
         *** src/plugins/io_dlpoly/common.h
         Copyright T. Youngs 2016-2016
         Copyright A. M. Elena 2016-2016
@@ -24,6 +24,7 @@
 #define ATEN_DLPOLYPLUGINCOMMON_H
 
 #include "base/kvmap.h"
+#include <QStringList>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -40,11 +41,21 @@ class DLPOLYPluginCommon
 
 	public:
 	// Read single CONFIG model from file
-	static bool readCONFIGModel(FilePluginInterface* interface, FileParser& parser, Model* targetModel, DLPOLYVersion version);
+	static bool readCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, const bool inTraj=false);
 	// Skip single frame model in file
-	static bool skipFrameModel(FileParser& parser);
+	static bool skipFrameModel(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version);
 	// Write single CONFIG model to file
 	static bool writeCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* sourceModel, DLPOLYVersion version);
+	// Determine whether trajectory file is unformatted
+	static bool determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYVersion version);
+	// Read single unformatted frame from file
+	static bool readUnformattedFrame(AtenSpace::FilePluginInterface* plugin, AtenSpace::FileParser& parser, AtenSpace::Model* targetModel, AtenSpace::DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, QStringList unformattedAtomNames, AtenSpace::Array< double > unformattedCharges);
+	// Skip unformatted frame model in file
+	static bool skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize);
+	// Read single DEFECTS model from file
+	static bool readDEFECTSModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel);
+	// Skip single frame fects in file
+	static bool skipFrameDefects(FilePluginInterface* plugin, FileParser& parser);
 };
 
 ATEN_END_NAMESPACE

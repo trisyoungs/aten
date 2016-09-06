@@ -22,8 +22,8 @@
 #include "model/model.h"
 #include "base/pattern.h"
 #include "model/clipboard.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/undostate.h"
+#include "undo/cell_set.h"
 
 ATEN_USING_NAMESPACE
 
@@ -89,7 +89,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent* newchange = new CellEvent;
+		CellSetEvent* newchange = new CellSetEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
@@ -108,7 +108,7 @@ void Model::setCell(Matrix axes)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent* newchange = new CellEvent;
+		CellSetEvent* newchange = new CellSetEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
@@ -127,7 +127,7 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent* newchange = new CellEvent;
+		CellSetEvent* newchange = new CellSetEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
@@ -151,7 +151,7 @@ bool Model::setCell(UnitCell* newcell)
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			CellEvent* newchange = new CellEvent;
+			CellSetEvent* newchange = new CellSetEvent;
 			newchange->set(oldaxes, cell_.axes(), oldhs, true);
 			recordingState_->addEvent(newchange);
 		}
@@ -169,7 +169,7 @@ bool Model::setCell(UnitCell& newcell)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent* newchange = new CellEvent;
+		CellSetEvent* newchange = new CellSetEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
@@ -184,7 +184,7 @@ void Model::removeCell()
 	Messenger::enter("Model::removeCell");
 	if (recordingState_ != NULL)
 	{
-		CellEvent* newchange = new CellEvent;
+		CellSetEvent* newchange = new CellSetEvent;
 		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != UnitCell::NoCell, false);
 		recordingState_->addEvent(newchange);
 	}

@@ -52,11 +52,13 @@ int WrapInt::value()
  */
 
 // Assignment
-void WrapInt::operator=(int i)
+WrapInt& WrapInt::operator=(int i)
 {
 	int j = (i - minimum_)%range_;
 	if (j < 0) j+= range_;
 	value_ = (j%range_) + minimum_;
+
+	return *this;
 }
 
 // Binary addition
