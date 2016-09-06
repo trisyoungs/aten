@@ -90,7 +90,7 @@ bool MOPAC71OptimisationPlugin::runMethod()
 {
 	// Duplicate MOPAC71MethodPlugin ('mopac71') to perform the calculation...
 	// -- First, find the plugin
-	const MethodPluginInterface* methodPluginMaster = pluginStore_->findMethodPluginByNickname(PluginTypes::OptimisationMethodPlugin, "mopac71");
+	const MethodPluginInterface* methodPluginMaster = pluginStore_->findMethodPluginByNickname(PluginTypes::GeneralMethodPlugin, "mopac71");
 	if (!methodPluginMaster)
 	{
 		Messenger::error("Error: MOPAC71OptimisationPlugin also requires the MOPAC71MethodPlugin.");
@@ -103,7 +103,7 @@ bool MOPAC71OptimisationPlugin::runMethod()
 	//mopacMethod->setOption();
 
 	// Run it
-	bool result = mopacMethod->executeMethod();
+	bool result = mopacMethod->executeMethod(true);
 	
 	return result;
 }

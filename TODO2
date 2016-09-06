@@ -26,6 +26,8 @@ Colour by coordination number
 Collapse cell tool.
 Tool to calculate / show total charge in selection.
 Calculate tool to work out centre of geometry/mass.
+FF popup minimise needs to remember previous choice
+MOPAC71 needs to deallocate arrays, or a 'stop' is encountered when trying to reallocate a previously-allocated array (needs to be done after extraction of calculated data etc.)
 
 Plugin TODO
 ===========

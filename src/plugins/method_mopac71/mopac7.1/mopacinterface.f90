@@ -62,9 +62,7 @@
 
 !---TGAY ADDED 08/2016-------------------------- 
       jobnam=JOBBASENAME
-      tore = ios + iop + iod
-      tore(57:71) = 3.d0
-      call getdat(ir,iw)
+
 !
 !   CLOSE UNIT IW IN CASE IT WAS ALREADY PRE-ASSIGNED
 !
@@ -72,6 +70,13 @@
      i = index(jobnam,' ') - 1 
      open(unit=iw, file=jobnam(:i)//'.out', status='UNKNOWN', position='asis') 
      rewind iw 
+
+!--TGAY MOVED 08/2016- Error in getdat would write to as-yet-unopened unit iw
+      tore = ios + iop + iod
+      tore(57:71) = 3.d0
+      call getdat(ir,iw)
+
+     
       numcal = 0 
       isok = .TRUE. 
       errtxt = 'Job stopped by operator' 
@@ -79,7 +84,7 @@
 !
 ! Set up essential arrays: arrays needed for reading in the data
 !
-      if (natoms == 0) stop
+      if (natoms == 0) return
 
       call setup_mopac_arrays(natoms, 1)
       maxatoms = natoms
@@ -94,7 +99,7 @@
 !
       call readmo 
 
-      if (natoms == 0) stop
+      if (natoms == 0) return
       if (moperr) go to 10 
       if (index(keywrd,' OLDFPC') + index(keywrd, ' MNDOD') > 0) then
 !

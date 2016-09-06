@@ -114,10 +114,13 @@ bool MOPAC71MethodPlugin::runMethod()
 		Messenger::error("Couldn't export data for MOPAC71 optimisation job.");
 		return false;
 	}
+	plugin->closeFiles();
 
 	// Input file is ready, so run MOPAC...
+	printf("HERE.........\n");
 	bool result = runmopac71_(qPrintable(jobBaseName), jobBaseNameLength);
 	if (!result) Messenger::error("Failed to perform MOPAC calculation.");
+	printf("HERE.........\n");
 
 	// Dump output file to Messenger...
 	QFile file(jobBaseName + ".out");
@@ -128,6 +131,7 @@ bool MOPAC71MethodPlugin::runMethod()
 		file.close();
 	}
 	else Messenger::error("Couldn't retrieve MOPAC output '" + file.fileName()+ "' for display.");
+	printf("HERE.........\n");
 
 	return true;
 }
