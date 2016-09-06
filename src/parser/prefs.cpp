@@ -88,6 +88,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "imageQuality",		VTypes::IntegerData,		0, false },
 	{ "keyAction",			VTypes::StringData,		Prefs::nModifierKeys, false },
 	{ "labelSize",			VTypes::DoubleData,		0, false },
+	{ "labelDepthScaling",		VTypes::IntegerData,		0, false },
 	{ "lineAliasing",		VTypes::IntegerData,		0, false },
 	{ "maxCuboids",			VTypes::IntegerData,		0, false },
 	{ "maxRings",			VTypes::IntegerData,		0, false },

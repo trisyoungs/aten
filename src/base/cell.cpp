@@ -153,9 +153,6 @@ void UnitCell::print()
 	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
 	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
 	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
-	printf("%14.10f %14.10f %14.10f\n", axes_[0], axes_[1], axes_[2]);
-	printf("%14.10f %14.10f %14.10f\n", axes_[4], axes_[5], axes_[6]);
-	printf("%14.10f %14.10f %14.10f\n", axes_[8], axes_[9], axes_[10]);
 }
 
 // Remove the cell definition (i.e. set 'type' to UnitCell::NoCell)

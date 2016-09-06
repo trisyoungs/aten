@@ -43,6 +43,8 @@ class TMenuButton : public QToolButton
 	public:
 	// Constructor
 	TMenuButton(QWidget* parent = 0);
+	// Popup Location
+	enum PopupLocation { PopupOnLeft, PopupOnRight, PopupOnTop, PopupOnBottom };
 
 
 	/*
@@ -81,12 +83,16 @@ class TMenuButton : public QToolButton
 	QTimer popupTimer_;
 	// Whether button was already checked before being pressed
 	bool checkedBeforePressed_;
+	// Where the popup (if any) should be located relative to the button
+	TMenuButton::PopupLocation popupLocation_;
 
 	public:
 	// Set popup widget for button
 	void setPopupWidget(TPopupWidget* widget, bool instantPopup = false);
 	// Return popup widget set for button
 	TPopupWidget* popupWidget();
+	// Set where the popup (if any) should be located relative to the button
+	void setPopupLocation(TMenuButton::PopupLocation location);
 	// Call named method in associated popup widget
 	bool callPopupMethod(QString methodName, ReturnValue& rv);
 	// Notify button that popup is done

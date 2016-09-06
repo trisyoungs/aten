@@ -59,7 +59,7 @@ Switch / Case.
 More descriptions / examples for Disorder Builder options.
 --noplugins, --plugin, and --atenplugins CLI switch.
 Removed --pack, --bond, --centre, and --fold CLI switches.
-Removed --cachelimit switch, and renamed to --cache.
+Removed --cachelimit switch, and repurposed to --cache.
 ATENPLUGINS environment switch.
 Whole plugin thing, really!  And make filters section defunct.
 Removed FinaliseModel/Grid commands, and all read/write commands related to files.
@@ -72,3 +72,4 @@ Remove "combinationRules" Prefs accessor.
 Removed 'setCombinationRule' and 'combinationRule' commands.
 Added 'reMap' command to re-do name->element mapping for the current selection. 
 Add 'deselectAll' command (direct synonym for selectNone).
+Add 'labelDepthScaling' option to PrefsVariable.

@@ -45,6 +45,7 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	popupTimer_.setSingleShot(true);
 	popupTimer_.setInterval(QApplication::style()->styleHint(QStyle::SH_ToolButton_PopupDelay));
 	connect(&popupTimer_, SIGNAL(timeout()), this, SLOT(popup()));
+	popupLocation_ = TMenuButton::PopupOnBottom;
 
 	// Connect signals for pressed / released
 	connect(this, SIGNAL(pressed()), this, SLOT(buttonPressed()));
@@ -80,6 +81,12 @@ void TMenuButton::setPopupWidget(TPopupWidget* widget, bool instantPopup)
 TPopupWidget* TMenuButton::popupWidget()
 {
 	return popupWidget_;
+}
+
+// Set where the popup (if any) should be located relative to the button
+void TMenuButton::setPopupLocation(TMenuButton::PopupLocation location)
+{
+	popupLocation_ = location;
 }
 
 // Call named method in associated popup widget
@@ -295,12 +302,22 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			{
 				QRect arrowRect = rect;
 				arrowRect.setTop(arrowRect.bottom() - 6);
+// 				if (popupLocation_ == TMenuButton::PopupOnBottom) arrowRect.setTop(arrowRect.bottom() - 6);
+// 				else if (popupLocation_ == TMenuButton::PopupOnTop) arrowRect.setBottom(arrowRect.top() + 6);
+// 				else if (popupLocation_ == TMenuButton::PopupOnLeft) arrowRect.setRight(arrowRect.left() + 6);
+// 				else if (popupLocation_ == TMenuButton::PopupOnRight) arrowRect.setLeft(arrowRect.right() - 6);
 				QStyleOption arrowOpt;
 				arrowOpt.rect = arrowRect;
 				arrowOpt.palette = inner.palette;
 				arrowOpt.state = inner.state;
 				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
-				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
+				else
+				{
+					if (popupLocation_ == TMenuButton::PopupOnBottom) style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
+					else if (popupLocation_ == TMenuButton::PopupOnTop) style()->drawPrimitive(QStyle::PE_IndicatorArrowUp, &arrowOpt, &painter, this);
+					else if (popupLocation_ == TMenuButton::PopupOnLeft) style()->drawPrimitive(QStyle::PE_IndicatorArrowLeft, &arrowOpt, &painter, this);
+					else if (popupLocation_ == TMenuButton::PopupOnRight) style()->drawPrimitive(QStyle::PE_IndicatorArrowRight, &arrowOpt, &painter, this);
+				}
 			}
 			if (!isCheckable()) rect.setHeight(rect.height() - 6);
 
@@ -454,9 +471,28 @@ void TMenuButton::popup()
 		return;
 	}
 
-	// Reposition popup widget to sit flush left with the tool button, and immediately underneath it
-	QPoint toolPos = parentWidget()->mapToGlobal(pos()+QPoint(0,height()));
-	popupWidget_->move(toolPos);
+	// Reposition popup widget
+	QPoint popupPos;
+	switch (popupLocation_)
+	{
+		case (TMenuButton::PopupOnBottom):
+			// Flush left with the tool button, and immediately underneath it
+			popupPos = parentWidget()->mapToGlobal(pos()+QPoint(0, height()));
+			break;
+		case (TMenuButton::PopupOnTop):
+			// Flush left with the tool button, and immediately on top of it
+			popupPos = parentWidget()->mapToGlobal(pos()+QPoint(0, -popupWidget_->height()));
+			break;
+		case (TMenuButton::PopupOnLeft):
+			// Flush top with the tool button, and immediately to its left
+			popupPos = parentWidget()->mapToGlobal(pos()+QPoint(-popupWidget_->width(), 0));
+			break;
+		case (TMenuButton::PopupOnRight):
+			// Flush top with the tool button, and immediately to its right
+			popupPos = parentWidget()->mapToGlobal(pos()+QPoint(width(), 0));
+			break;
+	}
+	popupWidget_->move(popupPos);
 }
 
 // Return whether popup (if there is one) is visible

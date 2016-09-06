@@ -65,6 +65,7 @@
 #include "gui/popupgridshift.h"
 #include "gui/popupgridstyle.h"
 #include "gui/popupgridsopen.h"
+#include "gui/popuplabeloptions.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
@@ -298,6 +299,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// -- Tools Panel (Pores)
 	ui.ToolsPoresDrillButton->setPopupWidget(new PoresDrillPopup(*this, ui.ToolsPoresDrillButton), true);
 	ui.ToolsPoresSchemeButton->setPopupWidget(new PoresSchemePopup(*this, ui.ToolsPoresSchemeButton, aten_.poresPartitioningScheme()), true);
+
+	// -- Right Side Panel
+	ui.LabelOptionsButton->setPopupWidget(new LabelOptionsPopup(*this, ui.LabelOptionsButton), true);
+	ui.LabelOptionsButton->setPopupLocation(TMenuButton::PopupOnLeft);
 
 	// Setup Shortcuts
 	QShortcut* shortcut;

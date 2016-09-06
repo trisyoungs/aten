@@ -49,6 +49,7 @@ SET(gui_MOC_HDRS
   popupgridshift.h
   popupgridstyle.h
   popupgridsopen.h
+  popuplabeloptions.h
   popupmeasureangle.h
   popupmeasureclear.h
   popupmeasuredistance.h
@@ -151,6 +152,7 @@ SET(gui_UIS
   popupgridshift.ui
   popupgridstyle.ui
   popupgridsopen.ui
+  popuplabeloptions.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
@@ -266,6 +268,7 @@ set(gui_SRCS
   popupgridshift_funcs.cpp
   popupgridstyle_funcs.cpp
   popupgridsopen_funcs.cpp
+  popuplabeloptions_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp

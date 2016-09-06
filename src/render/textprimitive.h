@@ -96,7 +96,7 @@ class TextPrimitive : public ListItem<TextPrimitive>
 	// Set data
 	void set(QString text, Vec3<double> anchorPoint, double textSize, TextAnchor anchorPosition, Vec3<double> globalAdjustment, bool flat);
 	// Render primitive
-	void render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double baseFontSize);
+	void render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double sizeScale, bool depthScaling);
 
 
 	/*

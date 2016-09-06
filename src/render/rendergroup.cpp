@@ -230,7 +230,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		inverseMatrix.invert();
 
 		FontInstance::font()->FaceSize(1);
-		textPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, 1.0);
+		textPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, prefs.labelSize(), prefs.labelDepthScaling());
 	}
 
 	/*
@@ -252,7 +252,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	if (FontInstance::fontOK())
 	{
 		FontInstance::font()->FaceSize(1);
-		overlayTextPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, 1.0);
+		overlayTextPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, prefs.labelSize(), prefs.labelDepthScaling());
 	}
 }
 

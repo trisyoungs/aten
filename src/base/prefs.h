@@ -237,6 +237,8 @@ class Prefs
 	QString chargeLabelFormat_;
 	// Relative size for text labels, in percentage of view height
 	double labelSize_;
+	// Whether labels are scaled according to their depth
+	bool labelDepthScaling_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
 	// Mouse move event filter rate
@@ -267,10 +269,14 @@ class Prefs
 	void setChargeLabelFormat(QString cFormat);
 	// Return C-style format for charge label values
 	QString chargeLabelFormat();
-	// Set the pointsize of labels in the model
+	// Set the scaling factor for labels in the model
 	void setLabelSize(double size);
-	// Return the current label pointsize
+	// Return the current label scale factor
 	double labelSize() const;
+	// Set whether labels are scaled according to their depth
+	void setLabelDepthScaling(bool depthScale);
+	// Return whether labels are scaled according to their depth
+	bool labelDepthScaling() const; 
 	// Return whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics();
 	// Set  whether to use solid or dashed circles for aromatic ring rendering

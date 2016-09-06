@@ -342,7 +342,8 @@ Prefs::Prefs()
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
 	chargeLabelFormat_ = "(%0.3f e)";
-	labelSize_ = 1.5;
+	labelSize_ = 0.2;
+	labelDepthScaling_ = true;
 	mouseMoveFilter_ = 10;
 	renderDashedAromatics_ = true;
 	nModelsPerRow_ = 2;
@@ -1400,16 +1401,28 @@ QString Prefs::chargeLabelFormat()
 	return chargeLabelFormat_;
 }
 
-// Set the scale of labels in the model
+// Set the scaling factor for labels in the model
 void Prefs::setLabelSize(double size)
 {
 	labelSize_ = size;
 }
 
-// Return the current label scale
+// Return the current label scale factor
 double Prefs::labelSize() const
 {
 	return labelSize_;
+}
+
+// Set whether labels are scaled according to their depth
+void Prefs::setLabelDepthScaling(bool depthScale)
+{
+	labelDepthScaling_ = depthScale;
+}
+
+// Return whether labels are scaled according to their depth
+bool Prefs::labelDepthScaling() const
+{
+	return labelDepthScaling_;
 }
 
 // Return whether to use solid or dashed circles for aromatic ring rendering
