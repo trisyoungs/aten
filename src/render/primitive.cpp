@@ -566,7 +566,7 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 
 	// Calculate orthogonal vectors
 	u = rj.orthogonal();
-// 	u.normalise();
+	u.normalise();
 	v = rj * u;
 	v.normalise();
 	w = rj;
@@ -585,9 +585,10 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			normal[1] = u*cos(d) + v*sin(d);
 			vert[2] = normal[1]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
 			vert[3] = normal[1]*( startRadius -i* dRadius ) + deltarj*i;
+
 			
 			// Triangle 1
-			if ((i > 1) || ( startRadius > 1.0e-5))
+			if ((i > 1) || (startRadius > 1.0e-5))
 			{
 				if (colourData)
 				{
@@ -604,7 +605,7 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			}
  
 			// Triangle 2
-			if ((i < nStacks ) || ( endRadius > 1.0e-5))
+			if ((i < nStacks ) || (endRadius > 1.0e-5))
 			{
 				if (colourData)
 				{
@@ -621,7 +622,7 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			}
 			
 			// Start cap
-			if ((i == 1) && ( startRadius > 1.0e-5) && capStart)
+			if ((i == 1) && (startRadius > 1.0e-5) && capStart)
 			{
 				if (colourData)
 				{
@@ -638,7 +639,7 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			}
 
 			// End cap
-			if ((i == nStacks ) && ( endRadius > 1.0e-5) && capEnd)
+			if ((i == nStacks) && (endRadius > 1.0e-5) && capEnd)
 			{
 				if (colourData)
 				{
