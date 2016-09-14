@@ -205,8 +205,8 @@ void AtenWindow::loadSettings()
 				case (Prefs::SelectHistory):
 					selectHistory << data;
 					break;
-        default:
-          break;
+				default:
+					break;
 			}
 		}
 		parser.closeFiles();
@@ -309,6 +309,7 @@ void AtenWindow::saveSettings()
 		// Quick command history
 		for (n=0; n < ui.QuickCommandCombo->count(); ++n)
 		{
+			printf("Writing Line: [%s]\n", qPrintable(ui.QuickCommandCombo->itemText(n)));
 			line.sprintf("%s  %s", Prefs::historyType(Prefs::CommandHistory), qPrintable(ui.QuickCommandCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
@@ -320,7 +321,7 @@ void AtenWindow::saveSettings()
 			historyFile.writeLine(line);
 		}
 	}
-	
 	historyFile.closeFiles();
+
 	Messenger::print("Done.");
 }

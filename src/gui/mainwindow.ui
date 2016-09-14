@@ -12028,9 +12028,6 @@
             <height>16</height>
            </size>
           </property>
-          <property name="shortcut">
-           <string>Space</string>
-          </property>
          </widget>
         </item>
         <item>
@@ -12061,7 +12058,7 @@
            </size>
           </property>
           <property name="toolTip">
-           <string>Cycle visibility of messages and model view</string>
+           <string>Cycle visibility of messages and model view (Space)</string>
           </property>
           <property name="text">
            <string/>
@@ -12187,7 +12184,7 @@
            <enum>Qt::TabFocus</enum>
           </property>
           <property name="toolTip">
-           <string>Clear message buffer</string>
+           <string>Increase text size for messages (Ctrl-+)</string>
           </property>
           <property name="text">
            <string/>
@@ -12231,7 +12228,7 @@
            <enum>Qt::TabFocus</enum>
           </property>
           <property name="toolTip">
-           <string>Clear message buffer</string>
+           <string>Decrease text size for messages (Ctrl--)</string>
           </property>
           <property name="text">
            <string/>

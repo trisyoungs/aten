@@ -73,15 +73,15 @@ int main(int argc, char* argv[])
 	/* Set random seed */
 	srand( (unsigned) time(NULL) );
 
+	/* Find/set directory locations */
+	MrAten.setDirectories();
+	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", qPrintable(MrAten.homeDir().path()), qPrintable(MrAten.workDir().path()), qPrintable(MrAten.dataDir().path()));
+	
 	/* Create the main window */
 	AtenWindow mainWindow(MrAten);
 
 	/* Set AtenWindow pointer in MrAten */
 	MrAten.setAtenWindow(&mainWindow);
-
-	/* Find/set directory locations */
-	MrAten.setDirectories();
-	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", qPrintable(MrAten.homeDir().path()), qPrintable(MrAten.workDir().path()), qPrintable(MrAten.dataDir().path()));
 
 	/* Load plugins */
 	if (prefs.loadPlugins()) MrAten.loadPlugins();

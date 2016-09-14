@@ -35,6 +35,7 @@ void AtenWindow::quickCommandRun()
 	{
 		ReturnValue rv;
 		program.execute(rv);
+		ui.QuickCommandCombo->addItem(ui.QuickCommandCombo->currentText());
 		ui.QuickCommandCombo->clear();
 	}
 	else
