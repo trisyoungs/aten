@@ -51,9 +51,6 @@ CMAKE_POLICY(SET CMP0020 NEW)
 if(WIN32)
   set (target_name Aten)
 
-  # Request C++11 Standard Support (Required for Qt 5.7)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
   # Adjust external include directories
   include_directories(
     ${FTGL_INCLUDE_DIRS}
@@ -84,9 +81,6 @@ endif(UNIX)
 if(APPLE)
   set (target_name aten)
 
-  # Request C++11 Standard Support (Required for Qt 5.7)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
   set(CMAKE_OSX_ARCHITECTURES "x86_64")
   ADD_DEFINITIONS(-D_MAC)
 
@@ -116,10 +110,14 @@ endif(APPLE)
 # Process CMakeLists in subdirs
 add_subdirectory(${SRCS})
 
+# Add main executable target
 add_executable(${target_name}
   MACOSX_BUNDLE
   ${SRCS}/main.cpp 
 )
+
+# Request C++11 Standard Support (Required for Qt 5.7)
+set_property(TARGET ${target_name} PROPERTY CXX_STANDARD 11)
 
 # Set project-local include directories for target
 target_include_directories(${target_name} PRIVATE
