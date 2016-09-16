@@ -83,10 +83,16 @@ endif(UNIX)
 # -- OSX
 if(APPLE)
   set (target_name aten)
+
+  # Request C++11 Standard Support (Required for Qt 5.7)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
   set(CMAKE_OSX_ARCHITECTURES "x86_64")
   ADD_DEFINITIONS(-D_MAC)
+
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
+
   # Request dynamic lookup of symbols in shared library objects
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -undefined dynamic_lookup")

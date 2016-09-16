@@ -112,8 +112,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 					return false;
 				}
 				break;
-      default:
-        break;  
+			default:
+				break;  
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.prepend() : components_.add());
 		Messenger::print("Initialising component model '%s' for partition '%s'...", qPrintable(m->name()), qPrintable(scheme->partitionName(id)));
@@ -132,7 +132,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		Messenger::exit("MonteCarlo::disorder");
 		return false;
 	}
-	
+
 	// Step 3 - Determine cell size (if applicable) and perform some sanity checks
 	if (!fixedCell)
 	{
@@ -152,7 +152,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			Messenger::exit("MonteCarlo::disorder");
 			return false;
 		}
-		
+
 		// So, we must decide on the final volume of the cell - this means that both a population and a density for each 
 		// component must have been specified - i.e. no 'bulk' components and no 'free' densities
 		Messenger::print("Calculating cell volume based on component information...");
