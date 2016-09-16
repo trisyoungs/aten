@@ -84,6 +84,9 @@ if(APPLE)
   set(CMAKE_OSX_ARCHITECTURES "x86_64")
   ADD_DEFINITIONS(-D_MAC)
 
+  # Set some specific C++11 related options here (set_property below does not seem to persist)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11 ")
+
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
 
