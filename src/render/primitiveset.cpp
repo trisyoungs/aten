@@ -383,32 +383,32 @@ void PrimitiveSet::recreatePrimitives()
 	bonds_[Prefs::TubeStyle][Bond::Triple].initialise(GL_TRIANGLES, false);
 	bonds_[Prefs::SphereStyle][Bond::Triple].initialise(GL_TRIANGLES, false);
 	bonds_[Prefs::ScaledStyle][Bond::Triple].initialise(GL_TRIANGLES, false);
-	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, bRadius[Prefs::TubeStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, bRadius[Prefs::TubeStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder( bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, bRadius[Prefs::TubeStyle]*0.33, nStacks, nSlices);
+	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, nSlices);
+	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, nSlices);
+	bonds_[Prefs::TubeStyle][Bond::Triple].plotCylinder( bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33, nSlices);
 	Messenger::incrementTaskProgress(task);
-	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, bRadius[Prefs::SphereStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, bRadius[Prefs::SphereStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder( bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, bRadius[Prefs::SphereStyle]*0.33, nStacks, nSlices);
+	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, nSlices);
+	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, nSlices);
+	bonds_[Prefs::SphereStyle][Bond::Triple].plotCylinder( bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33, nSlices);
 	Messenger::incrementTaskProgress(task);
-	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, bRadius[Prefs::ScaledStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, bRadius[Prefs::ScaledStyle]*0.33, nStacks, nSlices);
-	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder( bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, bRadius[Prefs::ScaledStyle]*0.33, nStacks, nSlices);
+	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder(-bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, nSlices);
+	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, nSlices);
+	bonds_[Prefs::ScaledStyle][Bond::Triple].plotCylinder( bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33, nSlices);
 	Messenger::incrementTaskProgress(task);
 	selectedBonds_[Prefs::TubeStyle][Bond::Triple].initialise(GL_LINES, false);
 	selectedBonds_[Prefs::SphereStyle][Bond::Triple].initialise(GL_LINES, false);
 	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].initialise(GL_LINES, false);
-	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, bRadius[Prefs::TubeStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, bRadius[Prefs::TubeStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, bRadius[Prefs::TubeStyle]*0.33* selScale, nStacks, nSlices);
+	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::TubeStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::TubeStyle]*0.33* selScale, nSlices);
 	Messenger::incrementTaskProgress(task);
-	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, bRadius[Prefs::SphereStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, bRadius[Prefs::SphereStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, bRadius[Prefs::SphereStyle]*0.33* selScale, nStacks, nSlices);
+	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::SphereStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::SphereStyle]*0.33* selScale, nSlices);
 	Messenger::incrementTaskProgress(task);
-	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, bRadius[Prefs::ScaledStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, bRadius[Prefs::ScaledStyle]*0.33* selScale, nStacks, nSlices);
-	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, bRadius[Prefs::ScaledStyle]*0.33* selScale, nStacks, nSlices);
+	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder(-bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, nSlices);
+	selectedBonds_[Prefs::ScaledStyle][Bond::Triple].plotLineCylinder( bRadius[Prefs::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bRadius[Prefs::ScaledStyle]*0.33* selScale, nSlices);
 	Messenger::incrementTaskProgress(task);
 
 	// Other primitives
@@ -429,7 +429,7 @@ void PrimitiveSet::recreatePrimitives()
 	Messenger::incrementTaskProgress(task);
 
 	cone_.initialise(GL_TRIANGLES, false);
-	cone_.plotCylinder(0,0,0,0,0,1,1.0,0.0, nStacks, nSlices);
+	cone_.plotCone(0,0,0,0,0,1,1.0, nStacks, nSlices);
 	Messenger::incrementTaskProgress(task);
 
 	tubeRing_.initialise(GL_TRIANGLES, false);
@@ -458,11 +458,11 @@ void PrimitiveSet::recreatePrimitives()
 
 	cellAxes_.initialise(GL_TRIANGLES, true);
 	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
-	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
+	cellAxes_.plotCone(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
 	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
-	cellAxes_.plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
+	cellAxes_.plotCone(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
 	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
+	cellAxes_.plotCone(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
 	Messenger::incrementTaskProgress(task);
 
 	rotationGlobe_.initialise(GL_TRIANGLE_STRIP, true);
