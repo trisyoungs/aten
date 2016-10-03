@@ -31,14 +31,9 @@ APP_DSSTORE="NONE"
 
 # -- USE_QT : Set to TRUE if this is a Qt app, and macdeployqt should be used
 USE_QT="TRUE"
-#QT_DIR=/Developer/Applications/Qt
-#QT_FRAMEWORKS_DIR=/Library/Frameworks
-QT_DIR=/Users/tris/Qt5.7/5.7/clang_64
-QT_FRAMEWORKS_DIR=/Users/tris/Qt5.7/5.7/clang_64/lib
 QT_NO_DYLIBS="TRUE"
 QT_EXTRA_FRAMEWORKS="QtSvg QtXml"
 QT_EXTRA_IMAGEFORMATS="libqsvg.dylib"
-QT_VERSION=5
 
 # -- EXTRA_DYLIBS : Extra dylibs to be copied in to the bundle (or NONE)
 # --              : Format is "<input dylib | NONE>,<input dylib | NONE>,<output dylib>"
