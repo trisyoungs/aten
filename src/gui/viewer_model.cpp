@@ -80,7 +80,9 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		A.removeTranslationAndScaling();
 		A[14] = -1.2;
 		glLoadMatrixd(A.matrix());
-		primitives_[primitiveSet_].rotationGlobeAxes().sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].rotationGlobeAxes(0).sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].rotationGlobeAxes(1).sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].rotationGlobeAxes(2).sendToGL(QOpenGLContext::currentContext());
 
 		// Draw globe - no view rotation, just translate it back a bit
 		A.setIdentity();
@@ -119,7 +121,9 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		// Draw cell axes
 		Vec3<double> v = source->cell().lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-		primitives_[primitiveSet_].cellAxes().sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].cellAxes(0).sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].cellAxes(1).sendToGL(QOpenGLContext::currentContext());
+		primitives_[primitiveSet_].cellAxes(2).sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Get RenderGroup for model (it will be updated if necessary by the called function)
