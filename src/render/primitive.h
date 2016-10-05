@@ -62,8 +62,6 @@ class Primitive : public ListItem<Primitive>
 	Array<GLuint> indexData_;
 	// GL primitive type (GL_TRIANGLES, GL_LINES etc.)
 	GLenum type_;
-	// Number of vertices per primitive type
-	int verticesPerType_;
 	// Number of data points per vertex
 	int dataPerVertex_;
 	// Whether vertex data array also contains colour information
@@ -144,6 +142,8 @@ class Primitive : public ListItem<Primitive>
 	void defineIndices(GLuint a, GLuint b);
 	// Define next index triple
 	void defineIndices(GLuint a, GLuint b, GLuint c);
+	// Add degenerate triangle
+	void addDegenerateTriangle();
 
 
 	/*
@@ -163,10 +163,10 @@ class Primitive : public ListItem<Primitive>
 	void plotSphere(double radius, int nStacks, int nSlices, bool colourData = false, Vec4<GLfloat> colour = Vec4<GLfloat>());
 	// Plot line sphere with specified radius and quality
 	void plotLineSphere(double radius, int nStacks, int nSlices);
-	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nStacks, int nSlices, bool capStart = false, bool capEnd = false, bool colourData = false, Vec4<GLfloat> colour = Vec4<GLfloat>());
-	// Plot line cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotLineCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nStacks, int nSlices, bool capStart = false, bool capEnd = false);
+	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radius and quality specified
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double radius, int nSlices, bool capStart = false, bool capEnd = false, bool colourData = false, Vec4<GLfloat> colour = Vec4<GLfloat>());
+	// Plot cone vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with start radius and quality specified
+	void plotCone(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, int nSlices, bool capStart = false, bool colourData = false, Vec4<GLfloat> colour = Vec4<GLfloat>());
 	// Plot tube ring of specified radius and tube width
 	void plotRing(double radius, double width, int nStacks, int nSlices, int nSegments, bool segmented = false);
 	// Plot circle of specified radius

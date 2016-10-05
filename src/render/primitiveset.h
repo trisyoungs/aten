@@ -84,7 +84,7 @@ class PrimitiveSet
 	// Geometric objects
 	Primitive cube_, wireCube_, originCube_, sphere_, cylinder_, cone_;
 	// Specialist objects
-	Primitive crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_, halo_, pickedAtom_;
+	Primitive crossedCube_, cellAxes_[3], rotationGlobe_, rotationGlobeAxes_[3], halo_, pickedAtom_;
 	// List of registered dynamic primitives, managed and updated as and when required
 	static RefList<Primitive,int> dynamicPrimitives_;
 
@@ -120,11 +120,11 @@ class PrimitiveSet
 	// Return crossed cube primitive
 	Primitive& crossedCube();
 	// Return cell axes primitive
-	Primitive& cellAxes();
+	Primitive& cellAxes(int axis);
 	// Return rotation globe primitive
 	Primitive& rotationGlobe();
 	// Return rotation globe axes primitive
-	Primitive& rotationGlobeAxes();
+	Primitive& rotationGlobeAxes(int axis);
 	// Return halo primitive
 	Primitive& halo();
 	// Return picked atom primitive

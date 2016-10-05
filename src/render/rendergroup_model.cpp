@@ -206,11 +206,12 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 	// Determine bond plane rotation if a multiple bond
 	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (bondInPlane != NULL))
 	{
-		// Desired z-axis is already known ( = vijn) so get normalised copy
+		// Desired z-axis is already known ( = vijn)
 		normz = localz / rij;
-		
+		normz.normalise();
+
 		// X axis is bond plane vector...
-		localx = i->findBondPlane(j, bondInPlane,normz,true);
+		localx = i->findBondPlane(j, bondInPlane, normz, true);
 
 		// Generate Y-axis from cross-product of z and x axes
 		localy = localx * normz;
@@ -234,7 +235,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 		if (phi > 179.99) A.applyRotationX(phi);
 		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, true);
 	}
-	
+
 	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
 	B = A;
 	A.applyTranslation(0.0, 0.0, radius_i);
@@ -290,8 +291,8 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 				addLines(primitiveSet.selectedBond(style_i, bt), A, penColour_);
 			}
 			break;
-    default:
-      break;  
+		default:
+			break;  
 	}
 	
 	// Draw second bond half
@@ -342,8 +343,8 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 				addLines(primitiveSet.selectedBond(style_j, bt), B, penColour_);
 			}
 			break;
-    default:
-      break;  
+		default:
+			break;  
 	}
 }
 
