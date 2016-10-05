@@ -48,7 +48,7 @@ CMAKE_POLICY(SET CMP0020 NEW)
 
 # Options
 # -- MOPAC7 Plugin (requires Fortran)
-option(MOPACPLUGIN "Enable compilation of MOPAC7 method plugin" ON)
+option(MOPACPLUGIN "Enable compilation of MOPAC7 method plugin" OFF)
 if(MOPACPLUGIN)
   enable_language(Fortran)
 endif(MOPACPLUGIN)

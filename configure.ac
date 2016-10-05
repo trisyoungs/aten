@@ -53,10 +53,10 @@ AM_CONDITIONAL([LOCALDEPLOY], [test "$with_localdeploy" = "yes"])
 AC_ARG_WITH([nordynamic], [AC_HELP_STRING([--with-nordynamic], [Disable passing of -rdynamic at link time [default="no"]])], [with_nordynamic="yes"], [with_nordynamic="no"])
 AM_CONDITIONAL([NORDYNAMIC], [test "$with_nordynamic" = "yes"])
 
-# Turn off compilation of MOPAC7 plugin (which requires a Fortran compiler)
-AC_ARG_WITH([nomopacplugin], [AC_HELP_STRING([--with-nomopacplugin], [Disable compilation of MOPAC7 plugin [default="no"]])], [with_nomopacplugin="yes"], [with_nomopacplugin="no"])
-AM_CONDITIONAL([MOPACPLUGIN], [test "$with_nomopacplugin" = "no"])
-if test "$with_nomopacplugin" = "no"; then
+# Turn on compilation of MOPAC7 plugin (which requires a Fortran compiler)
+AC_ARG_WITH([nomopacplugin], [AC_HELP_STRING([--with-mopacplugin], [Enable compilation of MOPAC7 plugin [default="no"]])], [with_mopacplugin="yes"], [with_mopacplugin="no"])
+AM_CONDITIONAL([MOPACPLUGIN], [test "$with_mopacplugin" = "yes"])
+if test "$with_mopacplugin" = "yes"; then
   AC_PROG_FC
 fi
 
