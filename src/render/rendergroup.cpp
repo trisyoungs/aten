@@ -78,9 +78,9 @@ void RenderGroup::addOverlayText(QString text, Vec3<double> pos, double textSize
 void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, GLenum fillMode, GLfloat lineWidth)
 {
 	// Check type of supplied primitive
-	if (targetPrimitive.type() != GL_TRIANGLES)
+	if ((targetPrimitive.type() != GL_TRIANGLES) && (targetPrimitive.type() != GL_TRIANGLE_STRIP))
 	{
-		printf("Warning: RenderGroup is rejecting primitive for triangle list, since it doesn't contain GL_TRIANGLES.\n");
+		printf("Warning: RenderGroup is rejecting primitive for triangle list, since it doesn't contain any kind of triangle data.\n");
 		return;
 	}
 
@@ -96,32 +96,13 @@ void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, Ve
 	else wireTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour);
 }
 
-// // Add triangle primitive
-// void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
-// {
-// 	// Check type of supplied primitive
-// 	if (targetPrimitive.type() != GL_TRIANGLES)
-// 	{
-// 		printf("Warning: RenderGroup is rejecting primitive for triangle list, since it doesn't contain GL_TRIANGLES.\n");
-// 		return;
-// 	}
-// 
-// 	// Check if supplied primitive contains colour data already
-// 	if (!targetPrimitive.colouredVertexData()) printf("Warning: Triangle primitive added to RenderGroup contains no colour data and has no colour supplied.\n");
-// 	
-// 	// Create new PrimitiveInfo in correct list
-// 	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform, lineWidth);
-// 	if (fillMode == GL_FILL) solidTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour
-// 	else wireTrianglePrimitives_.own(pi);
-// }
-
 // Add line primitive in specified colour
 void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, bool bold)
 {
 	// Check type of supplied primitive
-	if (targetPrimitive.type() != GL_LINES)
+	if ((targetPrimitive.type() != GL_LINES) && (targetPrimitive.type() != GL_LINE_LOOP))
 	{
-		printf("Warning: RenderGroup is rejecting primitive for lines list, since it doesn't contain GL_LINES.\n");
+		printf("Warning: RenderGroup is rejecting primitive for lines list, since it doesn't contain GL_LINES or GL_LINE_LOOP.\n");
 		return;
 	}
 
@@ -137,9 +118,9 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<G
 void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, bool bold)
 {
 	// Check type of supplied primitive
-	if (targetPrimitive.type() != GL_LINES)
+	if ((targetPrimitive.type() != GL_LINES) && (targetPrimitive.type() != GL_LINE_LOOP))
 	{
-		printf("Warning: RenderGroup is rejecting primitive for lines list, since it doesn't contain GL_LINES.\n");
+		printf("Warning: RenderGroup is rejecting primitive for lines list, since it doesn't contain GL_LINES or GL_LINE_LOOP.\n");
 		return;
 	}
 

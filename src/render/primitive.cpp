@@ -57,10 +57,6 @@ void Primitive::initialise(GLenum type, bool colourData)
 
 	// Set data per vertex based on the primitive type, and whether we have individual colour data or not
 	dataPerVertex_ = (colouredVertexData_ ? 10 : 6);
-	if (type_ == GL_TRIANGLES) verticesPerType_ = 3;
-	else if ((type_ == GL_LINES) || (type_ == GL_LINE_LOOP) || (type_ == GL_LINE_STRIP)) verticesPerType_ = 2;
-	else if (type_ == GL_POINTS) verticesPerType_ = 1;
-	else printf("Warning - Invalid GLenum type given to VertexChunk::initialise (%i)\n", type_);
 
 	forgetAll();
 }
@@ -452,6 +448,14 @@ void Primitive::defineIndices(GLuint a, GLuint b, GLuint c)
 	indexData_.add(c);
 }
 
+// Add degenerate triangle
+void Primitive::addDegenerateTriangle()
+{
+	if (indexData_.nItems() == 0) return;
+	indexData_.add(nDefinedIndices()-1);
+	indexData_.add(nDefinedIndices());
+}
+
 /*
  * Geometric Primitive Generation
  */
@@ -480,66 +484,32 @@ void Primitive::line(Vec3<double> v1, Vec3<double> v2, Vec4<GLfloat> colour)
 // Create vertices of sphere with specified radius and quality
 void Primitive::plotSphere(double radius, int nStacks, int nSlices, bool colourData, Vec4<GLfloat> colour)
 {
-	int i, j, count;
-	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
-	
-	count = 0;
-	for (i = 1; i <= nStacks; ++i)
+	double stack, z, zr, slice, x, y;
+
+	int index = -1;
+	for (int i = 0; i <= nStacks; ++i)
 	{
-		stack0 = PI * (-0.5 + (double) (i-1) / nStacks );
-		z0  = sin(stack0);
-		zr0 = cos(stack0);
-		
-		stack1 = PI * (-0.5 + (double) i / nStacks );
-		z1 = sin(stack1);
-		zr1 = cos(stack1);
-		
-		for (j = 1; j <= nSlices; ++j)
+		stack = PI * (-0.5 + (double) i / nStacks );
+		z  = sin(stack);
+		zr = cos(stack);
+
+		for (int j = 0; j < nSlices; ++j)
 		{
-			slice0 = 2 * PI * (double) (j-1) / nSlices;
-			x0 = cos(slice0);
-			y0 = sin(slice0);
-			
-			slice1 = 2 * PI * (double) j / nSlices;
-			x1 = cos(slice1);
-			y1 = sin(slice1);
-			
-			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			// N.B Don't plot if i == 1, to avoid overlapping with subsequent vertices in this pass
-			if (i > 1)
-			{
-				if (colourData)
-				{
-					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, colour);
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
-				}
-				else
-				{
-					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-				}
-			}
-			
-			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			// N.B. Don't plot if i == nstacks, to avoid overlapping with previous vertices in this pass
-			if (i < nStacks )
-			{
-				if (colourData)
-				{
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
-					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, colour);
-				}
-				else
-				{
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
-				}
-			}
+			slice = 2 * PI * (double) j / nSlices;
+			x = cos(slice);
+			y = sin(slice);
+
+			// Plot vertex and add index information if relevant
+			if (colourData) defineVertex(x * zr * radius, y * zr * radius, z * radius, x * zr, y * zr, z, colour);
+			else defineVertex(x * zr * radius, y * zr * radius, z * radius, x * zr, y * zr, z);
+			++index;
+
+			if (i > 0) defineIndices(index-nSlices, index);
 		}
+
+		// Finalise current slice and add degenerate triangles ready for next slice
+		if (i > 0) defineIndices((index-nSlices*2)+1, (index-nSlices)+1);
+		if (i < nStacks) defineIndices((index-nSlices)+1, index+1);
 	}
 }
 
@@ -590,179 +560,137 @@ void Primitive::plotLineSphere(double radius, int nStacks, int nSlices)
 }
 
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
-void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd, bool colourData, Vec4<GLfloat> colour)
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double radius, int nSlices, bool capStart, bool capEnd, bool colourData, Vec4<GLfloat> colour)
 {
-	int i, j;
-	Vec3<GLfloat> u, v, w, vert[4], normal[2], deltarj, rj;
-	double d, dTheta, dRadius;
+	int i, capIndex, currentIndex = nDefinedVertices_ - 1;
+	Vec3<GLfloat> u, v, w, vertex, normal, rj;
+	double d, dTheta;
 	
 	// Setup some variables
 	rj.set(vx,vy,vz);
 	dTheta = TWOPI / nSlices;
-	dRadius = ( startRadius - endRadius ) / nStacks;
-	deltarj = rj / nStacks;
 
 	// Calculate orthogonal vectors
 	u = rj.orthogonal();
-// 	u.normalise();
+	u.normalise();
 	v = rj * u;
 	v.normalise();
 	w = rj;
 	w.normalise();
 
-	// ATEN2 TODO Normal calculation for cones will be incorrect
-	for (i = 1; i <= nStacks; ++i)
+	// Plot the cylinder cap vertex first, if requested
+	if (capStart)
 	{
-		for (j = 1; j <= nSlices; ++j)
-		{
-			d = (j-1) * dTheta;
-			normal[0] = u*cos(d) + v*sin(d);
-			vert[0] = normal[0]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
-			vert[1] = normal[0]*( startRadius -i* dRadius ) + deltarj*i;
-			d = j * dTheta;
-			normal[1] = u*cos(d) + v*sin(d);
-			vert[2] = normal[1]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
-			vert[3] = normal[1]*( startRadius -i* dRadius ) + deltarj*i;
-			
-			// Triangle 1
-			if ((i > 1) || ( startRadius > 1.0e-5))
-			{
-				if (colourData)
-				{
-					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z, colour);
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, colour);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, colour);
-				}
-				else
-				{
-					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-				}
-			}
- 
-			// Triangle 2
-			if ((i < nStacks ) || ( endRadius > 1.0e-5))
-			{
-				if (colourData)
-				{
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, colour);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, colour);
-					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z, colour);
-				}
-				else
-				{
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
-				}
-			}
-			
-			// Start cap
-			if ((i == 1) && ( startRadius > 1.0e-5) && capStart)
-			{
-				if (colourData)
-				{
-					defineVertex(ox, oy, oz, -w.x, -w.y, -w.z, colour);
-					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z, colour);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z, colour);
-				}
-				else
-				{
-					defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
-					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z);
-					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z);
-				}
-			}
+		if (colourData) defineVertex(ox, oy, oz, -w.x, -w.y, -w.z, colour);
+		else defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
+		capIndex = ++currentIndex;
+	}
 
-			// End cap
-			if ((i == nStacks ) && ( endRadius > 1.0e-5) && capEnd)
-			{
-				if (colourData)
-				{
-					defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z, colour);
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z, colour);
-					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z, colour);
-				}
-				else
-				{
-					defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
-					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
-					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
-				}
-			}
-		}
+	// First set of cylinder vertices
+	for (i = 0; i < nSlices; ++i)
+	{
+		d = i * dTheta;
+		normal = u*cos(d) + v*sin(d);
+		vertex = normal * radius;
+
+		// Plot vertex and add index information if relevant
+		if (colourData) defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z, colour);
+		else defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z);
+		++currentIndex;
+
+		if (capStart) defineIndices(capIndex, currentIndex);
+	}
+
+	// Second set of cylinder vertices
+	for (i = 0; i < nSlices; ++i)
+	{
+		d = i * dTheta;
+		normal = u*cos(d) + v*sin(d);
+		vertex = normal * radius + rj;
+
+		// Plot vertex and add index information if relevant
+		if (colourData) defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z, colour);
+		else defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z);
+		++currentIndex;
+
+		defineIndices(currentIndex-nSlices, currentIndex);
+	}
+
+	// Join cylinder up
+	defineIndices(currentIndex-nSlices*2+1, currentIndex-nSlices+1);
+
+	if (capEnd)
+	{
+		// Plot vertex information if relevant
+		if (colourData) defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z, colour);
+		else defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
+		++currentIndex;
+
+		for (i = 0; i < nSlices; ++i) defineIndices(currentIndex-nSlices+i, currentIndex);
+
+		defineIndices(currentIndex-nSlices, currentIndex);
 	}
 }
 
-// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
-void Primitive::plotLineCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd)
+// Plot cone vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
+void Primitive::plotCone(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, int nSlices, bool capStart, bool colourData, Vec4<GLfloat> colour)
 {
-	int i, j;
-	Vec3<GLfloat> u, v, w, vert[4], normal[2], deltarj, rj;
-	double d, dTheta, dRadius;
+	int i, capIndex, currentIndex = nDefinedVertices_ - 1;
+	Vec3<GLfloat> u, v, w, vertex, normal, rj;
+	double d, dTheta;
 	
 	// Setup some variables
 	rj.set(vx,vy,vz);
 	dTheta = TWOPI / nSlices;
-	dRadius = ( startRadius - endRadius ) / nStacks;
-	deltarj = rj / nStacks;
 
 	// Calculate orthogonal vectors
 	u = rj.orthogonal();
-// 	u.normalise();
+	u.normalise();
 	v = rj * u;
 	v.normalise();
 	w = rj;
 	w.normalise();
 
-	// ATEN2 TODO Normal calculation for cones will be incorrect
-	for (i = 1; i <= nStacks; ++i)
+	// Plot the cylinder cap vertex first, if requested
+	if (capStart)
 	{
-		for (j = 1; j <= nSlices; ++j)
-		{
-			d = (j-1) * dTheta;
-			normal[0] = u*cos(d) + v*sin(d);
-			vert[0] = normal[0]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
-			vert[1] = normal[0]*( startRadius -i* dRadius ) + deltarj*i;
-			d = j * dTheta;
-			normal[1] = u*cos(d) + v*sin(d);
-			vert[2] = normal[1]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
-			vert[3] = normal[1]*( startRadius -i* dRadius ) + deltarj*i;
-			
-			// Triangle 1
-			if ((i > 1) || ( startRadius > 1.0e-5))
-			{
-				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-// 				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-			}
- 
-			// Triangle 2
-			if ((i < nStacks ) || ( endRadius > 1.0e-5))
-			{
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-// 				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
-			}
-			
-			// Start cap
-			if ((i == 1) && ( startRadius > 1.0e-5) && capStart)
-			{
-				defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
-				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z);
-// 				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z);
-			}
-
-			// End cap
-			if ((i == nStacks ) && ( endRadius > 1.0e-5) && capEnd)
-			{
-				defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
-// 				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
-			}
-		}
+		if (colourData) defineVertex(ox, oy, oz, -w.x, -w.y, -w.z, colour);
+		else defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
+		capIndex = ++currentIndex;
 	}
+
+	// Base vertices of cone
+	for (i = 0; i < nSlices; ++i)
+	{
+		d = i * dTheta;
+		normal = u*cos(d) + v*sin(d);
+		vertex = normal * startRadius;
+
+		// Plot vertex and add index information if relevant
+		if (colourData) defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z, colour);
+		else defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z);
+		++currentIndex;
+
+		if (capStart) defineIndices(capIndex, currentIndex);
+	}
+
+	// Tip of cone
+	for (i = 0; i < nSlices; ++i)
+	{
+		d = i * dTheta;
+		normal = u*cos(d) + v*sin(d);
+		vertex = rj;
+
+		// Plot vertex and add index information if relevant
+		if (colourData) defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z, colour);
+		else defineVertex(ox+vertex.x, oy+vertex.y, oz+vertex.z, normal.x, normal.y, normal.z);
+		++currentIndex;
+
+		defineIndices(currentIndex-nSlices, currentIndex);
+	}
+
+	// Join cone up
+	defineIndices(currentIndex-nSlices*2+1, currentIndex-nSlices+1);
 }
 
 // Plot tube ring of specified radius and tube width
@@ -1080,7 +1008,8 @@ void Primitive::sendVBOWithIndices()
 // Draw primitive (as VBO, with indices)
 void Primitive::sendVBO()
 {
-	glDrawArrays(type_, 0, nDefinedVertices_);
+	if (indexData_.nItems() != 0) glDrawElements(type_, indexData_.nItems(), GL_UNSIGNED_INT, 0);
+	else glDrawArrays(type_, 0, nDefinedVertices_);
 }
 
 // Finalise after GL rendering
@@ -1144,7 +1073,7 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 			glDisableClientState(GL_COLOR_ARRAY);
 			if (indexData_.nItems() != 0) glDisableClientState(GL_INDEX_ARRAY);
 		}
-		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::ListInstance)
 		{
 			if (pi->listObject() != 0) glCallList(pi->listObject());
 		}
