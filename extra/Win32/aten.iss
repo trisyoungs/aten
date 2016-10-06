@@ -8,9 +8,9 @@
 #define MyAppExeName "Aten.exe"
 
 ; Locations of bin directories of Qt, GnuWin(32), and MinGW(32)
-#define QtDir "C:\Qt\5.7.0\5.7"
+#define QtDir "C:\Qt\5.7.0\5.7\mingw53_32"
 #define GnuWinDir "C:\GnuWin32"
-#define MinGWDir "C:\MinGW32"
+#define MinGWDir "C:\Qt\5.7.0\5.7\mingw53_32"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

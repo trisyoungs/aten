@@ -64,6 +64,9 @@ if(WIN32)
     ${GLEXT_INCLUDE_DIRS}
   )
 
+  # Set some specific C++11 related options here (set_property below does not seem to persist)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
   # Set plugin link libraries
   SET(PLUGIN_LINK_LIBS
     aten
@@ -92,7 +95,7 @@ if(APPLE)
   ADD_DEFINITIONS(-D_MAC)
 
   # Set some specific C++11 related options here (set_property below does not seem to persist)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11 ")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11")
 
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
