@@ -76,7 +76,7 @@ void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
 	{
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openExpressionDialog_.selectedFilenames();
-		FilePluginInterface* plugin = openExpressionDialog_.selectedPlugin();
+		const FilePluginInterface* plugin = openExpressionDialog_.selectedPlugin();
 		for (int n=0; n<filesToLoad.count(); ++n) aten_.importExpression(filesToLoad.at(n), plugin, openExpressionDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTargets);

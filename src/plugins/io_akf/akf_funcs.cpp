@@ -75,11 +75,11 @@ AKFModelPlugin::~AKFModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* AKFModelPlugin::makeCopy()
+BasePluginInterface* AKFModelPlugin::makeCopy() const
 {
 	return new AKFModelPlugin;
 }
@@ -88,8 +88,14 @@ FilePluginInterface* AKFModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType AKFModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory AKFModelPlugin::category() const
+int AKFModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -129,7 +135,7 @@ QStringList AKFModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool AKFModelPlugin::canImport()
+bool AKFModelPlugin::canImport() const
 {
 	return true;
 }
@@ -282,7 +288,7 @@ bool AKFModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool AKFModelPlugin::canExport()
+bool AKFModelPlugin::canExport() const
 {
 	return true;
 }
@@ -382,25 +388,25 @@ bool AKFModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool AKFModelPlugin::hasImportOptions()
+bool AKFModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool AKFModelPlugin::showImportOptionsDialog()
+bool AKFModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool AKFModelPlugin::hasExportOptions()
+bool AKFModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool AKFModelPlugin::showExportOptionsDialog()
+bool AKFModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

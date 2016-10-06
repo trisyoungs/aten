@@ -35,7 +35,7 @@ Aten::ProgramMode Aten::programMode() const
  */
 
 // Set plugin to use in export
-void Aten::setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions)
+void Aten::setExportModelPlugin(const FilePluginInterface* plugin, KVMap pluginOptions)
 {
 	exportModelPlugin_ = plugin;
 	for (KVPair* pair = pluginOptions.pairs(); pair != NULL; pair = pair->next) exportModelPluginOptions_.add(pair->key(), pair->value());

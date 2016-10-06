@@ -127,7 +127,7 @@ void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 	{
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openGridDialog_.selectedFilenames();
-		FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
+		const FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
 		for (int n=0; n<filesToLoad.count(); ++n) aten_.importGrid(aten_.currentModelOrFrame(), filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTargets);

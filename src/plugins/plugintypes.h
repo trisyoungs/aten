@@ -33,10 +33,16 @@ ATEN_BEGIN_NAMESPACE
 class PluginTypes
 {
 	public:
-	// Plugin types
-	enum PluginType { FilePlugin, nPluginTypes };
+	// Basic Plugin types
+	enum PluginType { FilePlugin, MethodPlugin, nPluginTypes };
 	// Return single-word name of plugin type
 	static const char* pluginType(PluginType type);
+
+
+	/*
+	 * File Plugin
+	 */
+	public:
 	// File plugin category
 	enum FilePluginCategory { ModelFilePlugin, TrajectoryFilePlugin, ExpressionFilePlugin, GridFilePlugin, nFilePluginCategories };
 	// Return capitalised single-word name of file plugin category
@@ -47,6 +53,18 @@ class PluginTypes
 	enum FilePluginType { ImportPlugin, ExportPlugin };
 	// Return single-word name of file plugin type
 	static const char* filePluginType(FilePluginType type);
+
+
+	/*
+	 * Method Plugin
+	 */
+	public:
+	// Method plugin category
+	enum MethodPluginCategory { ChargeMethodPlugin, GeneralMethodPlugin, OptimisationMethodPlugin, nMethodPluginCategories };
+	// Return capitalised single-word name of method plugin category
+	static const char* niceMethodPluginCategory(MethodPluginCategory category);
+	// Return single-word name of method plugin category
+	static const char* methodPluginCategory(MethodPluginCategory category);
 };
 
 ATEN_END_NAMESPACE

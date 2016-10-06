@@ -39,11 +39,11 @@ XYZModelPlugin::~XYZModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* XYZModelPlugin::makeCopy()
+BasePluginInterface* XYZModelPlugin::makeCopy() const
 {
 	return new XYZModelPlugin;
 }
@@ -52,8 +52,14 @@ FilePluginInterface* XYZModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType XYZModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory XYZModelPlugin::category() const
+int XYZModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -93,7 +99,7 @@ QStringList XYZModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool XYZModelPlugin::canImport()
+bool XYZModelPlugin::canImport() const
 {
 	return true;
 }
@@ -155,7 +161,7 @@ bool XYZModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool XYZModelPlugin::canExport()
+bool XYZModelPlugin::canExport() const
 {
 	return true;
 }
@@ -183,29 +189,29 @@ bool XYZModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool XYZModelPlugin::hasImportOptions()
+bool XYZModelPlugin::hasImportOptions() const
 {
 	return true;
 }
 
 // Show import options dialog
-bool XYZModelPlugin::showImportOptionsDialog()
+bool XYZModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-	XYZImportOptionsDialog optionsDialog(pluginOptions_);
+	XYZImportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 
 // Return whether the plugin has export options
-bool XYZModelPlugin::hasExportOptions()
+bool XYZModelPlugin::hasExportOptions() const
 {
 	return true;
 }
 
 // Show export options dialog
-bool XYZModelPlugin::showExportOptionsDialog()
+bool XYZModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	XYZExportOptionsDialog optionsDialog(pluginOptions_);
+	XYZExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

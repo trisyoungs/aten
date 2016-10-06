@@ -34,11 +34,11 @@ CIFModelPlugin::~CIFModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* CIFModelPlugin::makeCopy()
+BasePluginInterface* CIFModelPlugin::makeCopy() const
 {
 	return new CIFModelPlugin;
 }
@@ -47,8 +47,14 @@ FilePluginInterface* CIFModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType CIFModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory CIFModelPlugin::category() const
+int CIFModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -88,7 +94,7 @@ QStringList CIFModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool CIFModelPlugin::canImport()
+bool CIFModelPlugin::canImport() const
 {
 	return true;
 }
@@ -259,7 +265,7 @@ bool CIFModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool CIFModelPlugin::canExport()
+bool CIFModelPlugin::canExport() const
 {
 	return false;
 }
@@ -287,25 +293,25 @@ bool CIFModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool CIFModelPlugin::hasImportOptions()
+bool CIFModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool CIFModelPlugin::showImportOptionsDialog()
+bool CIFModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool CIFModelPlugin::hasExportOptions()
+bool CIFModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool CIFModelPlugin::showExportOptionsDialog()
+bool CIFModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

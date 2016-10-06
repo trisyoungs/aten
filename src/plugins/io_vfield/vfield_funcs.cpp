@@ -33,11 +33,11 @@ VFieldModelPlugin::~VFieldModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* VFieldModelPlugin::makeCopy()
+BasePluginInterface* VFieldModelPlugin::makeCopy() const
 {
 	return new VFieldModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* VFieldModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType VFieldModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory VFieldModelPlugin::category() const
+int VFieldModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList VFieldModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool VFieldModelPlugin::canImport()
+bool VFieldModelPlugin::canImport() const
 {
 	return true;
 }
@@ -110,7 +116,7 @@ bool VFieldModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool VFieldModelPlugin::canExport()
+bool VFieldModelPlugin::canExport() const
 {
 	return false;
 }
@@ -138,25 +144,25 @@ bool VFieldModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool VFieldModelPlugin::hasImportOptions()
+bool VFieldModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool VFieldModelPlugin::showImportOptionsDialog()
+bool VFieldModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool VFieldModelPlugin::hasExportOptions()
+bool VFieldModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool VFieldModelPlugin::showExportOptionsDialog()
+bool VFieldModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

@@ -39,7 +39,7 @@ RMCProfile6BondsModelPlugin::~RMCProfile6BondsModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* RMCProfile6BondsModelPlugin::makeCopy()
+BasePluginInterface* RMCProfile6BondsModelPlugin::makeCopy() const
 {
 	return new RMCProfile6BondsModelPlugin;
 }
@@ -48,8 +48,14 @@ FilePluginInterface* RMCProfile6BondsModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType RMCProfile6BondsModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory RMCProfile6BondsModelPlugin::category() const
+int RMCProfile6BondsModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -89,7 +95,7 @@ QStringList RMCProfile6BondsModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool RMCProfile6BondsModelPlugin::canImport()
+bool RMCProfile6BondsModelPlugin::canImport() const
 {
 	return true;
 }
@@ -176,7 +182,7 @@ bool RMCProfile6BondsModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool RMCProfile6BondsModelPlugin::canExport()
+bool RMCProfile6BondsModelPlugin::canExport() const
 {
 	return false;
 }
@@ -204,25 +210,25 @@ bool RMCProfile6BondsModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool RMCProfile6BondsModelPlugin::hasImportOptions()
+bool RMCProfile6BondsModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool RMCProfile6BondsModelPlugin::showImportOptionsDialog()
+bool RMCProfile6BondsModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool RMCProfile6BondsModelPlugin::hasExportOptions()
+bool RMCProfile6BondsModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool RMCProfile6BondsModelPlugin::showExportOptionsDialog()
+bool RMCProfile6BondsModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

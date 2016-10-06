@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenGrid::AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
+AtenOpenGrid::AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -44,9 +44,13 @@ AtenOpenGrid::AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefLis
 void AtenOpenGrid::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	KVMap& pluginOptions = ui.FileSelector->selectedPluginOptions();
 	if (!plugin) return;
-	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog();
+	if (plugin->hasImportOptions())
+	{
+		plugin->showImportOptionsDialog(pluginOptions);
+	}
 }
 
 void AtenOpenGrid::on_OpenButton_clicked(bool checked)
@@ -77,7 +81,7 @@ void AtenOpenGrid::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenGrid::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
+bool AtenOpenGrid::execute(int currentPluginsLogPoint, QString currentFilename, const FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	updateFileSelector(currentPluginsLogPoint);
@@ -113,7 +117,7 @@ FilePluginStandardExportOptions AtenOpenGrid::standardExportOptions()
 void AtenOpenGrid::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
 	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));

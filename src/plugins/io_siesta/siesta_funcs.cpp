@@ -33,11 +33,11 @@ SiestaModelPlugin::~SiestaModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* SiestaModelPlugin::makeCopy()
+BasePluginInterface* SiestaModelPlugin::makeCopy() const
 {
 	return new SiestaModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* SiestaModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType SiestaModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory SiestaModelPlugin::category() const
+int SiestaModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList SiestaModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool SiestaModelPlugin::canImport()
+bool SiestaModelPlugin::canImport() const
 {
 	return true;
 }
@@ -320,7 +326,7 @@ bool SiestaModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool SiestaModelPlugin::canExport()
+bool SiestaModelPlugin::canExport() const
 {
 	return false;
 }
@@ -348,25 +354,25 @@ bool SiestaModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool SiestaModelPlugin::hasImportOptions()
+bool SiestaModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool SiestaModelPlugin::showImportOptionsDialog()
+bool SiestaModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool SiestaModelPlugin::hasExportOptions()
+bool SiestaModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool SiestaModelPlugin::showExportOptionsDialog()
+bool SiestaModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

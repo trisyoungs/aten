@@ -47,7 +47,7 @@ FilePluginInterface* XYZModelPlugin::duplicate()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory XYZModelPlugin::category() const
+int XYZModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +87,7 @@ QStringList XYZModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool XYZModelPlugin::canImport()
+bool XYZModelPlugin::canImport() const
 {
 	return true;
 }
@@ -130,7 +130,7 @@ bool XYZModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 }
 
 // Return whether this plugin can export data
-bool XYZModelPlugin::canExport()
+bool XYZModelPlugin::canExport() const
 {
 	return true;
 }

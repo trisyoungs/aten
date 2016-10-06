@@ -1,5 +1,7 @@
-SUBDIRS = interfaces io_akf io_cif io_cube io_dlpoly io_dlputils io_epsr io_ff io_gromacs io_mdlmol io_mopac io_msi io_pdb io_rmcprofile io_sybylmol2 io_vfield io_xyz
-#SUBDIRS = io_csd io_espresso io_gamess io_gaussian io_siesta
+SUBDIRS = interfaces
+SUBDIRS += io_akf io_cif io_cube io_dlpoly io_dlputils io_epsr io_ff io_gromacs io_mdlmol io_mopac io_msi io_pdb io_rmcprofile io_sybylmol2 io_vfield io_xyz
+#SUBDIRS += io_csd io_espresso io_gamess io_gaussian io_siesta
+SUBDIRS += method_mopac71
 
 noinst_LTLIBRARIES = libplugins.la
 

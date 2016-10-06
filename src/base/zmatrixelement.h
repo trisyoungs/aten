@@ -77,6 +77,8 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	void setDistance(double value);
 	// Retrieve distance value (geometry variable 0)
 	double distance();
+	// Return atom associated with distance
+	Atom* distanceAtom();
 	// Set angle (geometry variable 1)
 	void setAngleVariable(Variable* v);
 	// Retrieve angle variable (geometry variable 1)
@@ -89,6 +91,8 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	void setAngle(double value);
 	// Retrieve angle value (geometry variable 1)
 	double angle();
+	// Return atom associated with angle
+	Atom* angleAtom();
 	// Set torsion (geometry variable 2)
 	void setTorsionVariable(Variable* v);
 	// Retrieve torsion variable (geometry variable 2)
@@ -101,6 +105,8 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	void setTorsion(double value);
 	// Retrieve torsion value (geometry variable 2)
 	double torsion();
+	// Return atom associated with torsion
+	Atom* torsionAtom();
 };
 
 ATEN_END_NAMESPACE

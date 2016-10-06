@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -44,9 +44,11 @@ AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefL
 void AtenOpenModel::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	KVMap& pluginOptions  = ui.FileSelector->selectedPluginOptions();
 	if (!plugin) return;
-	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog();
+
+	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog(pluginOptions);
 }
 
 void AtenOpenModel::on_OpenButton_clicked(bool checked)
@@ -77,7 +79,7 @@ void AtenOpenModel::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenModel::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
+bool AtenOpenModel::execute(int currentPluginsLogPoint, QString currentFilename, const FilePluginInterface* currentPlugin)
 {
 	// Make sure file selector is up to date
 	updateFileSelector(currentPluginsLogPoint, currentFilename, currentPlugin);
@@ -120,7 +122,7 @@ FilePluginStandardExportOptions AtenOpenModel::standardExportOptions()
 void AtenOpenModel::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
 	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));

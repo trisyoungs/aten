@@ -53,6 +53,13 @@ AM_CONDITIONAL([LOCALDEPLOY], [test "$with_localdeploy" = "yes"])
 AC_ARG_WITH([nordynamic], [AC_HELP_STRING([--with-nordynamic], [Disable passing of -rdynamic at link time [default="no"]])], [with_nordynamic="yes"], [with_nordynamic="no"])
 AM_CONDITIONAL([NORDYNAMIC], [test "$with_nordynamic" = "yes"])
 
+# Turn on compilation of MOPAC7 plugin (which requires a Fortran compiler)
+AC_ARG_WITH([mopacplugin], [AC_HELP_STRING([--with-mopacplugin], [Enable compilation of MOPAC7 plugin [default="no"]])], [with_mopacplugin="yes"], [with_mopacplugin="no"])
+AM_CONDITIONAL([MOPACPLUGIN], [test "$with_mopacplugin" = "yes"])
+if test "$with_mopacplugin" = "yes"; then
+  AC_PROG_FC
+fi
+
 # Readline include dir
 RLINCDIR=""
 AC_ARG_WITH([readline-includes],[AC_HELP_STRING([--with-readline-includes=<dir>],
@@ -175,6 +182,8 @@ src/plugins/io_rmcprofile/Makefile
 src/plugins/io_sybylmol2/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
+src/plugins/method_mopac71/Makefile
+src/plugins/method_mopac71/mopac7.1/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

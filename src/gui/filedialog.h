@@ -40,7 +40,7 @@ class AtenFileDialog
 
 	public:
 	// Constructor
-	AtenFileDialog(const RefList<FilePluginInterface,int>& filePlugins);
+	AtenFileDialog(const RefList<FilePluginInterface,KVMap>& filePlugins);
 
 
 	/*
@@ -48,7 +48,7 @@ class AtenFileDialog
 	 */
 	protected:
 	// Reference to plugin list to use for this file dialog
-	const RefList<FilePluginInterface,int>& filePlugins_;
+	const RefList<FilePluginInterface,KVMap>& filePlugins_;
 	// PluginStore logpoint at which plugins were added to the file selector
 	int pluginsLogPoint_;
 	// Pointer to associated FileSelector widget
@@ -58,13 +58,13 @@ class AtenFileDialog
 	// Set pointer to associated FileSelector widget
 	void setFileSelectorWidget(FileSelectorWidget* widget, QDir startingDirectory, FileSelectorWidget::SelectionMode mode);
 	// Make sure file selector is up to date
-	void updateFileSelector(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
+	void updateFileSelector(int currentPluginsLogPoint, QString currentFilename = QString(), const FilePluginInterface* currentPlugin = NULL);
 	// Execute dialog
-	virtual bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL) = 0;
+	virtual bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), const FilePluginInterface* currentPlugin = NULL) = 0;
 	// Return selected filename(s)
 	QStringList selectedFilenames();
 	// Return selected file plugin
-	FilePluginInterface* selectedPlugin();
+	const FilePluginInterface* selectedPlugin();
 	// Return map of standard import options from dialog
 	virtual FilePluginStandardImportOptions standardImportOptions() = 0;
 	// Return map of standard export options from dialog

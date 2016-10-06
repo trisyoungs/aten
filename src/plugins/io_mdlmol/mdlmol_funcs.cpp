@@ -33,11 +33,11 @@ MOLModelPlugin::~MOLModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* MOLModelPlugin::makeCopy()
+BasePluginInterface* MOLModelPlugin::makeCopy() const
 {
 	return new MOLModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* MOLModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType MOLModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory MOLModelPlugin::category() const
+int MOLModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList MOLModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MOLModelPlugin::canImport()
+bool MOLModelPlugin::canImport() const
 {
 	return true;
 }
@@ -126,7 +132,7 @@ bool MOLModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool MOLModelPlugin::canExport()
+bool MOLModelPlugin::canExport() const
 {
 	return false;
 }
@@ -154,25 +160,25 @@ bool MOLModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MOLModelPlugin::hasImportOptions()
+bool MOLModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool MOLModelPlugin::showImportOptionsDialog()
+bool MOLModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MOLModelPlugin::hasExportOptions()
+bool MOLModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool MOLModelPlugin::showExportOptionsDialog()
+bool MOLModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

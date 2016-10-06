@@ -47,7 +47,7 @@ class AtenSaveModel : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins);
 	// Main form declaration
 	Ui::SaveModelDialog ui;
 
@@ -62,7 +62,7 @@ class AtenSaveModel : public QDialog, public AtenFileDialog
 
 	public:
 	// Execute dialog
-	bool execute(int currentPluginsLogPoint, QString currentFileName = QString(), FilePluginInterface* plugin = NULL);
+	bool execute(int currentPluginsLogPoint, QString currentFileName = QString(), const FilePluginInterface* plugin = NULL);
 	// Return standard import options from dialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog

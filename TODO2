@@ -15,6 +15,8 @@ Polymer builder.
 Collapse cell tool.
 WEBSITE - Add missing examples linked to from front page!!
 Calculate Panel - Align Control in 'Transform panel, allowing fragments in selections to be aligned in various ways. Is Model::selection_ ordered by ID, or as-selected?
+FF popup minimise needs to remember previous choice
+MOPAC71 needs to deallocate arrays, or a 'stop' is encountered when trying to reallocate a previously-allocated array (needs to be done after extraction of calculated data etc.)
 
 Plugin TODO
 ===========
@@ -70,3 +72,4 @@ Removed 'setCombinationRule' and 'combinationRule' commands.
 Added 'reMap' command to re-do name->element mapping for the current selection. 
 Add 'deselectAll' command (direct synonym for selectNone).
 Add 'labelDepthScaling' option to PrefsVariable.
+Remove MopacMinimise command.

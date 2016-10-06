@@ -22,7 +22,7 @@
 #ifndef ATEN_FILEPLUGININTERFACE_H
 #define ATEN_FILEPLUGININTERFACE_H
 
-#include "plugins/plugintypes.h"
+#include "plugins/interfaces/baseplugin.h"
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
@@ -143,11 +143,11 @@ class FilePluginStandardExportOptions
 };
 
 // File Plugin Interface
-class FilePluginInterface : public ListItem<FilePluginInterface>
+class FilePluginInterface : public BasePluginInterface
 {
 	public:
 	// Constructor
-	FilePluginInterface() : ListItem<FilePluginInterface>(), fileParser_(lineParser_)
+	FilePluginInterface() : fileParser_(lineParser_)
 	{
 		// Import / Export
 		nDataParts_ = 0;
@@ -158,57 +158,36 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Core
+	 * Instance Handling
 	 */
 	private:
-	// Original filename for plugin
-	QString pluginFilename_;
-	// Object store for plugin instances
-	List<FilePluginInterface> instances_;
-	// Core LineParser object
-	LineParser lineParser_;
+	// Return a copy of the plugin object (provided by main plugin)
+	virtual BasePluginInterface* makeCopy() const = 0;
 
-	private:
-	// Return a copy of the plugin object
-	virtual FilePluginInterface* makeCopy() = 0;
+	public:
 	// Return a duplicate of the plugin object, including options etc.
-	virtual FilePluginInterface* duplicate()
+	BasePluginInterface* duplicate() const
 	{
-		FilePluginInterface* copy = makeCopy();
+		FilePluginInterface* copy = (FilePluginInterface*) makeCopy();
+		copy->setPluginStore(pluginStore_);
 		copy->applyStandardOptions(standardOptions_);
 		copy->setOptions(pluginOptions_);
 		return copy;
 	}
 
 
+	/*
+	 * File Handling
+	 */
+	private:
+	// Core LineParser object
+	LineParser lineParser_;
+
 	protected:
 	// File parser object
 	FileParser fileParser_;
 
 	public:
-	// Set filename for plugin
-	void setPluginFilename(QString filename)
-	{
-		pluginFilename_ = filename;
-	}
-	// Return filanem for plugin
-	QString pluginFilename() const
-	{
-		return pluginFilename_;
-	}
-	// Return instance of plugin
-	FilePluginInterface* createInstance()
-	{
-		// Create a copy with duplicate(), and add it to the instances list
-		FilePluginInterface* pluginInstance = duplicate();
-		instances_.own(pluginInstance);
-		return pluginInstance;
-	}
-	// Delete all instances of plugin
-	void deleteInstances()
-	{
-		instances_.clear();
-	}
 	// Open specified file for input
 	bool openInput(QString filename)
 	{
@@ -239,17 +218,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Definition
+	 * Additional Definition
 	 */
 	public:
-	// Return category of plugin
-	virtual PluginTypes::FilePluginCategory category() const = 0;
-	// Return name of plugin
-	virtual QString name() const = 0;
-	// Return nickname of plugin
-	virtual QString nickname() const = 0;
-	// Return description (long name) of plugin
-	virtual QString description() const = 0;
 	// Return related file extensions
 	virtual QStringList extensions() const = 0;
 	// Return exact names list
@@ -268,7 +239,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Object Handling
+	 * Additional Object Handling
 	 */
 	private:
 	// Parent model objects created on import
@@ -287,58 +258,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Forcefield* targetForcefield_;
 
 	public:
-	// Create new parent model
-	Model* createModel(QString name = QString())
-	{
-		Model* newModel = createdModels_.add();
-		if (!name.isEmpty()) newModel->setName(name);
-		setParentModel(newModel);
-		return newModel;
-	}
-	// Discard created model
-	bool discardModel(Model* model)
-	{
-		if (createdModels_.contains(model))
-		{
-			if ((targetModel_ == model) || (parentModel_ == model)) targetModel_ = NULL;
-			if (parentModel_ == model) parentModel_ = NULL;
-			createdModels_.remove(model);
-			return true;
-		}
-		Messenger::error("Can't discard model - not owned by the interface.");
-		return false;
-	}
-	// Return parent Model objects created on import
-	List<Model>& createdModels()
-	{
-		return createdModels_;
-	}
-	// Create frame in parent model
-	Model* createFrame()
-	{
-		Model* frame = parentModel()->addTrajectoryFrame();
-		createdFrames_.add(frame);
-		targetModel_ = frame;
-		return frame;
-	}
-	// Discard created frame
-	bool discardFrame(Model* frame)
-	{
-		if (createdFrames_.contains(frame))
-		{
-			if (targetModel_ == frame) targetModel_ = parentModel_;
-			parentModel_->removeTrajectoryFrame(frame);
-			createdFrames_.remove(frame);
-			return true;
-		}
-		Messenger::error("Can't discard frame - not owned by the interface.");
-		return false;
-	}
-	// Return created frames
-	RefList<Model,int>& createdFrames()
-	{
-		return createdFrames_;
-	}
 	// Create new atom in specified model
 	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
 	{
@@ -488,11 +407,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return false;
 	}
 	// Return whether this plugin can import data
-	virtual bool canImport() = 0;
+	virtual bool canImport() const = 0;
 	// Import data via the supplied parser
 	virtual bool importData() = 0;
 	// Return whether this plugin can export data
-	virtual bool canExport() = 0;
+	virtual bool canExport() const = 0;
 	// Export data via the supplied parser
 	virtual bool exportData() = 0;
 	// Import next partial data chunk
@@ -652,13 +571,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 	public:
 	// Return whether the plugin has import options
-	virtual bool hasImportOptions() = 0;
-	// Show import options dialog
-	virtual bool showImportOptionsDialog() = 0;
+	virtual bool hasImportOptions() const = 0;
+	// Show import options dialog, setting values in the specified KVMap
+	virtual bool showImportOptionsDialog(KVMap& targetOptions) const = 0;
 	// Return whether the plugin has export options
-	virtual bool hasExportOptions() = 0;
-	// Show export options dialog
-	virtual bool showExportOptionsDialog() = 0;
+	virtual bool hasExportOptions() const = 0;
+	// Show export options dialog, setting values in the specified KVMap
+	virtual bool showExportOptionsDialog(KVMap& targetOptions) const = 0;
 	// Apply standard options
 	void applyStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{

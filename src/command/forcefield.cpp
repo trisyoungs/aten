@@ -589,7 +589,7 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+	const FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
 
 	// Check that a suitable format was found
 	if (plugin == NULL)

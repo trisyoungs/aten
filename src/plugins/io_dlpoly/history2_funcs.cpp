@@ -44,21 +44,27 @@ DLP2TrajectoryPlugin::~DLP2TrajectoryPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* DLP2TrajectoryPlugin::makeCopy()
+BasePluginInterface* DLP2TrajectoryPlugin::makeCopy() const
 {
 	return new DLP2TrajectoryPlugin;
 }
 
 /*
- * DLPOLY2 Model Import Plugin
+ * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType DLP2TrajectoryPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory DLP2TrajectoryPlugin::category() const
+int DLP2TrajectoryPlugin::category() const
 {
 	return PluginTypes::TrajectoryFilePlugin;
 }
@@ -98,7 +104,7 @@ QStringList DLP2TrajectoryPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool DLP2TrajectoryPlugin::canImport()
+bool DLP2TrajectoryPlugin::canImport() const
 {
 	return true;
 }
@@ -199,7 +205,7 @@ bool DLP2TrajectoryPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool DLP2TrajectoryPlugin::canExport()
+bool DLP2TrajectoryPlugin::canExport() const
 {
 	return false;
 }
@@ -229,26 +235,26 @@ bool DLP2TrajectoryPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool DLP2TrajectoryPlugin::hasImportOptions()
+bool DLP2TrajectoryPlugin::hasImportOptions() const
 {
 	return true;
 }
 
 // Show import options dialog
-bool DLP2TrajectoryPlugin::showImportOptionsDialog()
+bool DLP2TrajectoryPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-	DLP2ImportOptionsDialog optionsDialog(pluginOptions_);
+	DLP2ImportOptionsDialog optionsDialog(targetOptions);
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 
 // Return whether the plugin has export options
-bool DLP2TrajectoryPlugin::hasExportOptions()
+bool DLP2TrajectoryPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool DLP2TrajectoryPlugin::showExportOptionsDialog()
+bool DLP2TrajectoryPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

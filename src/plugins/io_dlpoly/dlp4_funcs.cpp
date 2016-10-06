@@ -48,7 +48,7 @@ DLP4ModelPlugin::~DLP4ModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* DLP4ModelPlugin::makeCopy()
+BasePluginInterface* DLP4ModelPlugin::makeCopy() const
 {
     return new DLP4ModelPlugin;
 }
@@ -57,8 +57,14 @@ FilePluginInterface* DLP4ModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType DLP4ModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory DLP4ModelPlugin::category() const
+int DLP4ModelPlugin::category() const
 {
     return PluginTypes::ModelFilePlugin;
 }
@@ -98,7 +104,7 @@ QStringList DLP4ModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool DLP4ModelPlugin::canImport()
+bool DLP4ModelPlugin::canImport() const
 {
     return true;
 }
@@ -120,7 +126,7 @@ bool DLP4ModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool DLP4ModelPlugin::canExport()
+bool DLP4ModelPlugin::canExport() const
 {
     return true;
 }
@@ -148,27 +154,27 @@ bool DLP4ModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool DLP4ModelPlugin::hasImportOptions()
+bool DLP4ModelPlugin::hasImportOptions() const
 {
     return true;
 }
 
 // Show import options dialog
-bool DLP4ModelPlugin::showImportOptionsDialog()
+bool DLP4ModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-    DLP4ImportOptionsDialog optionsDialog ( pluginOptions_ );
+    DLP4ImportOptionsDialog optionsDialog ( targetOptions );
     return ( optionsDialog.updateAndExecute() == QDialog::Accepted );
 }
 
 // Return whether the plugin has export options
-bool DLP4ModelPlugin::hasExportOptions()
+bool DLP4ModelPlugin::hasExportOptions() const
 {
     return true;
 }
 
 // Show export options dialog
-bool DLP4ModelPlugin::showExportOptionsDialog()
+bool DLP4ModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-    DLP4ExportOptionsDialog optionsDialog ( pluginOptions_ );
+    DLP4ExportOptionsDialog optionsDialog ( targetOptions );
     return ( optionsDialog.updateAndExecute() == QDialog::Accepted );
 }

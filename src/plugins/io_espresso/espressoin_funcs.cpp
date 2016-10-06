@@ -33,11 +33,11 @@ QEInModelPlugin::~QEInModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* QEInModelPlugin::makeCopy()
+BasePluginInterface* QuantumEspressoModelPlugin::makeCopy() const
 {
 	return new QEInModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* QEInModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType QuantumEspressoModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory QEInModelPlugin::category() const
+int QuantumEspressoModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList QEInModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool QEInModelPlugin::canImport()
+bool QuantumEspressoModelPlugin::canImport() const
 {
 	return false;
 }
@@ -485,7 +491,7 @@ bool QEInModelPlugin::importData()
 //
 
 // Return whether this plugin can export data
-bool QEInModelPlugin::canExport()
+bool QuantumEspressoModelPlugin::canExport() const
 {
 	return false;
 }
@@ -513,25 +519,25 @@ bool QEInModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool QEInModelPlugin::hasImportOptions()
+bool QuantumEspressoModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool QEInModelPlugin::showImportOptionsDialog()
+bool QuantumEspressoModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool QEInModelPlugin::hasExportOptions()
+bool QuantumEspressoModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool QEInModelPlugin::showExportOptionsDialog()
+bool QuantumEspressoModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

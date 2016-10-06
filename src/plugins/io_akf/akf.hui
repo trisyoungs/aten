@@ -37,16 +37,11 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	Q_INTERFACES(AtenSpace::FilePluginInterface)
 
 
-	/*
-	 * Core
-	 */
 	public:
 	// Constructor
 	AKFModelPlugin();
 	// Destructor
 	~AKFModelPlugin();
-	// Return a copy of the plugin object
-	FilePluginInterface* makeCopy();
 	// Keyword Enum
 	enum AKFKeyword { AngleKeyword, AtomKeyword, BondKeyword, CellKeyword, CellMatrixKeyword, DistanceKeyword, GlyphKeyword, GridKeyword, TitleKeyword, TorsionKeyword, nKeywords };
 	static AKFKeyword akfKeyword(QString s);
@@ -62,11 +57,21 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 
 
 	/*
+	 * Instance Handling
+	 */
+	private:
+	// Return a copy of the plugin object
+	BasePluginInterface* makeCopy() const;
+
+
+	/*
 	 * Definition
 	 */
 	public:
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
 	// Return category of plugin
-	PluginTypes::FilePluginCategory category() const;
+	int category() const;
 	// Return name of plugin
 	QString name() const;
 	// Return nickname of plugin
@@ -84,11 +89,11 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Return whether this plugin can import data
-	bool canImport();
+	bool canImport() const;
 	// Import data via the supplied parser
 	bool importData();
 	// Return whether this plugin can export data
-	bool canExport();
+	bool canExport() const;
 	// Export data via the supplied parser
 	bool exportData();
 	// Import next partial data chunk
@@ -102,13 +107,13 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Return whether the plugin has import options
-	bool hasImportOptions();
+	bool hasImportOptions() const;
 	// Show import options dialog
-	bool showImportOptionsDialog();
+	bool showImportOptionsDialog(KVMap& targetOptions) const;
 	// Return whether the plugin has export options
-	bool hasExportOptions();
+	bool hasExportOptions() const;
 	// Show export options dialog
-	bool showExportOptionsDialog();
+	bool showExportOptionsDialog(KVMap& targetOptions) const;
 };
 
 ATEN_END_NAMESPACE

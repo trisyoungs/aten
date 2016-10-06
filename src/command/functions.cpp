@@ -353,7 +353,6 @@ void Commands::initPointers()
 	// Minimisation Commands
 	pointers_[CGMinimise] = &AtenSpace::Commands::function_CGMinimise;
 	pointers_[MCMinimise] = &AtenSpace::Commands::function_MCMinimise;
-	pointers_[MopacMinimise] = &AtenSpace::Commands::function_MopacMinimise;
 	pointers_[SDMinimise] = &AtenSpace::Commands::function_SDMinimise;
 	
 	// Model Commands

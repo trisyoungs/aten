@@ -33,11 +33,11 @@ CSDModelPlugin::~CSDModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* CSDModelPlugin::makeCopy()
+BasePluginInterface* CSDModelPlugin::makeCopy() const
 {
 	return new CSDModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* CSDModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType CSDModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory CSDModelPlugin::category() const
+int CSDModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList CSDModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool CSDModelPlugin::canImport()
+bool CSDModelPlugin::canImport() const
 {
 	return true;
 }
@@ -209,7 +215,7 @@ bool CSDModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool CSDModelPlugin::canExport()
+bool CSDModelPlugin::canExport() const
 {
 	return false;
 }
@@ -237,25 +243,25 @@ bool CSDModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool CSDModelPlugin::hasImportOptions()
+bool CSDModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool CSDModelPlugin::showImportOptionsDialog()
+bool CSDModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool CSDModelPlugin::hasExportOptions()
+bool CSDModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool CSDModelPlugin::showExportOptionsDialog()
+bool CSDModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

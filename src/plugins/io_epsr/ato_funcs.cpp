@@ -52,11 +52,11 @@ EPSRAtoModelPlugin::~EPSRAtoModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* EPSRAtoModelPlugin::makeCopy()
+BasePluginInterface* EPSRAtoModelPlugin::makeCopy() const
 {
 	return new EPSRAtoModelPlugin;
 }
@@ -65,8 +65,14 @@ FilePluginInterface* EPSRAtoModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType EPSRAtoModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory EPSRAtoModelPlugin::category() const
+int EPSRAtoModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -106,7 +112,7 @@ QStringList EPSRAtoModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool EPSRAtoModelPlugin::canImport()
+bool EPSRAtoModelPlugin::canImport() const
 {
 	return true;
 }
@@ -280,7 +286,7 @@ bool EPSRAtoModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool EPSRAtoModelPlugin::canExport()
+bool EPSRAtoModelPlugin::canExport() const
 {
 	return true;
 }
@@ -583,27 +589,27 @@ bool EPSRAtoModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool EPSRAtoModelPlugin::hasImportOptions()
+bool EPSRAtoModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool EPSRAtoModelPlugin::showImportOptionsDialog()
+bool EPSRAtoModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool EPSRAtoModelPlugin::hasExportOptions()
+bool EPSRAtoModelPlugin::hasExportOptions() const
 {
 	return true;
 }
 
 // Show export options dialog
-bool EPSRAtoModelPlugin::showExportOptionsDialog()
+bool EPSRAtoModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	EPSRAtoExportOptionsDialog optionsDialog(pluginOptions_);
+	EPSRAtoExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

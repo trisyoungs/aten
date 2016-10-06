@@ -47,7 +47,7 @@ class AtenOpenExpression : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenOpenExpression(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenExpression(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins);
 	// Main form declaration
 	Ui::OpenExpressionDialog ui;
 
@@ -62,7 +62,7 @@ class AtenOpenExpression : public QDialog, public AtenFileDialog
 
 	public:
 	// Execute dialog
-	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
+	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), const FilePluginInterface* currentPlugin = NULL);
 	// Return standard import options from dialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog

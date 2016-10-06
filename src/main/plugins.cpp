@@ -1,7 +1,7 @@
 /*
 	*** Aten Plugins
 	*** src/main/plugins.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2016-2016
 
 	This file is part of Aten.
 
@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "plugins/interfaces/fileplugin.h"
+#include "plugins/interfaces/methodplugin.h"
 #include <QDir>
 #include <QPluginLoader>
 
@@ -55,9 +56,29 @@ bool Aten::loadPlugin(QString filename)
 		return false;
 	}
 
-	return registerPlugin(plugin, filename);
+	// Determine which type of plugin this is by attempting to cast it to the available types
 
-	return true;
+	// -- FilePluginInterface
+	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
+	if (filePlugin)
+	{
+		filePlugin->setPluginFilename(filename);
+		filePlugin->setPluginStore(&pluginStore_);
+		pluginStore_.registerFilePlugin(filePlugin);
+		return true;
+	}
+
+	// -- MethodPluginInterface
+	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
+	if (methodPlugin)
+	{
+		methodPlugin->setPluginFilename(filename);
+		methodPlugin->setPluginStore(&pluginStore_);
+		pluginStore_.registerMethodPlugin(methodPlugin);
+		return true;
+	}
+
+	return false;
 }
 
 // Load plugins
@@ -106,7 +127,11 @@ int Aten::searchPluginsDir(QDir path)
 		if ((fileInfo.suffix() != "so") && (fileInfo.suffix() != "dll")) continue;
 
 		if (loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
-		else ++nFailed;
+		else
+		{
+			Messenger::error("Failed to load/register plugin from file '" + pluginsList.at(i) + ";");
+			++nFailed;
+		}
 	}
 	Messenger::print(s);
 

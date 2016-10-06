@@ -47,11 +47,11 @@ EPSRMolModelPlugin::~EPSRMolModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* EPSRMolModelPlugin::makeCopy()
+BasePluginInterface* EPSRMolModelPlugin::makeCopy() const
 {
 	return new EPSRMolModelPlugin;
 }
@@ -60,8 +60,14 @@ FilePluginInterface* EPSRMolModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType EPSRMolModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory EPSRMolModelPlugin::category() const
+int EPSRMolModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -101,7 +107,7 @@ QStringList EPSRMolModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool EPSRMolModelPlugin::canImport()
+bool EPSRMolModelPlugin::canImport() const
 {
 	return false;
 }
@@ -113,7 +119,7 @@ bool EPSRMolModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool EPSRMolModelPlugin::canExport()
+bool EPSRMolModelPlugin::canExport() const
 {
 	return true;
 }
@@ -364,27 +370,27 @@ bool EPSRMolModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool EPSRMolModelPlugin::hasImportOptions()
+bool EPSRMolModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool EPSRMolModelPlugin::showImportOptionsDialog()
+bool EPSRMolModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool EPSRMolModelPlugin::hasExportOptions()
+bool EPSRMolModelPlugin::hasExportOptions() const
 {
 	return true;
 }
 
 // Show export options dialog
-bool EPSRMolModelPlugin::showExportOptionsDialog()
+bool EPSRMolModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	EPSRMolExportOptionsDialog optionsDialog(pluginOptions_);
+	EPSRMolExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

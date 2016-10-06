@@ -86,7 +86,7 @@ bool ForcefieldsOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 void ForcefieldsOpenPopup::loadForcefield(QString fileName)
 {
 	// Load forcefield
-	FilePluginInterface* plugin = parent_.aten().pluginStore().findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
+	const FilePluginInterface* plugin = parent_.aten().pluginStore().findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
 	// ATEN2 TODO ENDOFFILTERS
 // 	if (plugin) plugin->importData(qPrintable(fileName));
 

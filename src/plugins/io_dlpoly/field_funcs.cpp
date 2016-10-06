@@ -42,7 +42,7 @@ DLPExpressionPlugin::~DLPExpressionPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* DLPExpressionPlugin::makeCopy()
+BasePluginInterface* DLPExpressionPlugin::makeCopy() const
 {
 	return new DLPExpressionPlugin;
 }
@@ -51,8 +51,14 @@ FilePluginInterface* DLPExpressionPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType DLPExpressionPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory DLPExpressionPlugin::category() const
+int DLPExpressionPlugin::category() const
 {
 	return PluginTypes::ExpressionFilePlugin;
 }
@@ -92,7 +98,7 @@ QStringList DLPExpressionPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool DLPExpressionPlugin::canImport()
+bool DLPExpressionPlugin::canImport() const
 {
 	return false;
 }
@@ -293,7 +299,7 @@ bool DLPExpressionPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool DLPExpressionPlugin::canExport()
+bool DLPExpressionPlugin::canExport() const
 {
 	return true;
 }
@@ -493,25 +499,25 @@ bool DLPExpressionPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool DLPExpressionPlugin::hasImportOptions()
+bool DLPExpressionPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool DLPExpressionPlugin::showImportOptionsDialog()
+bool DLPExpressionPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool DLPExpressionPlugin::hasExportOptions()
+bool DLPExpressionPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool DLPExpressionPlugin::showExportOptionsDialog()
+bool DLPExpressionPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

@@ -33,11 +33,11 @@ GaussianModelPlugin::~GaussianModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* GaussianModelPlugin::makeCopy()
+BasePluginInterface* GaussianModelPlugin::makeCopy() const
 {
 	return new GaussianModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* GaussianModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType GaussianModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory GaussianModelPlugin::category() const
+int GaussianModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList GaussianModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool GaussianModelPlugin::canImport()
+bool GaussianModelPlugin::canImport() const
 {
 	return false;
 }
@@ -415,7 +421,7 @@ bool GaussianModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool GaussianModelPlugin::canExport()
+bool GaussianModelPlugin::canExport() const
 {
 	return false;
 }
@@ -443,25 +449,25 @@ bool GaussianModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool GaussianModelPlugin::hasImportOptions()
+bool GaussianModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool GaussianModelPlugin::showImportOptionsDialog()
+bool GaussianModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool GaussianModelPlugin::hasExportOptions()
+bool GaussianModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool GaussianModelPlugin::showExportOptionsDialog()
+bool GaussianModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

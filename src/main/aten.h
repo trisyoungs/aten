@@ -336,7 +336,7 @@ class Aten
 	// Current mode of program operation
 	ProgramMode programMode_;
 	// Model plugin to use when exporting models
-	FilePluginInterface* exportModelPlugin_;
+	const FilePluginInterface* exportModelPlugin_;
 	// Standard options to pass to import plugins
 	FilePluginStandardImportOptions standardImportOptions_;
 	// Options to pass to export plugin (if any)
@@ -352,7 +352,7 @@ class Aten
 	// Return the current program mode
 	ProgramMode programMode() const;
 	// Set plugin to use in model export
-	void setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions);
+	void setExportModelPlugin(const FilePluginInterface* plugin, KVMap pluginOptions);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
@@ -530,17 +530,17 @@ class Aten
 
 	public:
 	// Import model (if it is not loaded already)
-	bool importModel(QString filename, FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool importModel(QString filename, const FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Export model
-	bool exportModel(Model* sourceModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool exportModel(Model* sourceModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Import grid
-	bool importGrid(Model* targetModel, QString filename, FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool importGrid(Model* targetModel, QString filename, const FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Import trajectory
-	bool importTrajectory(Model* targetModel, QString filename, FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool importTrajectory(Model* targetModel, QString filename, const FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Import expression
-	bool importExpression(QString filename, FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool importExpression(QString filename, const FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Export expression
-	bool exportExpression(Model* sourceModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+	bool exportExpression(Model* sourceModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 };
 
 ATEN_END_NAMESPACE

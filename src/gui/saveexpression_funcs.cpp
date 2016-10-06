@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenSaveExpression::AtenSaveExpression(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
+AtenSaveExpression::AtenSaveExpression(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -44,9 +44,11 @@ AtenSaveExpression::AtenSaveExpression(QWidget* parent, QDir startingDirectory, 
 void AtenSaveExpression::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
-	if (plugin->hasExportOptions()) plugin->showExportOptionsDialog();
+
+	KVMap& pluginOptions = ui.FileSelector->selectedPluginOptions();
+	if (plugin->hasExportOptions()) plugin->showExportOptionsDialog(pluginOptions);
 }
 
 void AtenSaveExpression::on_SaveButton_clicked(bool checked)
@@ -75,7 +77,7 @@ void AtenSaveExpression::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenSaveExpression::execute(int currentPluginsLogPoint, QString currentFileName, FilePluginInterface* plugin)
+bool AtenSaveExpression::execute(int currentPluginsLogPoint, QString currentFileName, const FilePluginInterface* plugin)
 {
 	// Make sure the file selector is up to date
 	updateFileSelector(currentPluginsLogPoint, currentFileName, plugin);
@@ -113,6 +115,6 @@ bool AtenSaveExpression::extensionDeterminesType()
 void AtenSaveExpression::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 }

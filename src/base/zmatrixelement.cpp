@@ -138,6 +138,12 @@ double ZMatrixElement::distance()
 	return 0.0;
 }
 
+// Return atom associated with distance
+Atom* ZMatrixElement::distanceAtom()
+{
+	return atoms_[1];
+}
+
 // Set angle (geometry variable 1)
 void ZMatrixElement::setAngleVariable(Variable* v)
 {
@@ -190,6 +196,12 @@ double ZMatrixElement::angle()
 	return 0.0;
 }
 
+// Return atom associated with angle
+Atom* ZMatrixElement::angleAtom()
+{
+	return atoms_[2];
+}
+
 // Set torsion (geometry variable 2)
 void ZMatrixElement::setTorsionVariable(Variable* v)
 {
@@ -240,4 +252,10 @@ double ZMatrixElement::torsion()
 		return (negated_[2] ? -rv.asDouble() : rv.asDouble());
 	}
 	return 0.0;
+}
+
+// Return atom associated with torsion
+Atom* ZMatrixElement::torsionAtom()
+{
+	return atoms_[3];
 }

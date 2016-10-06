@@ -394,7 +394,6 @@ class Commands
 		// Minimisation Commands
 		CGMinimise,
 		MCMinimise,
-		MopacMinimise,
 		SDMinimise,
 
 		// Model Commands
@@ -844,7 +843,6 @@ class Commands
 	// Minimisation Commands
 	bool function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Model Commands
 	bool function_CreateAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv);

@@ -47,7 +47,7 @@ class AtenOpenGrid : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins);
 	// Main form declaration
 	Ui::OpenGridDialog ui;
 
@@ -62,7 +62,7 @@ class AtenOpenGrid : public QDialog, public AtenFileDialog
 
 	public:
 	// Execute dialog
-	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
+	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), const FilePluginInterface* currentPlugin = NULL);
 	// Return standard import options from dialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog

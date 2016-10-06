@@ -48,7 +48,7 @@ DLP4DefectsPlugin::~DLP4DefectsPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* DLP4DefectsPlugin::makeCopy()
+BasePluginInterface* DLP4DefectsPlugin::makeCopy() const
 {
 	return new DLP4DefectsPlugin;
 }
@@ -57,8 +57,14 @@ FilePluginInterface* DLP4DefectsPlugin::makeCopy()
  * DLPOLY4 Model Import / Export Plugin
  */
 
+// Return type of plugin
+PluginTypes::PluginType DLP4DefectsPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory DLP4DefectsPlugin::category() const
+int DLP4DefectsPlugin::category() const
 {
 	return PluginTypes::TrajectoryFilePlugin;
 }
@@ -98,7 +104,7 @@ QStringList DLP4DefectsPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool DLP4DefectsPlugin::canImport()
+bool DLP4DefectsPlugin::canImport() const
 {
 	return true;
 }
@@ -150,7 +156,7 @@ bool DLP4DefectsPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool DLP4DefectsPlugin::canExport()
+bool DLP4DefectsPlugin::canExport() const
 {
 	return false;
 }
@@ -178,26 +184,26 @@ bool DLP4DefectsPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool DLP4DefectsPlugin::hasImportOptions()
+bool DLP4DefectsPlugin::hasImportOptions() const
 {
 	return true;
 }
 
 // Show import options dialog
-bool DLP4DefectsPlugin::showImportOptionsDialog()
+bool DLP4DefectsPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-	DLP4DefImportOptionsDialog optionsDialog(pluginOptions_);
+	DLP4DefImportOptionsDialog optionsDialog(targetOptions);
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 
 // Return whether the plugin has export options
-bool DLP4DefectsPlugin::hasExportOptions()
+bool DLP4DefectsPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool DLP4DefectsPlugin::showExportOptionsDialog()
+bool DLP4DefectsPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

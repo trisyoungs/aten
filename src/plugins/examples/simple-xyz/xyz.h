@@ -53,8 +53,10 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	 * Definition
 	 */
 	public:
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
 	// Return category of plugin
-	PluginTypes::FilePluginCategory category() const;
+	int category() const;
 	// Return name of plugin
 	QString name() const;
 	// Return nickname of plugin
@@ -72,11 +74,11 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Return whether this plugin can import data
-	bool canImport();
+	bool canImport() const;
 	// Import data via the supplied parser
 	bool importData(FileParser& parser, const KVMap standardOptions = KVMap());
 	// Return whether this plugin can export data
-	bool canExport();
+	bool canExport() const;
 	// Export data via the supplied parser
 	bool exportData(FileParser& parser, const KVMap standardOptions = KVMap());
 };

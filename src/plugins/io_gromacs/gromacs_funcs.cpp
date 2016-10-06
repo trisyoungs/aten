@@ -33,11 +33,11 @@ GROMACSModelPlugin::~GROMACSModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* GROMACSModelPlugin::makeCopy()
+BasePluginInterface* GROMACSModelPlugin::makeCopy() const
 {
 	return new GROMACSModelPlugin;
 }
@@ -46,8 +46,14 @@ FilePluginInterface* GROMACSModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType GROMACSModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory GROMACSModelPlugin::category() const
+int GROMACSModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
@@ -87,7 +93,7 @@ QStringList GROMACSModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool GROMACSModelPlugin::canImport()
+bool GROMACSModelPlugin::canImport() const
 {
 	return false;
 }
@@ -482,7 +488,7 @@ bool GROMACSModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool GROMACSModelPlugin::canExport()
+bool GROMACSModelPlugin::canExport() const
 {
 	return false;
 }
@@ -510,25 +516,25 @@ bool GROMACSModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool GROMACSModelPlugin::hasImportOptions()
+bool GROMACSModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool GROMACSModelPlugin::showImportOptionsDialog()
+bool GROMACSModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool GROMACSModelPlugin::hasExportOptions()
+bool GROMACSModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool GROMACSModelPlugin::showExportOptionsDialog()
+bool GROMACSModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

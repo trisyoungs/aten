@@ -421,7 +421,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Model* model;
 	Program* script, tempProgram;
 	ReturnValue rv;
-	FilePluginInterface* plugin, *modelPlugin = NULL, *trajectoryPlugin = NULL;
+	const FilePluginInterface* plugin, *modelPlugin = NULL, *trajectoryPlugin = NULL;
 	Program interactiveScript;
 	QStringList items;
 	KVMap pluginOptions;

@@ -50,7 +50,7 @@ DLP2ModelPlugin::~DLP2ModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* DLP2ModelPlugin::makeCopy()
+BasePluginInterface* DLP2ModelPlugin::makeCopy() const
 {
     return new DLP2ModelPlugin;
 }
@@ -59,8 +59,14 @@ FilePluginInterface* DLP2ModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType DLP2ModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory DLP2ModelPlugin::category() const
+int DLP2ModelPlugin::category() const
 {
     return PluginTypes::ModelFilePlugin;
 }
@@ -100,7 +106,7 @@ QStringList DLP2ModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool DLP2ModelPlugin::canImport()
+bool DLP2ModelPlugin::canImport() const
 {
     return true;
 }
@@ -118,11 +124,11 @@ bool DLP2ModelPlugin::importData()
 		return false;
 	}
 
-    return true;
+	return true;
 }
 
 // Return whether this plugin can export data
-bool DLP2ModelPlugin::canExport()
+bool DLP2ModelPlugin::canExport() const
 {
     return true;
 }
@@ -150,27 +156,27 @@ bool DLP2ModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool DLP2ModelPlugin::hasImportOptions()
+bool DLP2ModelPlugin::hasImportOptions() const
 {
     return true;
 }
 
 // Show import options dialog
-bool DLP2ModelPlugin::showImportOptionsDialog()
+bool DLP2ModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-    DLP2ImportOptionsDialog optionsDialog ( pluginOptions_ );
+    DLP2ImportOptionsDialog optionsDialog ( targetOptions );
     return ( optionsDialog.updateAndExecute() == QDialog::Accepted );
 }
 
 // Return whether the plugin has export options
-bool DLP2ModelPlugin::hasExportOptions()
+bool DLP2ModelPlugin::hasExportOptions() const
 {
     return true;
 }
 
 // Show export options dialog
-bool DLP2ModelPlugin::showExportOptionsDialog()
+bool DLP2ModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-    DLP2ExportOptionsDialog optionsDialog ( pluginOptions_ );
+    DLP2ExportOptionsDialog optionsDialog ( targetOptions );
     return ( optionsDialog.updateAndExecute() == QDialog::Accepted );
 }

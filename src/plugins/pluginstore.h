@@ -1,7 +1,7 @@
 /*
         *** Plugin Store Definition
         *** src/plugins/pluginstore.h
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
     
@@ -24,6 +24,7 @@
 
 #include "plugins/plugintypes.h"
 #include "plugins/interfaces/fileplugin.h"
+#include "plugins/interfaces/methodplugin.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE
@@ -57,16 +58,14 @@ class PluginStore
 	 * File Import/Export Plugins
 	 */
 	private:
-	// List of IO plugin objects (by category)
-	RefList<FilePluginInterface,int> filePlugins_[PluginTypes::nFilePluginCategories];
+	// List of file plugin objects (by category)
+	RefList<FilePluginInterface,KVMap> filePlugins_[PluginTypes::nFilePluginCategories];
 
 	public:
 	// Register file plugin
 	bool registerFilePlugin(FilePluginInterface* plugin);
-	// Empty (delete) all plugins and plugin instances
-	void clearFilePlugins();
 	// Return reference list of file plugins of specified category
-	const RefList<FilePluginInterface,int>& filePlugins(PluginTypes::FilePluginCategory category) const;
+	const RefList<FilePluginInterface,KVMap>& filePlugins(PluginTypes::FilePluginCategory category) const;
 	// Return number of plugins of specified category and type
 	int nFilePlugins(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
 	// Return total number of file plugins available
@@ -76,9 +75,33 @@ class PluginStore
 	// Show all file plugins, by category, and their nicknames
 	void showAllFilePluginNicknames() const;
 	// Find plugin interface for specified file
-	FilePluginInterface* findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const;
+	const FilePluginInterface* findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const;
 	// Find plugin interface by nickname
-	FilePluginInterface* findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const;
+	const FilePluginInterface* findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const;
+
+
+	/*
+	 * Method Plugins
+	 */
+	private:
+	// List of method plugin objects (by category)
+	RefList<MethodPluginInterface,KVMap> methodPlugins_[PluginTypes::nMethodPluginCategories];
+
+	public:
+	// Register method plugin
+	bool registerMethodPlugin(MethodPluginInterface* plugin);
+	// Return reference list of file plugins of specified category
+	const RefList<MethodPluginInterface,KVMap>& methodPlugins(PluginTypes::MethodPluginCategory category) const;
+	// Return number of method plugins of specified category
+	int nMethodPlugins(PluginTypes::MethodPluginCategory category) const;
+	// Return total number of file plugins available
+	int nMethodPlugins() const;
+	// Show list of valid method plugin nicknames
+	void showMethodPluginNicknames(PluginTypes::MethodPluginCategory category) const;
+	// Show all method plugins, by category, and their nicknames
+	void showAllMethodPluginNicknames() const;
+	// Find plugin interface by nickname
+	MethodPluginInterface* findMethodPluginByNickname(PluginTypes::MethodPluginCategory category, QString nickname) const;
 };
 
 ATEN_END_NAMESPACE
