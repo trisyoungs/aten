@@ -64,11 +64,11 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_libdir}/aten/plugins/*.la
 
 %changelog
-* Wed Apr 02 2008 Tristan Youngs <tris@projectaten.net> 
+* Wed Apr 02 2008 Tristan Youngs <tristan.youngs@stfc.ac.uk> 
 - added checks to build on different distros with the SuSE build service.
-* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.net>
+* Tue Apr 01 2008 Tristan Youngs <tristan.youngs@stfc.ac.uk>
 - added dependencies list and long description.
-* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.net>
+* Sun Mar 30 2008 Tristan Youngs <tristan.youngs@stfc.ac.uk>
 - installation target points to local dir.
-* Mon Mar 24 2008 Tristan Youngs <tris@projectaten.net> 
+* Mon Mar 24 2008 Tristan Youngs <tristan.youngs@stfc.ac.uk> 
 - initial version.

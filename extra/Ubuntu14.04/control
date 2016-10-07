@@ -1,5 +1,5 @@
 Source: aten
-Maintainer: Tristan Youngs <tris@projectaten.net>
+Maintainer: Tristan Youngs <tristan.youngs@stfc.ac.uk>
 Section: science
 Priority: optional
 Build-Depends: debhelper (>= 9), ftgl-dev, libreadline6-dev, bison, libtool, chrpath, qt54base
