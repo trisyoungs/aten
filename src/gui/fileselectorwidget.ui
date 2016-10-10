@@ -73,6 +73,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="DirectoryUpButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -97,6 +100,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="DirectoryCreateButton">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string/>
        </property>
