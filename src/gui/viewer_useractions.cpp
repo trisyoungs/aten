@@ -236,8 +236,8 @@ void Viewer::renderUserActions(Model* source)
 				renderGroup_.addOverlayText("DEL", v, 0.2);
 			}
 			break;
-    default:
-      break;
+		default:
+			break;
 	}
 	
 	// Selected user mode actions
@@ -273,7 +273,7 @@ void Viewer::renderUserActions(Model* source)
 				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], aten_->currentFragment()->orientedModel(), A);
 			}
 			break;
-    default:
-      break;
+		default:
+			break;
 	}
 }

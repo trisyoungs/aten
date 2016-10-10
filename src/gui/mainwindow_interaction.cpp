@@ -379,16 +379,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		case (UserAction::DrawAtomsAction):
 			// If there is no atom under the mouse we draw one
 			i = targetModel->atomOnScreen(rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y);
-			if ((clickedAtom_ == i) && (i != NULL))
-			{
-				// Centre model if the relevant option is checked
-				if (ui.BuildDrawKeepCenteredButton->isChecked())
-				{
-					targetModel->selectAll(true);
-					targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
-				}
-				break;
-			}
+
 
 			targetModel->beginUndoState("Draw Atoms");
 			if (i == NULL)
@@ -434,7 +425,6 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->beginUndoState("Draw Fragment");
 				aten_.currentFragment()->pasteOrientedModel(targetModel->screenToModel(rMouseDown.x, rMouseDown.y, prefs.drawDepth()), targetModel);
 			}
-			targetModel->endUndoState();
 
 			// Centre model if the relevant option is checked
 			if (ui.BuildDrawKeepCenteredButton->isChecked())
@@ -442,6 +432,8 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->selectAll(true);
 				targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
 			}
+
+			targetModel->endUndoState();
 
 			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
@@ -481,8 +473,17 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			{
 				targetModel->beginUndoState("Delete Atom");
 				targetModel->deleteAtom(clickedAtom_);
+
+				// Centre model if the relevant option is checked
+				if (ui.BuildDrawKeepCenteredButton->isChecked())
+				{
+					targetModel->selectAll(true);
+					targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+				}
+
 				targetModel->endUndoState();
 			}
+
 			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawProbeAction):
@@ -494,7 +495,16 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			{
 				targetModel->beginUndoState("Add Hydrogen to Atom");
 				targetModel->hydrogenSatisfy(clickedAtom_);
+
+				// Centre model if the relevant option is checked
+				if (ui.BuildDrawKeepCenteredButton->isChecked())
+				{
+					targetModel->selectAll(true);
+					targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+				}
+
 				targetModel->endUndoState();
+
 				updateWidgets(AtenWindow::AtomsTableTarget);
 			}
 			break;
@@ -513,6 +523,14 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 					targetModel->beginUndoState("Grow Atom");
 					targetModel->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, true);
 				}
+
+				// Centre model if the relevant option is checked
+				if (ui.BuildDrawKeepCenteredButton->isChecked())
+				{
+					targetModel->selectAll(true);
+					targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+				}
+
 				targetModel->endUndoState();
 				updateWidgets(AtenWindow::AtomsTableTarget);
 			}

@@ -14,11 +14,10 @@ Visualise toolbar, containing Glyph management, polyhedra etc.
 Polymer builder.
 Collapse cell tool.
 WEBSITE - Add missing examples linked to from front page!!
-Calculate Panel - Align Control in 'Transform panel, allowing fragments in selections to be aligned in various ways. Is Model::selection_ ordered by ID, or as-selected?
+Calculate Panel - Align Control in Transform panel, allowing fragments in selections to be aligned in various ways. Is Model::selection_ ordered by ID, or as-selected?
 FF popup minimise needs to remember previous choice
 MOPAC71 needs to deallocate arrays, or a 'stop' is encountered when trying to reallocate a previously-allocated array (needs to be done after extraction of calculated data etc.)
 Energy minimisation (SD at least) does not appear to converge on energy.
-Keep Centred is ignored by H-Add.
 
 Plugin TODO
 ===========
