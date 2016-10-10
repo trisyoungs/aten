@@ -26,8 +26,8 @@
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
-#include "ff/forcefield.h"
-#include "base/grid.h"
+// #include "ff/forcefield.h"
+// #include "base/grid.h"
 #include "base/kvmap.h"
 #include "base/forcefieldatom.h"
 #include "base/messenger.h"
@@ -177,6 +177,179 @@ class FilePluginInterface : public BasePluginInterface
 
 
 	/*
+	 * Object Handling
+	 */
+	private:
+	// Parent model objects created on import
+	List<Model> createdModels_;
+	// Parent model for read/write, if any
+	Model* parentModel_;
+	// Target model for read/write, if any
+	Model* targetModel_;
+	// Trajectory frames created on import
+	RefList<Model,int> createdFrames_;
+	// Grid objects created on import
+	List<Grid> createdGrids_;
+	// Forcefield objects create on import
+	List<Forcefield> createdForcefields_;
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield_;
+
+	public:
+	// Create new parent model
+	Model* createModel(QString name = QString())
+	{
+		Model* newModel = createdModels_.add();
+		if (!name.isEmpty()) newModel->setName(name);
+		setParentModel(newModel);
+		return newModel;
+	}
+	// Discard created model
+	bool discardModel(Model* model)
+	{
+		if (createdModels_.contains(model))
+		{
+			if ((targetModel_ == model) || (parentModel_ == model)) targetModel_ = NULL;
+			if (parentModel_ == model) parentModel_ = NULL;
+			createdModels_.remove(model);
+			return true;
+		}
+		Messenger::error("Can't discard model - not owned by the interface.");
+		return false;
+	}
+	// Return parent Model objects created on import
+	List<Model>& createdModels()
+	{
+		return createdModels_;
+	}
+	// Set parent model
+	void setParentModel(Model* model)
+	{
+		parentModel_ = model;
+		targetModel_ = parentModel_;
+	}
+	// Return parent model
+	Model* parentModel() const
+	{
+		return parentModel_;
+	}
+	// Set target model
+	void setTargetModel(Model* model)
+	{
+		targetModel_ = model;
+	}
+	// Return target model
+	Model* targetModel() const
+	{
+		return targetModel_;
+	}
+	// Create frame in parent model
+	Model* createFrame()
+	{
+		Model* frame = parentModel()->addTrajectoryFrame();
+		createdFrames_.add(frame);
+		targetModel_ = frame;
+		return frame;
+	}
+	// Discard created frame
+	bool discardFrame(Model* frame)
+	{
+		if (createdFrames_.contains(frame))
+		{
+			if (targetModel_ == frame) targetModel_ = parentModel_;
+			parentModel_->removeTrajectoryFrame(frame);
+			createdFrames_.remove(frame);
+			return true;
+		}
+		Messenger::error("Can't discard frame - not owned by the interface.");
+		return false;
+	}
+	// Return created frames
+	RefList<Model,int>& createdFrames()
+	{
+		return createdFrames_;
+	}
+	// Create new grid (in specified model)
+	Grid* createGrid(Model* model)
+	{
+		Grid* newGrid = createdGrids_.add();
+		newGrid->setParent(model);
+		return newGrid;
+	}
+	// Return Grid objects created on import
+	List<Grid>& createdGrids()
+	{
+		return createdGrids_;
+	}
+
+	// Create new forcefield
+	Forcefield* createForcefield(QString name = QString())
+	{
+		targetForcefield_ = createdForcefields_.add();
+		if (!name.isEmpty()) targetForcefield_->setName(name);
+		return targetForcefield_;
+	}
+	// Discard created forcefield
+	bool discardForcefield(Forcefield* forcefield)
+	{
+		if (createdForcefields_.contains(forcefield))
+		{
+			if (targetForcefield_ == forcefield) targetForcefield_ = NULL;
+			createdForcefields_.remove(forcefield);
+			return true;
+		}
+		Messenger::error("Can't discard forcefield - not owned by the interface.");
+		return false;
+	}
+	// Return parent Forcefield objects created on import
+	List<Forcefield>& createdForcefields()
+	{
+		return createdForcefields_;
+	}
+	// Set target forcefield
+	void setTargetForcefield(Forcefield* ff)
+	{
+		targetForcefield_ = ff;
+	}
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield() const
+	{
+		return targetForcefield_;
+	}
+	// Create new atom in specified model
+	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
+	{
+		// Find element in elements map
+		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
+
+		// Add atom
+		Atom* i = model->addAtom(el, r, v, f);
+		i->setData(qPrintable(name));
+
+		// KeepNames and KeepTypes standard options
+		ForcefieldAtom* ffa = NULL;
+		if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch)) ffa = model->addAtomName(el, name);
+		else if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch)) ffa = ElementMap::forcefieldAtom(name);
+		if (ffa != NULL)
+		{
+			i->setType(ffa);
+			i->setTypeFixed(true);
+		}
+
+		return i;
+	}
+	// Clear any created data
+	void clearCreatedData()
+	{
+		createdModels_.clear();
+		// Don't need to delete individual frame data, since they should have been removed with their parent model
+		createdFrames_.clear();
+		createdGrids_.clear();
+		createdForcefields_.clear();
+	}
+
+
+	/*
 	 * File Handling
 	 */
 	private:
@@ -235,126 +408,6 @@ class FilePluginInterface : public BasePluginInterface
 		else if (! exts.isEmpty()) filter += " (" + exts + ")";
 		else if (! exacts.isEmpty()) filter += " (" + exacts + ")";
 		return filter;
-	}
-
-
-	/*
-	 * Additional Object Handling
-	 */
-	private:
-	// Parent model objects created on import
-	List<Model> createdModels_;
-	// Trajectory frames created on import
-	RefList<Model,int> createdFrames_;
-	// Grid objects created on import
-	List<Grid> createdGrids_;
-	// Forcefield objects create on import
-	List<Forcefield> createdForcefields_;
-	// Parent model for read/write, if any
-	Model* parentModel_;
-	// Target model for read/write, if any
-	Model* targetModel_;
-	// Target forcefield for read/write, if any
-	Forcefield* targetForcefield_;
-
-	public:
-	// Create new atom in specified model
-	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
-	{
-		// Find element in elements map
-		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
-
-		// Add atom
-		Atom* i = model->addAtom(el, r, v, f);
-		i->setData(qPrintable(name));
-
-		// KeepNames and KeepTypes standard options
-		ForcefieldAtom* ffa = NULL;
-		if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch)) ffa = model->addAtomName(el, name);
-		else if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch)) ffa = ElementMap::forcefieldAtom(name);
-		if (ffa != NULL)
-		{
-			i->setType(ffa);
-			i->setTypeFixed(true);
-		}
-
-		return i;
-	}
-	// Create new grid (in specified model)
-	Grid* createGrid(Model* model = NULL)
-	{
-		Grid* newGrid = createdGrids_.add();
-		newGrid->setParent(model);
-		return newGrid;
-	}
-	// Return Grid objects created on import
-	List<Grid>& createdGrids()
-	{
-		return createdGrids_;
-	}
-	// Create new forcefield
-	Forcefield* createForcefield(QString name = QString())
-	{
-		targetForcefield_ = createdForcefields_.add();
-		if (!name.isEmpty()) targetForcefield_->setName(name);
-		return targetForcefield_;
-	}
-	// Discard created forcefield
-	bool discardForcefield(Forcefield* forcefield)
-	{
-		if (createdForcefields_.contains(forcefield))
-		{
-			if (targetForcefield_ == forcefield) targetForcefield_ = NULL;
-			createdForcefields_.remove(forcefield);
-			return true;
-		}
-		Messenger::error("Can't discard forcefield - not owned by the interface.");
-		return false;
-	}
-	// Return parent Forcefield objects created on import
-	List<Forcefield>& createdForcefields()
-	{
-		return createdForcefields_;
-	}
-	// Clear any created data
-	void clearCreatedData()
-	{
-		createdModels_.clear();
-		// Don't need to delete individual frame data, since they should have been removed with their parent model
-		createdFrames_.clear();
-		createdGrids_.clear();
-		createdForcefields_.clear();
-	}
-	// Set parent model
-	void setParentModel(Model* model)
-	{
-		parentModel_ = model;
-		targetModel_ = parentModel_;
-	}
-	// Return parent model
-	Model* parentModel() const
-	{
-		return parentModel_;
-	}
-	// Set target model
-	void setTargetModel(Model* model)
-	{
-		targetModel_ = model;
-	}
-	// Return target model
-	Model* targetModel() const
-	{
-		return targetModel_;
-	}
-	// Set target forcefield
-	void setTargetForcefield(Forcefield* ff)
-	{
-		targetForcefield_ = ff;
-	}
-	// Target forcefield for read/write, if any
-	Forcefield* targetForcefield() const
-	{
-		return targetForcefield_;
 	}
 
 

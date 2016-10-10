@@ -24,6 +24,8 @@
 
 #include "plugins/plugintypes.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
+#include "base/grid.h"
 #include "base/kvmap.h"
 #include "templates/list.h"
 #include <QStringList>
@@ -86,109 +88,6 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	public:
 	// Return a duplicate of the plugin object, including options etc.
 	virtual BasePluginInterface* duplicate() const = 0;
-
-
-	/*
-	 * Object Handling
-	 */
-	private:
-	// Parent model objects created on import
-	List<Model> createdModels_;
-	// Trajectory frames created on import
-	RefList<Model,int> createdFrames_;
-	// Grid objects created on import
-	RefList<Grid,int> createdGrids_;
-	// Parent model for read/write, if any
-	Model* parentModel_;
-	// Target model for read/write, if any
-	Model* targetModel_;
-
-	public:
-	// Create new parent model
-	Model* createModel(QString name = QString())
-	{
-		Model* newModel = createdModels_.add();
-		if (!name.isEmpty()) newModel->setName(name);
-		setParentModel(newModel);
-		return newModel;
-	}
-	// Discard created model
-	bool discardModel(Model* model)
-	{
-		if (createdModels_.contains(model))
-		{
-			if ((targetModel_ == model) || (parentModel_ == model)) targetModel_ = NULL;
-			if (parentModel_ == model) parentModel_ = NULL;
-			createdModels_.remove(model);
-			return true;
-		}
-		Messenger::error("Can't discard model - not owned by the interface.");
-		return false;
-	}
-	// Return parent Model objects created on import
-	List<Model>& createdModels()
-	{
-		return createdModels_;
-	}
-	// Create frame in parent model
-	Model* createFrame()
-	{
-		Model* frame = parentModel()->addTrajectoryFrame();
-		createdFrames_.add(frame);
-		targetModel_ = frame;
-		return frame;
-	}
-	// Discard created frame
-	bool discardFrame(Model* frame)
-	{
-		if (createdFrames_.contains(frame))
-		{
-			if (targetModel_ == frame) targetModel_ = parentModel_;
-			parentModel_->removeTrajectoryFrame(frame);
-			createdFrames_.remove(frame);
-			return true;
-		}
-		Messenger::error("Can't discard frame - not owned by the interface.");
-		return false;
-	}
-	// Return created frames
-	RefList<Model,int>& createdFrames()
-	{
-		return createdFrames_;
-	}
-	// Create new grid (in specified model)
-	Grid* createGrid(Model* model)
-	{
-		Grid* newGrid = model->addGrid();
-		createdGrids_.add(newGrid);
-		return newGrid;
-	}
-	// Return Grid objects created on import
-	RefList<Grid,int> createdGrids()
-	{
-		return createdGrids_;
-	}
-	// Set parent model
-	void setParentModel(Model* model)
-	{
-		parentModel_ = model;
-		targetModel_ = parentModel_;
-	}
-	// Return parent model
-	Model* parentModel() const
-	{
-		return parentModel_;
-	}
-	// Set target model
-	void setTargetModel(Model* model)
-	{
-		targetModel_ = model;
-	}
-	// Return target model
-	Model* targetModel() const
-	{
-		return targetModel_;
-	}
 
 
 	/*

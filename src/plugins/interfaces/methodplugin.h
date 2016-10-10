@@ -74,6 +74,26 @@ class MethodPluginInterface : public BasePluginInterface
 
 
 	/*
+	 * Object Handling
+	 */
+	private:
+	// Target model for method, if any
+	Model* targetModel_;
+
+	public:
+	// Set target model
+	void setTargetModel(Model* model)
+	{
+		targetModel_ = model;
+	}
+	// Return target model
+	Model* targetModel() const
+	{
+		return targetModel_;
+	}
+
+
+	/*
 	 * Method
 	 */
 	private:

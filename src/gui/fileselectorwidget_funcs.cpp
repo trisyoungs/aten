@@ -155,14 +155,14 @@ QStringList FileSelectorWidget::selectedFiles()
 const FilePluginInterface* FileSelectorWidget::selectedPlugin()
 {
 	// Get selected filter from combo box data
-	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentIndex());
+	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentData());
 	return refItem->item;
 }
 
 // Return reference to the options for the selected file plugin
 KVMap& FileSelectorWidget::selectedPluginOptions()
 {
-	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentIndex());
+	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentData());
 	return refItem->data;
 }
 
@@ -370,7 +370,8 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 	if (refreshing_) return;
 
 	// Grab data for selected item
-	FilePluginInterface* plugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
+	RefListItem<FilePluginInterface,KVMap>* ri = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->itemData(index));
+	FilePluginInterface* plugin = ri->item;
 
 	if (!plugin)
 	{

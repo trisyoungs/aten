@@ -17,6 +17,9 @@ WEBSITE - Add missing examples linked to from front page!!
 Calculate Panel - Align Control in 'Transform panel, allowing fragments in selections to be aligned in various ways. Is Model::selection_ ordered by ID, or as-selected?
 FF popup minimise needs to remember previous choice
 MOPAC71 needs to deallocate arrays, or a 'stop' is encountered when trying to reallocate a previously-allocated array (needs to be done after extraction of calculated data etc.)
+FileSelector ends up one level higher than intended when typing in directory location.
+Energy minimisation (SD at least) does not appear to converge on energy.
+Default options for plugins are not set in GUI (at least).
 
 Plugin TODO
 ===========
