@@ -25,10 +25,6 @@
 #include "base/sysfunc.h"
 #include <QPen>
 #include <QPainter>
-#include <QOpenGLTimerQuery>
-
-// TIMER CODE
-QOpenGLTimerQuery timerQuery;
 
 // Setup OpenGL ready for drawing
 void Viewer::setupGL()
@@ -175,11 +171,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 	viewPortHeight = contextHeight / nRows;
 	viewPortAspect = double(viewPortWidth) / double(viewPortHeight);
 
-	// BEGIN TIMER CODE
-	timerQuery.create();
-	timerQuery.begin();
-	// END TIMER CODE
-
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
 	row = 0;
@@ -249,17 +240,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		}
 	}
 
-	// BEGIN TIMER CODE
-	timerQuery.end();
-	// END TIMER CODE
-
-	if (timerQuery.isResultAvailable())
-	{
-		GLuint64 msecs = timerQuery.waitForResult();
-		printf("Render result = %f msecs\n", msecs / 1000000.0);
-	}
-// 	printf("NO result waiting.\n");
-
 	Messenger::exit("Viewer::renderFullScene");
 }
 
@@ -270,9 +250,6 @@ void Viewer::initializeGL()
 
 	// Setup function pointers to OpenGL extension functions
 	initializeOpenGLFunctions();
-
-	// TIMER CODE
-	if (!timerQuery.create()) printf("Failed to create timer object.\n");
 
 	// Setup offscreen context
 	Messenger::print(Messenger::Verbose, "Setting up offscreen context and surface...");
