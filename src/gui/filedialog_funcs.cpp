@@ -44,11 +44,10 @@ void AtenFileDialog::updateFileSelector(int currentPluginsLogPoint, QString curr
 	// Make sure the file selector is up to date
 	if (currentPluginsLogPoint != pluginsLogPoint_)
 	{
-		printf("refreshing.... %p\n", fileSelectorWidget_);
 		fileSelectorWidget_->refreshPlugins(filePlugins_);
 		pluginsLogPoint_ = currentPluginsLogPoint;
 	}
-printf("LKJKLJLKJKK|N");
+
 	// Set / clear filename
 	if (currentFilename.isEmpty()) fileSelectorWidget_->clearSelectedFilenames();
 	else fileSelectorWidget_->setSelectedFilename(currentFilename);

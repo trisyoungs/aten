@@ -91,6 +91,8 @@ class KVMap
 	bool isSet(QString key, QString value = QString()) const;
 	// Return first key in list
 	KVPair* pairs();
+	// Dump contents of map
+	void dump() const;
 };
 
 ATEN_END_NAMESPACE

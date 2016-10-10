@@ -63,7 +63,7 @@ bool PluginStore::registerFilePlugin(FilePluginInterface* plugin)
 	}
 
 	// Store the reference to the plugin 
-	filePlugins_[plugin->category()].add(plugin);
+	filePlugins_[plugin->category()].add(plugin, plugin->pluginOptions());
 	Messenger::print(Messenger::Verbose, "Registered new file plugin:");
 	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
 	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));

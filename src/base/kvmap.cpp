@@ -153,3 +153,11 @@ KVPair* KVMap::pairs()
 {
 	return pairs_.first();
 }
+
+// Dump contents of map
+void KVMap::dump() const
+{
+	printf("Number of key/valus pairs in map %p = %i\n", this, pairs_.nItems());
+	int count = 0;
+	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) printf("  %i   %s=%s\n", count++, qPrintable(kvp->key()), qPrintable(kvp->value()));
+}

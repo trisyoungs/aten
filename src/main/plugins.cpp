@@ -29,11 +29,23 @@
 bool Aten::registerPlugin(QObject* plugin, QString filename)
 {
 	// Determine which type of plugin this is by attempting to cast it to the available types
+	// -- FilePluginInterface
 	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
 		filePlugin->setPluginFilename(filename);
+		filePlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerFilePlugin(filePlugin);
+		return true;
+	}
+
+	// -- MethodPluginInterface
+	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
+	if (methodPlugin)
+	{
+		methodPlugin->setPluginFilename(filename);
+		methodPlugin->setPluginStore(&pluginStore_);
+		pluginStore_.registerMethodPlugin(methodPlugin);
 		return true;
 	}
 
@@ -56,29 +68,7 @@ bool Aten::loadPlugin(QString filename)
 		return false;
 	}
 
-	// Determine which type of plugin this is by attempting to cast it to the available types
-
-	// -- FilePluginInterface
-	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
-	if (filePlugin)
-	{
-		filePlugin->setPluginFilename(filename);
-		filePlugin->setPluginStore(&pluginStore_);
-		pluginStore_.registerFilePlugin(filePlugin);
-		return true;
-	}
-
-	// -- MethodPluginInterface
-	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
-	if (methodPlugin)
-	{
-		methodPlugin->setPluginFilename(filename);
-		methodPlugin->setPluginStore(&pluginStore_);
-		pluginStore_.registerMethodPlugin(methodPlugin);
-		return true;
-	}
-
-	return false;
+	return registerPlugin(plugin, filename);
 }
 
 // Load plugins
