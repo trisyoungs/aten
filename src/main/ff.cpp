@@ -29,8 +29,12 @@ ATEN_USING_NAMESPACE
 // Add Forcefield
 Forcefield* Aten::addForcefield(QString name)
 {
-	current_.ff = forcefields_.add();
-	if (name != NULL) current_.ff->setName(name);
+	Forcefield* newFF = forcefields_.add();
+	if (name != NULL) newFF->setName(name);
+
+	// Set this new forcefield to be the current one
+	setCurrentForcefield(newFF);
+
 	return current_.ff;
 }
 
@@ -38,6 +42,9 @@ Forcefield* Aten::addForcefield(QString name)
 void Aten::ownForcefield(Forcefield* ff)
 {
 	forcefields_.own(ff);
+
+	// Make this the current forcefield if there is currently no default
+	if (current_.ff == NULL) setCurrentForcefield(ff);
 }
 
 // Load forcefield
@@ -76,11 +83,7 @@ Forcefield* Aten::loadForcefield(QString ffFile)
 			}
 		}
 	}
-	if (result)
-	{
-		current_.ff = newff;
-		Messenger::print("Forcefield '%s' is now the default.", qPrintable(newff->name()));
-	}
+	if (result) setCurrentForcefield(newff);
 	else
 	{
 		Messenger::print("Couldn't load forcefield file '%s'.", qPrintable(ffFile));
