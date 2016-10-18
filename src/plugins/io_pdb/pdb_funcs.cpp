@@ -147,13 +147,13 @@ bool PDBModelPlugin::importData()
 			if (strict)
 			{
 				fileParser_.parseString(data, atomFormat);  //"%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
-				if (fileParser_.hasArg(5) && (!fileParser_.argc(5).isEmpty())) createAtom(targetModel(), fileParser_.argc(5), fileParser_.arg3d(2));
+				if (fileParser_.hasArg(5) && (!fileParser_.argc(5).trimmed().isEmpty())) createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(2));
 				else createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(2));
 			}
 			else
 			{
 				fileParser_.parseString(data); // readVar(line, id, name, discard, discard, discard, discard, discard, discard, discard, discard, rx, ry, rz, e);
-				if (fileParser_.hasArg(13)) createAtom(targetModel(), fileParser_.argc(13), fileParser_.arg3d(10));
+				if (fileParser_.hasArg(13) && (!fileParser_.argc(13).trimmed().isEmpty())) createAtom(targetModel(), fileParser_.argc(13), fileParser_.arg3d(10));
 				else createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(10));
 			}
 		}
