@@ -423,6 +423,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));
 
 	// Main Window
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F7), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(togglePanelVisibilty()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F11), this, 0, 0, Qt::ApplicationShortcut);
@@ -518,19 +520,11 @@ AtenWindow::~AtenWindow()
 {
 }
 
-/*
- * Aten Reference
- */
-
 // Return reference to Aten
 Aten& AtenWindow::aten()
 {
 	return aten_;
 }
-
-/*
- * Window Functions
- */
 
 // Catch window close event
 void AtenWindow::closeEvent(QCloseEvent* event)
@@ -550,6 +544,24 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 }
 
 /*
+ * Window Functions
+ */
+
+// Set interactivity (to full or zero), except for main view camera changes
+// ATEN2 TODO Update this!
+void AtenWindow::setInteractive(bool interactive)
+{
+	// ...and set the canvas 'editability'
+	editable_ = interactive;
+}
+
+// Toggle panel visibility
+void AtenWindow::togglePanelVisibilty()
+{
+	ui.ToolPanels->setVisible(!ui.ToolPanels->isVisible());
+}
+
+/*
  * File Dialogs
  */
 
@@ -565,17 +577,6 @@ AtenSaveExpression& AtenWindow::saveExpressionDialog()
 	return saveExpressionDialog_;
 }
 
-/*
- * Methods
- */
-
-// Set interactivity (to full or zero), except for main view camera changes
-// ATEN2 TODO Update this!
-void AtenWindow::setInteractive(bool interactive)
-{
-	// ...and set the canvas 'editability'
-	editable_ = interactive;
-}
 
 // Set message label text
 void AtenWindow::setMessageLabel(QString message)

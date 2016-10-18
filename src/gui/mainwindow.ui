@@ -65,7 +65,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="TTabWidget" name="ToolTabs">
+     <widget class="TTabWidget" name="ToolPanels">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -92,7 +92,7 @@
       <property name="documentMode">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="HomeTab">
+      <widget class="QWidget" name="HomePanel">
        <attribute name="icon">
         <iconset resource="icons.qrc">
          <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
@@ -2182,7 +2182,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="BuildTab">
+      <widget class="QWidget" name="BuildPanel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -3245,7 +3245,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="CellTab">
+      <widget class="QWidget" name="CellPanel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -4240,7 +4240,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="CalculateTab">
+      <widget class="QWidget" name="CalculatePanel">
        <attribute name="title">
         <string>  Calculate  </string>
        </attribute>
@@ -4767,7 +4767,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="TransformTab">
+      <widget class="QWidget" name="TransformPanel">
        <attribute name="title">
         <string>  Transform  </string>
        </attribute>
@@ -5612,7 +5612,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="GridsTab">
+      <widget class="QWidget" name="GridsPanel">
        <attribute name="title">
         <string>  Grids  </string>
        </attribute>
@@ -6816,7 +6816,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="TrajectoryTab">
+      <widget class="QWidget" name="TrajectoryPanel">
        <attribute name="title">
         <string>  Trajectory  </string>
        </attribute>
@@ -7694,7 +7694,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="ForcefieldTab">
+      <widget class="QWidget" name="ForcefieldPanel">
        <property name="contextMenuPolicy">
         <enum>Qt::NoContextMenu</enum>
        </property>
@@ -8899,7 +8899,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="SelectTab">
+      <widget class="QWidget" name="SelectPanel">
        <attribute name="title">
         <string>  Select  </string>
        </attribute>
@@ -9534,7 +9534,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="SelectionTab">
+      <widget class="QWidget" name="SelectionPanel">
        <attribute name="title">
         <string>Selection</string>
        </attribute>
@@ -10335,7 +10335,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="ToolsTab">
+      <widget class="QWidget" name="ToolsPanel">
        <attribute name="title">
         <string>Tools</string>
        </attribute>

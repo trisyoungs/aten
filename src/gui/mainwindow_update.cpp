@@ -116,7 +116,7 @@ void AtenWindow::initialUpdateAndShow()
 	show();
 	shown_ = true;
 
-	/* Load font */
+	// Load font - must do this *after* the mainwindow is shown on some systems (OSX)
 	if (!FontInstance::setup(prefs.viewerFontFileName())) QMessageBox::warning(0, "Font Error", "Failed to setup font '" + prefs.viewerFontFileName() + "'.");
 
 	// Update the fragments widget and icons
@@ -162,8 +162,8 @@ void AtenWindow::updateWidgets(int targets)
 	// Always update Home panel
 	updateHomePanel(currentModel);
 
-	// Enable / disable Selection tab
-	ui.SelectionTab->setEnabled(currentModel && currentModel->nSelected());
+	// Enable / disable Selection panel
+	ui.SelectionPanel->setEnabled(currentModel && currentModel->nSelected());
 
 	// Update atoms table
 	if (targets&AtenWindow::AtomsTableTarget) updateAtomsTable(currentModel);

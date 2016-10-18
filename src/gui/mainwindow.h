@@ -92,14 +92,6 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Methods
-	 */
-	public:
-	// Set interactivity (to full or zero), except for main view camera changes
-	void setInteractive(bool interactive);
-
-
-	/*
 	 * Update Functions
 	 */
 	public:
@@ -123,6 +115,18 @@ class AtenWindow : public QMainWindow
 	bool shown();
 	// Refreshes specified (or all) dock widgets
 	void updateWidgets(int targets = AtenWindow::DefaultTarget);
+
+
+	/*
+	 * Window Functions
+	 */
+	public:
+	// Set interactivity (to full or zero), except for main view camera changes
+	void setInteractive(bool interactive);
+
+	public slots:
+	// Toggle panel visibility
+	void togglePanelVisibilty();
 
 
 	/*

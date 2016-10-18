@@ -66,6 +66,7 @@ header_class: alt
 | F5 | Individual Style | Set model [drawing style](/aten/docs/enums/drawstyle) to atom’s assigned styles |
 | Ctrl-F5 | Bond Count Colouring | Set model [colouring scheme](/aten/docs/enums/colourscheme) to colour based on number of bonds to the atom |
 | Ctrl-F6 | Custom Colouring | Set model [colouring scheme](/aten/docs/enums/colourscheme) to use custom (per-element) colours |
+| F7 | Toggle Panels | Show / hide the main panels |
 | F8 | Detect H-Bonds | Toggle detection and display of hydrogen bonds |
 | F10 | Quick Command | Raise a dialog window allowing a quick command to be run |
 | F11 | Correct Grids | Perform a single-shot correction (reconstruction) of grid data |
@@ -88,6 +89,7 @@ header_class: alt
 | Ctrl-Down | Translate Down | Translate the current down in the plane of the screen |
 | PgUp | Previous Model | Move to the previous model in the list of loaded models (and make it the only visible one) |
 | PdDn | Next Model | Move to the next model in the list of loaded models (and make it the only visible one) |
+| F7 | Toggle Panels | Show / hide the main panels |
 | Ctrl-- | Zoom Out | Zoom out |
 | Ctrl-+ | Zoom In | Zoom in |
 
