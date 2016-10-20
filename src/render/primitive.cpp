@@ -1101,7 +1101,6 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 	}
 	else
 	{
-		printf("Here we are: nVerts = %i (%i), nIndices = %i\n", vertexData_.nItems(), vertexData_.size(), indexData_.nItems());
 		// Does the vertex data contain colour-per-vertex information?
 		glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, vertexData_.array());
 
