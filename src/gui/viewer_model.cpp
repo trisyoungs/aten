@@ -129,6 +129,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	// Get RenderGroup for model (it will be updated if necessary by the called function)
 	RenderGroup& modelGroup = source->renderGroup(primitives_[primitiveSet_]);
 
+
 	// Draw main model (atoms, bonds, etc.)
 	Matrix offset;
 	Vec3<int> repeatMin = -source->repeatCellsNegative();

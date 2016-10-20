@@ -72,6 +72,10 @@ class Primitive : public ListItem<Primitive>
 	void initialise(GLenum type, bool colourData);
 	// Forget all data, leaving arrays intact
 	void forgetAll();
+	// Clear all data
+	void clear();
+	// Set chunk increment in underlying arrays
+	void setArrayChunkIncrement(int chunkIncrement);
 	// Return number of vertices currently defined in primitive
 	int nDefinedVertices() const;
 	// Return number of indices currently defined in primitive
@@ -90,14 +94,16 @@ class Primitive : public ListItem<Primitive>
 	private:
 	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
 	List<PrimitiveInstance> instances_;
-	// Flag stating whether or not instances should be used for this primitive
-	bool useInstances_;
+	// Which type of instances this primitive uses
+	PrimitiveInstance::InstanceType instanceType_;
 	// Whether primitive is registered as a dynamic primitive (in PrimitiveSet)
 	bool registeredAsDynamic_;
 
 	public:
-	// Flag that this primitive should not use instances (rendering will use vertex arrays)
-	void setNoInstances();
+	// Return which type of instances this primitive uses
+	PrimitiveInstance::InstanceType instanceType();
+	// Set which type of instances this primitive uses
+	void setInstanceType(PrimitiveInstance::InstanceType instanceType);
 	// Push instance layer from current vertex chunk list
 	void pushInstance(const QOpenGLContext* context);
 	// Pop topmost instance layer

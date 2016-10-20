@@ -36,7 +36,7 @@ Primitive::Primitive() : ListItem<Primitive>()
 	type_ = GL_TRIANGLES;
 	dataPerVertex_ = 6;
 	nDefinedVertices_ = 0;
-	useInstances_ = true;
+	instanceType_ = PrimitiveInstance::instanceType();
 	registeredAsDynamic_ = false;
 }
 
@@ -64,9 +64,24 @@ void Primitive::initialise(GLenum type, bool colourData)
 // Forget all data, leaving arrays intact
 void Primitive::forgetAll()
 {
+	vertexData_.forgetData();
+	indexData_.forgetData();
+	nDefinedVertices_ = 0;
+}
+
+// Clear all data
+void Primitive::clear()
+{
 	vertexData_.clear();
 	indexData_.clear();
 	nDefinedVertices_ = 0;
+}
+
+// Set chunk increment in underlying arrays
+void Primitive::setArrayChunkIncrement(int chunkIncrement)
+{
+	vertexData_.setChunkIncrement(chunkIncrement);
+	indexData_.setChunkIncrement(chunkIncrement);
 }
 
 // Return number of vertices currently defined in primitive
@@ -105,17 +120,23 @@ void Primitive::updateMesh()
  * Instances
  */
 
-// Flag that this primitive should not use instances (rendering will use vertex arrays)
-void Primitive::setNoInstances()
+// Return which type of instances this primitive uses
+PrimitiveInstance::InstanceType Primitive::instanceType()
 {
-	useInstances_ = false;
+	return instanceType_;
+}
+
+// Set which type of instances this primitive uses
+void Primitive::setInstanceType(PrimitiveInstance::InstanceType instanceType)
+{
+	instanceType_ = instanceType;
 }
 
 // Push instance of primitive
 void Primitive::pushInstance(const QOpenGLContext* context)
 {
 	// Does this primitive use instances?
-	if (!useInstances_) return;
+	if (instanceType_ == PrimitiveInstance::NoInstances) return;
 
 	Messenger::enter("Primitive::pushInstance");
 
@@ -253,7 +274,7 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 void Primitive::popInstance(const QOpenGLContext* context)
 {
 	// Does this primitive use instances?
-	if (!useInstances_) return;
+	if (instanceType_ == PrimitiveInstance::NoInstances) return;
 
 	// Grab the QOpenGLFunctions object pointer
 	QOpenGLFunctions* glFunctions = context->functions();
@@ -966,7 +987,7 @@ bool Primitive::beginGL(QOpenGLFunctions* glFunctions)
 	if (nDefinedVertices_ == 0) return false;
 
 	// Check if using instances...
-	if (useInstances_)
+	if (instanceType_ != PrimitiveInstance::NoInstances)
 	{
 		// Grab topmost instance
 		PrimitiveInstance* pi = instances_.last();
@@ -1016,7 +1037,7 @@ void Primitive::sendVBO()
 void Primitive::finishGL(QOpenGLFunctions* glFunctions)
 {
 	// Check if using instances...
-	if (useInstances_)
+	if (instanceType_ != PrimitiveInstance::NoInstances)
 	{
 		// Grab topmost instance
 		PrimitiveInstance* pi = instances_.last();
@@ -1044,7 +1065,7 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 	QOpenGLFunctions* glFunctions = context->functions();
 
 	// Check if using instances...
-	if (useInstances_)
+	if (instanceType_ != PrimitiveInstance::NoInstances)
 	{
 		// Grab topmost instance
 		PrimitiveInstance* pi = instances_.last();
@@ -1080,6 +1101,7 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 	}
 	else
 	{
+		printf("Here we are: nVerts = %i (%i), nIndices = %i\n", vertexData_.nItems(), vertexData_.size(), indexData_.nItems());
 		// Does the vertex data contain colour-per-vertex information?
 		glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, vertexData_.array());
 

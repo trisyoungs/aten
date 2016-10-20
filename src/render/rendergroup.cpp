@@ -29,15 +29,15 @@ ATEN_USING_NAMESPACE
 // Constructor
 RenderGroup::RenderGroup()
 {
-	extraNormalLines_.setNoInstances();
+	extraNormalLines_.setInstanceType(PrimitiveInstance::NoInstances);
 	extraNormalLines_.initialise(GL_LINES, true);
-	extraBoldLines_.setNoInstances();
+	extraBoldLines_.setInstanceType(PrimitiveInstance::NoInstances);
 	extraBoldLines_.initialise(GL_LINES, true);
-	overlayLines_.setNoInstances();
+	overlayLines_.setInstanceType(PrimitiveInstance::NoInstances);
 	overlayLines_.initialise(GL_LINES, true);
-	extraSolidTriangles_.setNoInstances();
+	extraSolidTriangles_.setInstanceType(PrimitiveInstance::NoInstances);
 	extraSolidTriangles_.initialise(GL_TRIANGLES, true);
-	extraWireTriangles_.setNoInstances();
+	extraWireTriangles_.setInstanceType(PrimitiveInstance::NoInstances);
 	extraWireTriangles_.initialise(GL_TRIANGLES, true);
 }
 

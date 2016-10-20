@@ -22,7 +22,9 @@
 #ifndef ATEN_ARRAY_H
 #define ATEN_ARRAY_H
 
-#define CHUNKSIZE 1024*1024
+#define DEFAULTCHUNKSIZE 1024*1024
+#define SMALLCHUNKSIZE 256
+#define MEDIUMCHUNKSIZE 256*256
 
 #include "templates/list.h"
 #include "templates/vector3.h"
@@ -30,10 +32,10 @@
 
 ATEN_BEGIN_NAMESPACE
 
-/*!
- * \short Array
- * \details A simple dynamic Array-style class.
+/*
+ * Array
  */
+
 template <class A> class Array : public ListItem< Array<A> >
 {
 	public:
@@ -43,6 +45,7 @@ template <class A> class Array : public ListItem< Array<A> >
 		array_ = NULL;
 		size_ = 0;
 		nItems_ = 0;
+		chunkIncrement_ = DEFAULTCHUNKSIZE;
 		if (initialSize > 0) createEmpty(initialSize);
 	}
 	Array(const Array<A>& source, int firstIndex, int lastIndex) : ListItem< Array<A> >()
@@ -69,7 +72,7 @@ template <class A> class Array : public ListItem< Array<A> >
 	// Assignment Operator
 	Array<A>& operator=(const Array<A>& source)
 	{
-		clear();
+		forgetData();
 		resize(source.size_);
 		nItems_ = source.nItems_;
 		for (int n=0; n<nItems_; ++n) array_[n] = source.array_[n];
@@ -83,11 +86,12 @@ template <class A> class Array : public ListItem< Array<A> >
 	}
 
 
-	/*!
-	 * \name Array Data
+	/*
+	 * Array Data
 	 */
-	///@{
 	private:
+	// Chunk increment to use for this array
+	int chunkIncrement_;
 	// Current size of Array
 	int size_;
 	// Array data
@@ -135,15 +139,33 @@ template <class A> class Array : public ListItem< Array<A> >
 	{
 		return size_;
 	}
+	// Set current chunk increment to use
+	void setChunkIncrement(int newChunkSize)
+	{
+		chunkIncrement_ = newChunkSize;
+	}
+	// Reset chunk increment to default value
+	void setDefaultChunkIncrement()
+	{
+		chunkIncrement_ = DEFAULTCHUNKSIZE;
+	}
 	// Return data array
 	A* array()
 	{
 		return array_;
 	}
-	// Clear array (set nItems to zero)
-	void clear()
+	// Forget array data (set nItems to zero, leaving arrays intact)
+	void forgetData()
 	{
 		nItems_ = 0;
+	}
+	// Clear array
+	void clear()
+	{
+		if (array_ != NULL) delete[] array_;
+		array_ = NULL;
+		nItems_ = 0;
+		size_ = 0;
 	}
 	// Create empty array of specified size
 	void createEmpty(int size, A value = A())
@@ -169,7 +191,7 @@ template <class A> class Array : public ListItem< Array<A> >
 	// Copy data from source array
 	void copy(const Array<A>& source, int firstIndex, int lastIndex)
 	{
-		clear();
+		forgetData();
 
 		int nItemsToCopy = (lastIndex - firstIndex) + 1;
 		if (nItemsToCopy > 0)
@@ -179,19 +201,17 @@ template <class A> class Array : public ListItem< Array<A> >
 			for (int n=0; n<nItems_; ++n) array_[n] = source.array_[n+firstIndex];
 		}
 	}
-	///@}
 
 
-	/*!
-	 * \brief Set/Get
+	/*
+	 * Set/Get
 	 */
-	///@{
 	public:
 	// Add new element to array
 	void add(A data)
 	{
 		// Is current array large enough?
-		if (nItems_ == size_) resize(size_+CHUNKSIZE);
+		if (nItems_ == size_) resize(size_+chunkIncrement_);
 
 		// Store new value
 		array_[nItems_++] = data;
@@ -278,13 +298,12 @@ template <class A> class Array : public ListItem< Array<A> >
 	{
 		 for (int n=0; n<nItems_; ++n) array_[n] = array_[n] < 1.0e-3 ? 0.0 : log(array_[n]);
 	}
-	///@}
 };
 
-/*!
- * \short Array2D
- * \details A simple two-dimensional array class
+/*
+ * Array2D
  */
+
 template <class A> class Array2D : public ListItem< Array2D<A> >
 {
 	public:
@@ -349,10 +368,9 @@ template <class A> class Array2D : public ListItem< Array2D<A> >
 	}
 
 
-	/*!
-	 * \name Data
+	/*
+	 * Data
 	 */
-	///@{
 	private:
 	// Linear array of objects
 	A* array_;
@@ -489,7 +507,6 @@ template <class A> class Array2D : public ListItem< Array2D<A> >
 	{
 		return array_;
 	}
-	///@}
 };
 	
 ATEN_END_NAMESPACE

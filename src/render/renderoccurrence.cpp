@@ -113,27 +113,23 @@ void RenderOccurrence::sendToGL(Matrix& modelTransformationMatrix)
 	QOpenGLFunctions* glFunctions = QOpenGLContext::currentContext()->functions();
 	if (!primitive_.beginGL(glFunctions)) return;
 
-	// Grab topmost instance, instance type, and list index
-	PrimitiveInstance::InstanceType instanceType = PrimitiveInstance::instanceType();
-	PrimitiveInstance* instance = primitive_.lastInstance();
-	GLuint listID = instance->listObject();
-
-	// Loop over chunks
-	for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
+	// Render based on instance type
+	if (primitive_.instanceType() == PrimitiveInstance::VBOInstance)
 	{
-		// If there are no defined items in this chunk, may as well break early...
-		if (chunk->nDefined() == 0) break;
-
-		// Grab arrays from chunk...
-		const Matrix* localTransforms = chunk->localTransform();
-
-		// Loop over occurrences in chunk
-		Matrix A;
-		if (primitive_.colouredVertexData())
+		// Loop over chunks
+		for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 		{
-			// Draw primitives
-			if (instanceType == PrimitiveInstance::VBOInstance)
+			// If there are no defined items in this chunk, may as well break early...
+			if (chunk->nDefined() == 0) break;
+
+			// Grab arrays from chunk...
+			const Matrix* localTransforms = chunk->localTransform();
+
+			// Loop over occurrences in chunk
+			Matrix A;
+			if (primitive_.colouredVertexData())
 			{
+				// Draw primitives
 				for (int n=0; n<chunk->nDefined(); ++n)
 				{
 					A = modelTransformationMatrix * localTransforms[n];
@@ -141,43 +137,109 @@ void RenderOccurrence::sendToGL(Matrix& modelTransformationMatrix)
 					primitive_.sendVBO();
 				}
 			}
-			else if (instanceType == PrimitiveInstance::ListInstance)
+			else
 			{
+				// Grab colour arrays
+				const GLfloat* r = chunk->red();
+				const GLfloat* g = chunk->green();
+				const GLfloat* b = chunk->blue();
+				const GLfloat* a = chunk->alpha();
+
+				// Draw primitives
 				for (int n=0; n<chunk->nDefined(); ++n)
 				{
+					glColor4f(r[n], g[n], b[n], a[n]);
+					A = modelTransformationMatrix * localTransforms[n];
+					glLoadMatrixd(A.matrix());
+					primitive_.sendVBO();
+				}
+			}
+		}
+	}
+	else if (primitive_.instanceType() == PrimitiveInstance::ListInstance)
+	{
+		// Grab topmost instance
+		PrimitiveInstance* instance = primitive_.lastInstance();
+		GLuint listID = instance->listObject();
+
+		// Loop over chunks
+		for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
+		{
+			// If there are no defined items in this chunk, may as well break early...
+			if (chunk->nDefined() == 0) break;
+
+			// Grab arrays from chunk...
+			const Matrix* localTransforms = chunk->localTransform();
+
+			// Loop over occurrences in chunk
+			Matrix A;
+			if (primitive_.colouredVertexData())
+			{
+				// Draw primitives
+				for (int n=0; n<chunk->nDefined(); ++n)
+				{
+					A = modelTransformationMatrix * localTransforms[n];
+					glLoadMatrixd(A.matrix());
+					glCallList(listID);
+				}
+			}
+			else
+			{
+				// Grab colour arrays
+				const GLfloat* r = chunk->red();
+				const GLfloat* g = chunk->green();
+				const GLfloat* b = chunk->blue();
+				const GLfloat* a = chunk->alpha();
+
+				// Draw primitives
+				for (int n=0; n<chunk->nDefined(); ++n)
+				{
+					glColor4f(r[n], g[n], b[n], a[n]);
 					A = modelTransformationMatrix * localTransforms[n];
 					glLoadMatrixd(A.matrix());
 					glCallList(listID);
 				}
 			}
 		}
-		else
+	}
+	else
+	{
+		// Loop over chunks
+		for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 		{
-			// Grab colour arrays
-			const GLfloat* r = chunk->red();
-			const GLfloat* g = chunk->green();
-			const GLfloat* b = chunk->blue();
-			const GLfloat* a = chunk->alpha();
+			// If there are no defined items in this chunk, may as well break early...
+			if (chunk->nDefined() == 0) break;
 
-			// Draw primitives
-			if (instanceType == PrimitiveInstance::VBOInstance)
+			// Grab arrays from chunk...
+			const Matrix* localTransforms = chunk->localTransform();
+
+			// Loop over occurrences in chunk
+			Matrix A;
+			if (primitive_.colouredVertexData())
 			{
+				// Draw primitives
 				for (int n=0; n<chunk->nDefined(); ++n)
 				{
-					glColor4f(r[n], g[n], b[n], a[n]);
 					A = modelTransformationMatrix * localTransforms[n];
 					glLoadMatrixd(A.matrix());
-					primitive_.sendVBO();
+					primitive_.sendToGL(QOpenGLContext::currentContext());
 				}
 			}
-			else if (instanceType == PrimitiveInstance::ListInstance)
+			else
 			{
+				// Grab colour arrays
+				const GLfloat* r = chunk->red();
+				const GLfloat* g = chunk->green();
+				const GLfloat* b = chunk->blue();
+				const GLfloat* a = chunk->alpha();
+
+				// Draw primitives
 				for (int n=0; n<chunk->nDefined(); ++n)
 				{
 					glColor4f(r[n], g[n], b[n], a[n]);
 					A = modelTransformationMatrix * localTransforms[n];
 					glLoadMatrixd(A.matrix());
-					glCallList(listID);
+					primitive_.sendToGL(QOpenGLContext::currentContext());
 				}
 			}
 		}

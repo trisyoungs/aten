@@ -274,36 +274,69 @@ void PrimitiveSet::recreatePrimitives()
 	Task* task = Messenger::initialiseTask("(Re)generating primitives", 33);
 
 	// Clear old primitives
-	atom_.forgetAll();
-	selectedAtom_.forgetAll();
+	atom_.clear();
+	selectedAtom_.clear();
 	for (n=0; n<Prefs::nDrawStyles; ++n)
 	{
 		for (m=0; m<Bond::nBondTypes; ++m)
 		{
-			bonds_[n][m].forgetAll();
-			selectedBonds_[n][m].forgetAll();
+			bonds_[n][m].clear();
+			selectedBonds_[n][m].clear();
 		}
 	}
-	tubeRing_.forgetAll();
-	segmentedTubeRing_.forgetAll();
-	lineRing_.forgetAll();
-	segmentedLineRing_.forgetAll();
-	sphere_.forgetAll();
-	cube_.forgetAll();
-	originCube_.forgetAll();
-	cylinder_.forgetAll();
-	cone_.forgetAll();
-	wireCube_.forgetAll();
-	crossedCube_.forgetAll();
-	cellAxes_[0].forgetAll();
-	cellAxes_[1].forgetAll();
-	cellAxes_[2].forgetAll();
-	rotationGlobe_.forgetAll();
-	rotationGlobeAxes_[0].forgetAll();
-	rotationGlobeAxes_[1].forgetAll();
-	rotationGlobeAxes_[2].forgetAll();
-	halo_.forgetAll();
-	pickedAtom_.forgetAll();
+	tubeRing_.clear();
+	segmentedTubeRing_.clear();
+	lineRing_.clear();
+	segmentedLineRing_.clear();
+	sphere_.clear();
+	cube_.clear();
+	originCube_.clear();
+	cylinder_.clear();
+	cone_.clear();
+	wireCube_.clear();
+	crossedCube_.clear();
+	cellAxes_[0].clear();
+	cellAxes_[1].clear();
+	cellAxes_[2].clear();
+	rotationGlobe_.clear();
+	rotationGlobeAxes_[0].clear();
+	rotationGlobeAxes_[1].clear();
+	rotationGlobeAxes_[2].clear();
+	halo_.clear();
+	pickedAtom_.clear();
+
+	// Set chunk increment sizes
+	atom_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	selectedAtom_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	for (n=0; n<Prefs::nDrawStyles; ++n)
+	{
+		for (m=0; m<Bond::nBondTypes; ++m)
+		{
+			bonds_[n][m].setArrayChunkIncrement(SMALLCHUNKSIZE);
+			selectedBonds_[n][m].setArrayChunkIncrement(SMALLCHUNKSIZE);
+		}
+	}
+	tubeRing_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	segmentedTubeRing_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	lineRing_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	segmentedLineRing_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	sphere_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cube_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	originCube_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cylinder_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cone_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	wireCube_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	crossedCube_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cellAxes_[0].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cellAxes_[1].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	cellAxes_[2].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	rotationGlobe_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	rotationGlobeAxes_[0].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	rotationGlobeAxes_[1].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	rotationGlobeAxes_[2].setArrayChunkIncrement(SMALLCHUNKSIZE);
+	halo_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+	pickedAtom_.setArrayChunkIncrement(SMALLCHUNKSIZE);
+
 	Messenger::incrementTaskProgress(task);
 
 	// To clean up following code, grab radii here
