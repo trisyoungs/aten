@@ -253,6 +253,7 @@ int PluginStore::nMethodPlugins() const
 {
 	int count = 0;
 	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) count += methodPlugins_[n].nItems();
+	return count;
 }
 
 // Show list of valid method plugin nicknames

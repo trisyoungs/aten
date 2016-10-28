@@ -177,6 +177,8 @@ class MethodPluginInterface : public BasePluginInterface
 				}
 			}
 		}
+
+		return result;
 	}
 
 
