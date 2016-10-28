@@ -490,12 +490,13 @@ bool EPSRAtoModelPlugin::exportData()
 					int count = 1;
 					for (int n=0; n<rotationAtoms.nItems(); ++n)
 					{
-						rot += QString(" %1").arg(rotationAtoms[n]->item->id()+1, 4);
+						rot += QString("%1").arg(rotationAtoms[n]->item->id()+1, 4);
 						if ((++count)%14 == 0)
 						{
 							count = 0;
 							rot += "\n";
 						}
+						else rot += " ";
 					}
 					rotationalGroups << rot;
 				}
