@@ -486,7 +486,7 @@ bool EPSRAtoModelPlugin::exportData()
 					if (rotationAtoms.nItems() <= 1) continue;
 
 					// Construct ROT entry and add to our list of rotational groups
-					QString rot = QString(" ROT\n %1 %2\n %3").arg(i->id()+1, 4).arg(j->id()+1, 4).arg(rotationAtoms.nItems(), 4);
+					QString rot = QString(" ROT\n %1 %2\n %3 ").arg(i->id()+1, 4).arg(j->id()+1, 4).arg(rotationAtoms.nItems(), 4);
 					int count = 1;
 					for (int n=0; n<rotationAtoms.nItems(); ++n)
 					{
