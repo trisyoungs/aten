@@ -1,6 +1,6 @@
 /*
-        *** GAMESS Model Plugin Functions
-        *** src/plugins/io_gamess/gamess_funcs.cpp
+        *** GAMESS-US Model Plugin Functions
+        *** src/plugins/io_gamessus/gamess_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,16 +19,17 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_gamess/gamess.hui"
+#include "plugins/io_gamessus/gamessus.hui"
 #include "model/model.h"
 
 // Constructor
-GAMESSModelPlugin::GAMESSModelPlugin()
+GAMESSUSModelPlugin::GAMESSUSModelPlugin()
 {
+	// Setup plugin options
 }
 
 // Destructor
-GAMESSModelPlugin::~GAMESSModelPlugin()
+GAMESSUSModelPlugin::~GAMESSUSModelPlugin()
 {
 }
 
@@ -37,9 +38,9 @@ GAMESSModelPlugin::~GAMESSModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* GAMESSModelPlugin::makeCopy() const
+BasePluginInterface* GAMESSUSModelPlugin::makeCopy() const
 {
-	return new GAMESSModelPlugin;
+	return new GAMESSUSModelPlugin;
 }
 
 /*
@@ -47,43 +48,43 @@ BasePluginInterface* GAMESSModelPlugin::makeCopy() const
  */
 
 // Return type of plugin
-PluginTypes::PluginType GAMESSModelPlugin::type() const
+PluginTypes::PluginType GAMESSUSModelPlugin::type() const
 {
 	return PluginTypes::FilePlugin;
 }
 
 // Return category of plugin
-int GAMESSModelPlugin::category() const
+int GAMESSUSModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
-QString GAMESSModelPlugin::name() const
+QString GAMESSUSModelPlugin::name() const
 {
-	return QString("GAMESS (dlputils) 3D probability density");
+	return QString("GAMESS-US input file");
 }
 
 // Nickname of plugin
-QString GAMESSModelPlugin::nickname() const
+QString GAMESSUSModelPlugin::nickname() const
 {
-	return QString("gamess");
+	return QString("gamus");
 }
 
 // Description (long name) of plugin
-QString GAMESSModelPlugin::description() const
+QString GAMESSUSModelPlugin::description() const
 {
-	return QString("Import/export for dlputils GAMESS files");
+	return QString("Import/export for GAMESS-US input files");
 }
 
 // Related file extensions
-QStringList GAMESSModelPlugin::extensions() const
+QStringList GAMESSUSModelPlugin::extensions() const
 {
-	return QStringList() << "gamess";
+	return QStringList() << "inp";
 }
 
 // Exact names
-QStringList GAMESSModelPlugin::exactNames() const
+QStringList GAMESSUSModelPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -93,13 +94,13 @@ QStringList GAMESSModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool GAMESSModelPlugin::canImport() const
+bool GAMESSUSModelPlugin::canImport() const
 {
 	return false;
 }
 
 // Import data from the specified file
-bool GAMESSModelPlugin::importData()
+bool GAMESSUSModelPlugin::importData()
 {
 //filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", extension="trj", glob="*.trj", zmap="name", search="GAMESS VERSION", id=11)
 //{
@@ -729,25 +730,25 @@ bool GAMESSModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool GAMESSModelPlugin::canExport() const
+bool GAMESSUSModelPlugin::canExport() const
 {
 	return false;
 }
 
 // Export data to the specified file
-bool GAMESSModelPlugin::exportData()
+bool GAMESSUSModelPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool GAMESSModelPlugin::importNextPart()
+bool GAMESSUSModelPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool GAMESSModelPlugin::skipNextPart()
+bool GAMESSUSModelPlugin::skipNextPart()
 {
 	return false;
 }
@@ -757,25 +758,25 @@ bool GAMESSModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool GAMESSModelPlugin::hasImportOptions() const
+bool GAMESSUSModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool GAMESSModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
+bool GAMESSUSModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool GAMESSModelPlugin::hasExportOptions() const
+bool GAMESSUSModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool GAMESSModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
+bool GAMESSUSModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

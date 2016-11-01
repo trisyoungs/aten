@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = gamess.la
+pluginexec_LTLIBRARIES = gamessus.la
 
 # Rules
 .ui.lo:
@@ -16,10 +16,10 @@ pluginexec_LTLIBRARIES = gamess.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f gamess.cpp
+	-rm -f gamessus.cpp
 
 # AKF Model plugin
-gamess_la_SOURCES = gamess_funcs.cpp gamess.hui
-gamess_la_LDFLAGS = -module -shared -avoid-version
+gamessus_la_SOURCES = gamessus_funcs.cpp gamessus.hui
+gamessus_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
