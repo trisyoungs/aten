@@ -96,7 +96,7 @@ QStringList DLP4ModelPlugin::extensions() const
 // Exact names
 QStringList DLP4ModelPlugin::exactNames() const
 {
-    return QStringList() << "CONFIG";
+    return QStringList() << "CONFIG" << "REVCON";
 }
 
 /*

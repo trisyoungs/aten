@@ -508,7 +508,6 @@ NetaLogicNode::~NetaLogicNode()
 {
 }
 
-
 // Validation function (virtual)
 int NetaLogicNode::score(Atom* target, RefList<Atom,int>* nbrs, RefList<Ring,int>* rings, NetaContextNode* context, RefList<Atom,int>& path, int level)
 {
@@ -670,6 +669,7 @@ NetaNode* NetaBoundNode::clone(Neta* newparent)
 	NetaBoundNode* node = new NetaBoundNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
+	node->repeatComparison_ = repeatComparison_;
 	node->nodeType_ = nodeType_;
 	node->allowedElementsAndTypes_ = allowedElementsAndTypes_;
 	node->bondType_ = bondType_;
