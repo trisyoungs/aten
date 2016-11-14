@@ -1,6 +1,6 @@
 /*
-        *** GAMESS Model File Plugin
-        *** src/plugins/io_gamess/gamess.hui
+        *** GAMESSUS Model File Plugin
+        *** src/plugins/io_gamessus/gamess.hui
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GAMESSMODELPLUGIN_H
-#define ATEN_GAMESSMODELPLUGIN_H
+#ifndef ATEN_GAMESSUSMODELPLUGIN_H
+#define ATEN_GAMESSUSMODELPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
 
@@ -29,8 +29,8 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 /* none */
 
-// GAMESS Model Plugin
-class GAMESSModelPlugin : public QObject, public FilePluginInterface
+// GAMESSUS Model Plugin
+class GAMESSUSModelPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
@@ -39,9 +39,9 @@ class GAMESSModelPlugin : public QObject, public FilePluginInterface
 
 	public:
 	// Constructor
-	GAMESSModelPlugin();
+	GAMESSUSModelPlugin();
 	// Destructor
-	~GAMESSModelPlugin();
+	~GAMESSUSModelPlugin();
 
 
 	/*

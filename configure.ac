@@ -173,6 +173,7 @@ src/plugins/io_dlpoly/Makefile
 src/plugins/io_dlputils/Makefile
 src/plugins/io_epsr/Makefile
 src/plugins/io_ff/Makefile
+src/plugins/io_gamessus/Makefile
 src/plugins/io_gromacs/Makefile
 src/plugins/io_mdlmol/Makefile
 src/plugins/io_mopac/Makefile
@@ -189,6 +190,5 @@ src/templates/Makefile
 )
 #src/plugins/io_csd/Makefile
 #src/plugins/io_espresso/Makefile
-#src/plugins/io_gamess/Makefile
 #src/plugins/io_gaussian/Makefile
 #src/plugins/io_siesta/Makefile
