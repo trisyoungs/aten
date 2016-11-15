@@ -1,0 +1,1744 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GAMESSUSExportOptionsDialog</class>
+ <widget class="QDialog" name="GAMESSUSExportOptionsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>756</width>
+    <height>660</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>GAMESS-US Export Options</string>
+  </property>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>573</y>
+     <width>721</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="CONTRLGroup">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>681</width>
+     <height>311</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Job Control ($CONTRL)</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>4</number>
+    </property>
+    <property name="topMargin">
+     <number>4</number>
+    </property>
+    <property name="rightMargin">
+     <number>4</number>
+    </property>
+    <property name="bottomMargin">
+     <number>4</number>
+    </property>
+    <property name="spacing">
+     <number>4</number>
+    </property>
+    <item row="1" column="1" colspan="2">
+     <widget class="QGroupBox" name="PostHFGroup">
+      <property name="title">
+       <string>Post-HF</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Möller-Plesset Level</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Configuration Interaction Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="CICombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CIS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ALDET</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ORMAS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>FSOCI</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GENCI</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GUGA</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Coupled Cluster Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="CCCombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LCCD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CCD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CCSD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CCSD(T)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R-CC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CR-CC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CR-CCL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CCSD(TQ)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CR-CC(Q)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EOM-CCSD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CR-EOM</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CR-EOML</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>IP-EOM2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EA-EOM2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EA-EOM3A</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QGroupBox" name="MethodGroup">
+      <property name="title">
+       <string>Method</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
+       </property>
+       <item>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Run Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="RUNTYPCombo">
+           <property name="currentIndex">
+            <number>4</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>ENERGY</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GRADIENT</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>HESSIAN</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GAMMA</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>OPTIMIZE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>TRUDGE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SADPOINT</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>MEX</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>IRC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>VSCF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DRC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>MD</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GLOBOP</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>OPTFMO</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GRADEXTR</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SURFACE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>G3MP2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>PROP</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>RAMAN</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NACME</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NMR</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>EDA</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>TRANSITN</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>FFIELD</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>TDHF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>TDHFX</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>MAKEFP</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>FMO0</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>SCF Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="SCFTYPCombo">
+           <item>
+            <property name="text">
+             <string>RHF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>UHF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>ROHF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>GVB</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>MCSCF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NONE</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Multiplicity</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="MULTSpin">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>8</number>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Charge</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="CHARGESpin">
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Execution Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="EXETYPCombo">
+           <item>
+            <property name="text">
+             <string>RUN</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CHECK</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DEBUG</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="RELWFNCombo">
+           <item>
+            <property name="text">
+             <string>NONE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>LUT-IOTC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>IOTC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DK</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>RESC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NESC</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="MAXSCFSpin">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="singleStep">
+            <number>5</number>
+           </property>
+           <property name="value">
+            <number>30</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Relativistic Wavefunction</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Max SCF Iterations</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QCheckBox" name="ZMTCheck">
+           <property name="text">
+            <string>Write ZMatrix</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QCheckBox" name="CartesianSymbolsCheck">
+           <property name="text">
+            <string>Use symbols in Cartesian output</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="DFTGroup">
+      <property name="title">
+       <string>DFT</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout_3">
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="GridDFTRadio">
+         <property name="text">
+          <string>Grid-Based</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="GridDFTCombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SLATER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BECKE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GILL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>OPTX</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PW91X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBEX</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VWN1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PZ81</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>P86</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PW91C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBEc</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>OP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BOP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BP86</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GPW91</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBEVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBEOP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>OLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EDF1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PW91</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>revPBE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RPBE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBEsol</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCTH93</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCTH120</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCTH147</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCTH407</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SOGGA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MOHLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97-D</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BHHLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B3PW91</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B3LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B3LYP1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B97-K</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B98</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PBE0</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>X3LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CAMB3LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wB97</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wB97X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wB97X-D</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B2PLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wB97X-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wB97X-2L</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VS98</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PKZB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>tHCTH</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>tHCTHhyb</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BMK</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TPSS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TPSSh</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TPSSm</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>revTPSS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M05</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M05-2X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M06</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M06-L</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M06-2X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M06-HF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M08-HX</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>M08-SO</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="GridFreeDFTRadio">
+         <property name="text">
+          <string>Grid Free</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="GridFreeDFTCombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>XALPHA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SLATER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BECKE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DEPRISTO</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CAMA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HALF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PWLOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BLYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BPWLOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B3LYP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>CAMB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>XVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>XPWLOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SVWN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SPWLOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>WIGNER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>WS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>WIGEXP</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>TDDFT Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="TDDFTCombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EXCITE</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Other Options</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Pseudopotentials</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="ECPTYPCombo">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>READ</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SBKJC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HW</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MCP</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QCheckBox" name="ISPHERECheck">
+         <property name="text">
+          <string>ISPHERE</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>590</y>
+     <width>224</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="CancelButton">
+      <property name="text">
+       <string>&amp;Cancel</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="OKButton">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>&amp;OK</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>330</y>
+     <width>621</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Basis Set ($BASIS)</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="1" colspan="2">
+     <widget class="QComboBox" name="BASISCombo">
+      <property name="currentIndex">
+       <number>4</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>MINI</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MIDI</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>STO</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>N21</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>N31</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>N311</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>DZV</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>DH</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>TZV</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCD</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCT</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCQ</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CC5</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CC6</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCD</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCT</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCQ</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACC5</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACC6</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCDC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCTC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CCQC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CC5C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CC6C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCDC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCTC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACCQC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACC5C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ACC6C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PC0</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PC1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PC2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PC3</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PC4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>APC0</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>APC1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>APC2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>APC3</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>APC4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>SBKJC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>HW</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MCP-DZP</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MCP-TZP</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MCP-QZP</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>IMCP-SR1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>IMCP-SR2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>IMCP-NR1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>IMCP-NR2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MNDO</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AM1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>PM3</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QSpinBox" name="NGAUSSSpin">
+      <property name="minimum">
+       <number>3</number>
+      </property>
+      <property name="maximum">
+       <number>6</number>
+      </property>
+      <property name="value">
+       <number>6</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_13">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Basis Set</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="label_17">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Number of Gaussians</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_14">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Additional Functions: D</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="NDFUNCSpin">
+        <property name="maximum">
+         <number>3</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_15">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>P</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="NPFUNCSpin">
+        <property name="maximum">
+         <number>3</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_16">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>F</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="NFFUNCSpin">
+        <property name="maximum">
+         <number>1</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0" colspan="3">
+     <widget class="QCheckBox" name="DIFFSPCheck">
+      <property name="text">
+       <string>Add Diffuse SP</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QCheckBox" name="DIFFSCheck">
+      <property name="text">
+       <string>Add Diffuse S</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QTabWidget" name="OptionsTab">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>420</y>
+     <width>721</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>$SYSTEM</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Tab 2</string>
+    </attribute>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

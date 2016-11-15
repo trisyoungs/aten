@@ -277,7 +277,7 @@ bool MonteCarloVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			ptr->setDisorderNTweaks( newValue.asInteger(result) );
 			break;
 		case (MonteCarloVariable::DisorderRecoveryMaxCycles):
-			ptr->setDisorderMaxCycles( newValue.asInteger(result) );
+			ptr->setDisorderRecoveryMaxCycles( newValue.asInteger(result) );
 			break;
 		case (MonteCarloVariable::DisorderRecoveryMaxTweaks):
 			ptr->setDisorderRecoveryMaxTweaks( newValue.asInteger(result) );
