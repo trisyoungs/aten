@@ -156,14 +156,14 @@ const FilePluginInterface* FileSelectorWidget::selectedPlugin()
 {
 	// Get selected filter from combo box data
 	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentData());
-	return refItem->item;
+	return (refItem ? refItem->item : NULL);
 }
 
 // Return reference to the options for the selected file plugin
 KVMap& FileSelectorWidget::selectedPluginOptions()
 {
 	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentData());
-	return refItem->data;
+	return (refItem ? refItem->item : NULL);
 }
 
 // Add favourite place to list
@@ -186,7 +186,7 @@ const QStringList FileSelectorWidget::favourites()
 
 /*
  * Widget Functions
-*/
+ */
 
 // Update widgets, e.g. after directory change
 void FileSelectorWidget::updateWidgets()
@@ -371,7 +371,7 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 
 	// Grab data for selected item
 	RefListItem<FilePluginInterface,KVMap>* ri = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->itemData(index));
-	FilePluginInterface* plugin = ri->item;
+	FilePluginInterface* plugin = (ri ? ri->item : NULL);
 
 	if (!plugin)
 	{
