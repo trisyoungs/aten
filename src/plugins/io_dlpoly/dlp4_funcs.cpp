@@ -31,7 +31,7 @@ DLP4ModelPlugin::DLP4ModelPlugin()
 {
 	// Setup plugin options
 	pluginOptions_.add("shiftCell", "true");
-	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
+	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
 	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
 	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
 	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
