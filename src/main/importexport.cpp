@@ -212,7 +212,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, const FilePluginInt
 
 			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
 			if (atenWindow_->saveModelDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, filename);
-			else plugin = atenWindow_->saveModelDialog().selectedPlugin();
+			if (!plugin) plugin = atenWindow_->saveModelDialog().selectedPlugin();
 
 			if (!plugin)
 			{
@@ -435,7 +435,7 @@ bool Aten::exportExpression(Model* sourceModel, QString filename, const FilePlug
 
 			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
 			if (atenWindow_->saveExpressionDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, filename);
-			else plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
+			if (!plugin) plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
 
 			if (!plugin)
 			{

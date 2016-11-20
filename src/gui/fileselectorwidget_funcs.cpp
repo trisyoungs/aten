@@ -162,8 +162,9 @@ const FilePluginInterface* FileSelectorWidget::selectedPlugin()
 // Return reference to the options for the selected file plugin
 KVMap& FileSelectorWidget::selectedPluginOptions()
 {
+	static KVMap dummyMap;
 	RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->currentData());
-	return (refItem ? refItem->item : NULL);
+	return (refItem ? refItem->data : dummyMap);
 }
 
 // Add favourite place to list
