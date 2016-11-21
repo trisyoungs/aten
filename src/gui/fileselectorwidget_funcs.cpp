@@ -46,6 +46,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 	connect(ui.FavouritesTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(favouritesContextMenuRequested(QPoint)));
 
 	refreshing_ = false;
+	updatePluginFromFilename_ = false;
 }
 
 /*
@@ -123,12 +124,16 @@ void FileSelectorWidget::setSelectedFilename(QString filename)
 	// Check to see if the filename exists in the current dir
 	QModelIndex index = fileSystemModel_.index(currentDirectory_.filePath(filename));
 	if (index.isValid()) ui.FileView->selectRow(index.row());
+
+	// Update selected plugin
+	if (updatePluginFromFilename_) updatePluginFromCurrentFilename();
 }
 
 // Set current plugin selection
 void FileSelectorWidget::setSelectedPlugin(const FilePluginInterface* plugin)
 {
-	for (int n=0; n<ui.FilterCombo->count(); ++n)
+	if (plugin == NULL) ui.FilterCombo->setCurrentIndex(ui.FilterCombo->count()-1);
+	else for (int n=0; n<ui.FilterCombo->count(); ++n)
 	{
 		RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->itemData(n));
 		FilePluginInterface* filterPlugin = refItem->item;
@@ -183,6 +188,37 @@ void FileSelectorWidget::clearFavourites()
 const QStringList FileSelectorWidget::favourites()
 {
 	return favourites_;
+}
+
+// Set whether to attempt to determine and update file type from selected filename
+void FileSelectorWidget::setUpdatePluginFromFilename(bool b)
+{
+	updatePluginFromFilename_ = b;
+
+	if (updatePluginFromFilename_) updatePluginFromCurrentFilename();
+}
+
+// Update plugin choice from current filename
+FilePluginInterface* FileSelectorWidget::updatePluginFromCurrentFilename()
+{
+	if (refreshing_ || (selectedFilenames_.count() == 0)) return NULL;
+
+	// Loop over FilterCombo items, which contain pointers to the associated FilePluginInterfaces
+	for (int n=0; n<ui.FilterCombo->count(); ++n)
+	{
+		RefListItem<FilePluginInterface,KVMap>* refItem = (RefListItem<FilePluginInterface,KVMap>*) VariantPointer< RefListItem<FilePluginInterface,KVMap> >(ui.FilterCombo->itemData(n));
+		if (!refItem) continue;
+
+		FilePluginInterface* plugin = refItem->item;
+
+		if (plugin->isRelatedToFile(selectedFilenames_.first()))
+		{
+			setSelectedPlugin(plugin);
+			return plugin;
+		}
+	}
+
+	return NULL;
 }
 
 /*
@@ -363,7 +399,11 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 	selectedFilenames_.clear();
 	for (int n = 0; n < parser.nArgs(); ++n) selectedFilenames_ << parser.argc(n);
 
-	emit(selectionValid(selectedFilenames_.count() > 0));
+	// If we are updating filter/plugin based on the name, do it here
+	bool formatOk = true;
+	if (updatePluginFromFilename_ && (selectedFilenames_.count() > 0)) formatOk = updatePluginFromCurrentFilename() != NULL;
+	
+	emit(selectionValid((selectedFilenames_.count() > 0) && formatOk));
 }
 
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)

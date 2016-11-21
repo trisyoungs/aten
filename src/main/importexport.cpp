@@ -210,10 +210,8 @@ bool Aten::exportModel(Model* sourceModel, QString filename, const FilePluginInt
 		{
 			filename = atenWindow_->saveModelDialog().selectedFilenames().at(0);
 
-			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
-			if (atenWindow_->saveModelDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, filename);
-			if (!plugin) plugin = atenWindow_->saveModelDialog().selectedPlugin();
-
+			// Grab current plugin from dialog
+			plugin = atenWindow_->saveModelDialog().selectedPlugin();
 			if (!plugin)
 			{
 				QMessageBox::critical(atenWindow_, "Export Failed", "Export format could not be determined.\nCheck the file extension, or explicitly select a type.");
@@ -433,10 +431,8 @@ bool Aten::exportExpression(Model* sourceModel, QString filename, const FilePlug
 		{
 			filename = atenWindow_->saveExpressionDialog().selectedFilenames().at(0);
 
-			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
-			if (atenWindow_->saveExpressionDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, filename);
-			if (!plugin) plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
-
+			// Grab current plugin from dialog
+			plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
 			if (!plugin)
 			{
 				QMessageBox::critical(atenWindow_, "Export Failed", "Export format could not be determined.\nCheck the file extension, or explicitly select a type.");

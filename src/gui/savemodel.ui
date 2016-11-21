@@ -123,9 +123,9 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="ExtensionDeterminesTypeCheck">
+    <widget class="QCheckBox" name="NameDeterminesTypeCheck">
      <property name="text">
-      <string>Determine format of saved file by extension, if provided</string>
+      <string>Determine format of saved file by name</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

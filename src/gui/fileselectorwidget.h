@@ -68,6 +68,9 @@ class FileSelectorWidget : public QWidget
 	QStringList selectedFilenames_;
 	// Favourite places list
 	static QStringList favourites_;
+	// Whether to attempt to determine and update file type from selected filename
+	bool updatePluginFromFilename_;
+
 
 	public:
 	// Set mode of file selector
@@ -94,6 +97,10 @@ class FileSelectorWidget : public QWidget
 	static void addFavourite(QString place);
 	// Return favourite places list
 	static const QStringList favourites();
+	// Set whether to attempt to determine and update file type from selected filename
+	void setUpdatePluginFromFilename(bool b);
+	// Update plugin choice from current filename
+	FilePluginInterface* updatePluginFromCurrentFilename();
 
 
 	/*

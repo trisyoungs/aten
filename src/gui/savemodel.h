@@ -59,6 +59,7 @@ class AtenSaveModel : public QDialog, public AtenFileDialog
 	void on_PluginOptionsButton_clicked(bool checked);
 	void on_SaveButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
+	void on_NameDeterminesTypeCheck_clicked(bool checked);
 
 	public:
 	// Execute dialog
@@ -67,8 +68,7 @@ class AtenSaveModel : public QDialog, public AtenFileDialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog
 	FilePluginStandardExportOptions standardExportOptions();
-	// Return whether extension by type is selected
-	bool extensionDeterminesType();
+
 
 	/*
 	 * Signals / Slots

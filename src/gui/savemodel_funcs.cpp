@@ -29,6 +29,8 @@ AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefL
 	ui.setupUi(this);
 
 	setFileSelectorWidget(ui.FileSelector, startingDirectory, FileSelectorWidget::SaveSingleMode);
+	fileSelectorWidget_->setUpdatePluginFromFilename(ui.NameDeterminesTypeCheck->isChecked());
+	fileSelectorWidget_->ui.FilterCombo->setDisabled(ui.NameDeterminesTypeCheck->isChecked());
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_SaveButton_clicked(bool)));
@@ -75,6 +77,12 @@ void AtenSaveModel::on_CancelButton_clicked(bool checked)
 	reject();
 }
 
+void AtenSaveModel::on_NameDeterminesTypeCheck_clicked(bool checked)
+{
+	fileSelectorWidget_->setUpdatePluginFromFilename(checked);
+	fileSelectorWidget_->ui.FilterCombo->setDisabled(checked);
+}
+
 // Execute dialog
 bool AtenSaveModel::execute(int currentPluginsLogPoint, QString currentFileName, const FilePluginInterface* plugin)
 {
@@ -98,12 +106,6 @@ FilePluginStandardExportOptions AtenSaveModel::standardExportOptions()
 	FilePluginStandardExportOptions options;
 
 	return options;
-}
-
-// Return whether extension by type is selected
-bool AtenSaveModel::extensionDeterminesType()
-{
-	return ui.ExtensionDeterminesTypeCheck->isChecked();
 }
 
 /*
