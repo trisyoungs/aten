@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <QStringList>
+#include <QByteArray>
 
 // Constructor
 Task::Task()
@@ -256,7 +257,8 @@ void Task::printLineToMessages()
 	}
 	else
 	{
-		Messenger::print(commandStdOutput_.data());
+		QString line(commandStdOutput_);
+		Messenger::print(line);
 		commandStdOutput_.clear();
 	}
 }
