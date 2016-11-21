@@ -69,3 +69,9 @@ const FilePluginInterface* AtenFileDialog::selectedPlugin()
 {
 	return fileSelectorWidget_->selectedPlugin();
 }
+
+// Return selected file plugin options map
+KVMap& AtenFileDialog::selectedPluginOptions()
+{
+	return fileSelectorWidget_->selectedPluginOptions();
+}

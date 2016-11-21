@@ -100,7 +100,7 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openModelDialog_.selectedFilenames();
 		const FilePluginInterface* plugin = openModelDialog_.selectedPlugin();
-		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), plugin, openModelDialog_.standardImportOptions());
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), plugin, openModelDialog_.standardImportOptions(), openModelDialog_.selectedPluginOptions());
 
 		aten().setSingleModelVisible(aten().currentModel());
 

@@ -114,7 +114,7 @@ bool XYZModelPlugin::importData()
 	do
 	{
 		// Do we need to switch to reading the file as a trajectory?
-		if ((nModels == 1) && (pluginOptions_.value("readMultipleAsTrajectory") == "true"))
+		if ((nModels == 1) && toBool(pluginOptions_.value("readMultipleAsTrajectory")))
 		{
 			readAsTrajectory = true;
 

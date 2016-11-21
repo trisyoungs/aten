@@ -65,6 +65,8 @@ class AtenFileDialog
 	QStringList selectedFilenames();
 	// Return selected file plugin
 	const FilePluginInterface* selectedPlugin();
+	// Return selected file plugin options map
+	KVMap& selectedPluginOptions();
 	// Return map of standard import options from dialog
 	virtual FilePluginStandardImportOptions standardImportOptions() = 0;
 	// Return map of standard export options from dialog

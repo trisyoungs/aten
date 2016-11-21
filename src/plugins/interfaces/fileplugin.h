@@ -676,8 +676,8 @@ class FilePluginInterface : public BasePluginInterface
 	// Return conversion of supplied QString to bool
 	static bool toBool(QString string)
 	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
+		if ((string.toInt() == 1) || (string.toLower() == "true") || (string.toLower() == "on")) return true;
+		return false;
 	}
 };
 
