@@ -88,7 +88,7 @@ QString DLP4TrajectoryPlugin::description() const
 // Related file extensions
 QStringList DLP4TrajectoryPlugin::extensions() const
 {
-	return QStringList() << "HISTORY" << "HISu" << "HISf";
+	return QStringList() << "HISTORY" << "HISu" << "HISf"<<"dlpolyhist";
 }
 
 // Exact names
