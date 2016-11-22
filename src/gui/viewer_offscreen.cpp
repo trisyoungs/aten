@@ -123,7 +123,7 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight, bool transparent)
 
 	// Grab clear colour
 	GLfloat col[4];
-	prefs.copyColour(Prefs::BackgroundColour, col);
+	prefs.copyColour(prefs.currentBackgroundColour(), col);
 
 	// Set tile size
 	int tileWidth = 512;
