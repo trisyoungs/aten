@@ -322,7 +322,7 @@ const Element ElementMap::defaultElements_[] = {
 void ElementMap::initialise(Aten* aten)
 {
 	// Private variables
-	aten_ = NULL;
+	aten_ = aten;
 
 	// Determine number of defined elements, and double-check against MAXELEMENTSant
 	nElements_ = sizeof(defaultElements_) / sizeof(defaultElements_[0]);
@@ -576,6 +576,7 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt)
 ForcefieldAtom* ElementMap::forcefieldAtom(QString name)
 {
 	ForcefieldAtom* ffa;
+
 	for (Forcefield* ff = aten_->forcefields(); ff != NULL; ff = ff->next)
 	{
 		ffa = ff->findType(name);
