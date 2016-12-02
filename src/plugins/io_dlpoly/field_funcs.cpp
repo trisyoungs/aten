@@ -29,7 +29,10 @@
 DLPExpressionPlugin::DLPExpressionPlugin()
 {
 	// Setup plugin options
-	/* none */
+	pluginOptions_.add("assumeUA", "false");
+	pluginOptions_.add("massTolerance", "0.01");
+	pluginOptions_.add("chargeTolerance", "0.01");
+	pluginOptions_.add("reduceTypes", "true");
 }
 
 // Destructor
@@ -100,7 +103,7 @@ QStringList DLPExpressionPlugin::exactNames() const
 // Return whether this plugin can import data
 bool DLPExpressionPlugin::canImport() const
 {
-	return false;
+	return true;
 }
 
 // Import data from the specified file
@@ -114,7 +117,7 @@ bool DLPExpressionPlugin::importData()
 // 	double mass, charge, qdiff, data[10];
 // 	string discard, s, keyword, form, name, names[100];
 // 
-// 	# Main dialog creation function
+// 	# Main dialog creation functionreduceTypes
 // 	void createDefaultDialog(Dialog ui)
 // 	{
 // 		ui.title = "DL_POLY FIELD Import Options";
@@ -128,174 +131,303 @@ bool DLPExpressionPlugin::importData()
 // 	# Execute dialog and grab values
 // 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
 // 	Dialog ui = defaultDialog();
-// 	int assumeua = ui.asInteger("assumeua"); 
-// 	int reducetypes = ui.asInteger("reducetypes");
-// 	double masstol = ui.asDouble("masstol");
-// 	double qtol = ui.asDouble("qtol");
-// 
-// 	# First line is header information - use as FF name
-// 	getLine(s);
-// 	ff = newFF(s);
-// 
-// 	# Next line is energy unit
-// 	readLine(discard, s);
-// 	if ((lowerCase(s) != "kj") && (lowerCase(s) != "kcal") && (lowerCase(s) != "ev")) error("FIELD file energy unit (%s) is not compatible with Aten.\n", s);
-// 	units(s);
-// 
-// 	# Next is number of molecules specified in the 
-// 	readLine(s, nmols);
-// 	if (lowerCase(s) != "molecules") error("Didn't find 'molecules' directive where expected.");
-// 	else printf("Number of molecule types specified in FIELD file : %i\n", nmols);
-// 
-// 	# Loop over molecule types
-// 	for (mol=1; mol<=nmols; ++mol)
-// 	{
-// 		# First line is pattern name, next is number of molecules (neither of which we care about)
-// 		getLine(s);
-// 		skipLine();
-// 
-// 		# Number of atoms per molecule of this type we need...
-// 		readLine(keyword,natoms);
-// 		printf(" -- %i atoms in molecule '%s'\n", natoms, s);
-// 		n = 0;
-// 		do
-// 		{
-// 			readLine(name, mass, charge, nrepeat);
-// 			if (nrepeat == 0) nrepeat = 1;
-// 			# if 'reducetypes == TRUE' check previous atomtype definitions for ones with same name and charge (within tolerance)
-// 			if (reducetypes)
-// 			{
-// 				for (at1 in ff.atomTypes)
-// 				{
-// 					qdiff = abs(charge - at1.charge);
-// 					if ((at1.name == name) && (qdiff < qtol)) break;
-// 				}
-// 			}
-// 			else null(at1);
-// 			# if 'at1 != NULL' this type already exists and we should move on....Otherwise, create a new type
-// 			if (at1 == NULL)
-// 			{
-// 				at1 = typeDef(ff.nAtomTypes,name,name,elementByMass(mass, masstol),"");
-// 				at1.charge = charge;
-// 			}
-// 			# Increase atom counter and store names for upcoming bound definitions
-// 			for (m=0; m<nrepeat; ++m) names[++n] = name;
-// 		} while (n < natoms);
-// 
-// 		# Next sections are optional, and terminated by 'end' keyword
-// 		while (1)
-// 		{
-// 			readLine(keyword, nbound);
-// 			keyword = lowerCase(keyword);
-// 			if (keyword == "bonds")
-// 			{
-// 				printf("Found 'bonds' block...\n");
-// 				for (n=1; n<=nbound; ++n)
-// 				{
-// 					readLine(form, i, j, data[1], data[2], data[3], data[4]);
-// 					form = lowerCase(form);
-// 					# Does a bond definition between atom names i and j already exist?
-// 					if (ff.findBond(names[i], names[j]))
-// 					{
-// 						printf("Bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
-// 						continue;
-// 					}
-// 					// Create new definition
-// 					if (form == "harm") bondDef("harmonic", names[i], names[j], data[1], data[2]);
-// 					else if (form == "morse") bondDef("morse", names[i], names[j], data[1], data[3], data[2]);
-// 					else printf("Functional form of bond term (%s) is not present in Aten.\n", form);
-// 				}
-// 			}
-// 			else if (keyword == "constraints")
-// 			{
-// 				printf("Found 'constraints' block...\n");
-// 				for (n=1; n<=nbound; ++n)
-// 				{
-// 					readLine(i, j, data[1]);
-// 					# Does a constraint bond definition between atom names i, and j already exist?
-// 					if (ff.findBond(names[i], names[j]))
-// 					{
-// 						printf("Constraint bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
-// 						continue;
-// 					}
-// 					// Create new definition
-// 					bondDef("constraint", names[i], names[j], 1000.0, data[1]);
-// 				}
-// 			}
-// 			else if (keyword == "angles")
-// 			{
-// 				printf("Found 'angles' block...\n");
-// 				for (n=1; n<=nbound; ++n)
-// 				{
-// 					readLine(form, i, j, k, data[1], data[2], data[3], data[4]);
-// 					form = lowerCase(form);
-// 					# Does an angle definition between atom names i, j, and k already exist?
-// 					if (ff.findAngle(names[i], names[j], names[k]))
-// 					{
-// 						printf("Angle %s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k]);
-// 						continue;
-// 					}
-// 					// Create new definition
-// 					if (form == "harm") angleDef("harmonic", names[i], names[j], names[k], data[1], data[2]);
-// 					else if (form == "cos") angleDef("cos", names[i], names[j], names[k], data[1], data[3], data[2]);
-// 					else if (form == "hcos") angleDef("harmcos", names[i], names[j], names[k], data[1], data[2]);
-// 					else printf("Functional form of angle term (%s) is not present in Aten.\n", form);
-// 				}
-// 			}
-// 			else if (keyword == "dihedrals")
-// 			{
-// 				printf("Found 'dihedrals' block...\n");
-// 				for (n=1; n<=nbound; ++n)
-// 				{
-// 					readLine(form, i, j, k, l, data[1], data[2], data[3], data[4], data[5]);
-// 					form = lowerCase(form);
-// 					# Does a torsion definition between atom names i, j, k, and l already exist?
-// 					if (ff.findTorsion(names[i], names[j], names[k], names[l]))
-// 					{
-// 						printf("Torsion %s-%s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k], names[l]);
-// 						continue;
-// 					}
-// 					// Create new definition
-// 					null(ffb);
-// 					if (form == "cos") ffb = torsionDef("cos", names[i], names[j], names[k], names[l], data[1], data[3], data[2]);
-// 					else if (form == "cos3") ffb = torsionDef("cos3", names[i], names[j], names[k], names[l], data[1], data[2], data[3]);
-// 					else if (form == "opls") ffb = torsionDef("cos3c", names[i], names[j], names[k], names[l], data[1], data[2], data[3], data[4]);
-// 					else printf("Functional form of torsion term (%s) is not present in Aten.\n", form);
-// 					if (ffb != NULL) { ffb.eScale = data[4]; ffb.vScale = data[5]; }
-// 				}
-// 			}
-// 			else if (keyword == "finish") break;
-// 			else printf("Unrecognised keyword in FIELD file - '%s'\n", keyword);
-// 		}
-// 	}
-// 
-// 	# VDW Specification
-// 	readLine(keyword, nvdw);
-// 	if (lowerCase(keyword) != "vdw") printf("Didn't find 'vdw' section where expected. VDW information not converted.");
-// 	else
-// 	{
-// 		printf("Found 'vdw' block...\n");
-// 		for (n=0; n<nvdw; ++n)
-// 		{
-// 			# Read in each line of data, searching for those where the first atomtype is equal to the second
-// 			readLine(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
-// 			if (names[1] != names[2]) continue;
-// 			# We may have added multiple types of the same name earlier, so search the whole list explicitly
-// 			for (at1 in ff.atomTypes)
-// 			{
-// 				if (at1.name != names[1]) continue;
-// 				# Check form
-// 				if (form == "lj") interDef("lj", at1.id, at1.charge, data[1], data[2]);
-// #				else if (form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
-// 				else printf("Functional form of VDW term (%s) is not present in Aten.\n",form);
-// 			}
-// 		}
-// 	}
-// 
-// 	# Perform necessary tasks
-// 	finaliseFF();
 
-	return false;
+
+	// Get options
+	bool reduceTypes = FilePluginInterface::toBool(pluginOptions().value("reduceTypes"));
+	double chargeTolerance = pluginOptions().value("chargeTolerance").toDouble();
+	double massTolerance = pluginOptions().value("massTolerance").toDouble();
+
+	// First line is header information - use as FF name
+	QString line;
+	if (!fileParser_.readLine(line)) return false;
+
+	// Create a new forcefield
+	Forcefield* newFF = createForcefield(line);
+
+	// Next line is energy unit
+	if (!fileParser_.parseLine() ) return false;
+	QString unitString = fileParser_.argc(1).toLower();
+	Prefs::EnergyUnit unit = Prefs::energyUnit(unitString);
+	if (unit == Prefs::nEnergyUnits)
+	{
+		Messenger::error("FIELD file energy unit (%s) is not compatible with Aten.", qPrintable(unitString));
+		return false;
+	}
+
+	// Next is number of molecule types described in the file
+	if (!fileParser_.parseLine() ) return false;
+	if (fileParser_.argc(0).toLower() != "molecules")
+	{
+		Messenger::error("Didn't find 'molecules' directive where expected.");
+		return false;
+	}
+	int nMols = fileParser_.argi(1);
+	Messenger::print("Number of molecule types specified in FIELD file : %i", nMols);
+
+	// Loop over molecule types
+	for (int mol=0; mol<nMols; ++mol)
+	{
+		// First line is pattern name, next is number of molecules (neither of which we care about)
+		if (!fileParser_.readLine(line)) return false;
+		Messenger::print("Reading molecule type '%s'...", qPrintable(line));
+		if (!fileParser_.skipLines(1)) return false;
+
+		// Read number of atoms per molecule of this type
+		if (!fileParser_.parseLine()) return false;
+		if (fileParser_.argc(0).toLower() != "atoms")
+		{
+			Messenger::error("Didn't find 'atoms' directive where expected.");
+			return false;
+		}
+		int nAtoms = fileParser_.argi(1);
+		Messenger::print("  -- This molecule type contains %i atoms", nAtoms);
+
+		// Loop over atoms
+		QStringList atomNames;
+		int n = 0;
+		while (n < nAtoms)
+		{
+			// Read each atom definition:   Name    Mass   Charge   nRepeat
+			if (!fileParser_.parseLine()) return false;
+			QString typeName = fileParser_.argc(0);
+			double typeMass = fileParser_.argd(1);
+			double typeCharge = fileParser_.argd(2);
+			int nRepeat = fileParser_.argi(3) == 0 ? 1 : fileParser_.argi(3);
+			
+			// If reduceTypes is enabled, check previous atomtype definitions for ones with same name and charge (within tolerance)
+			ForcefieldAtom* ffa = NULL;
+			if (reduceTypes)
+			{
+				// Loop over atom types already defined in the forcefield, and find one with similar name and charge to this one
+				for (ffa = newFF->types(); ffa != NULL; ffa = ffa->next)
+				{
+					if (ffa->name() != typeName) continue;
+					if (fabs(typeCharge - ffa->charge()) < chargeTolerance) break; 
+				}
+			}
+
+			// If ffa is NULL this type already exists and we should move on.
+			// Otherwise, create a new type.
+			if (ffa == NULL)
+			{
+				// Need to find element based on the mass we were given....
+				int element = ElementMap::z(typeMass, massTolerance);
+				if (element == 0) Messenger::warn("Couldn't determine element for atom %i, whose mass is %f", n+1, typeMass);
+				ffa = newFF->addType(-1, typeName, typeName, element, "");
+				ffa->setCharge(typeCharge);
+			}
+
+			// Increase atom counter and store names for upcoming bound definitions
+			for (int m=0; m<nRepeat; ++m, ++n) atomNames << typeName;
+		}
+
+		// Next sections are optional, and terminated by 'end' keyword
+		int ii, jj, kk, ll;
+		QString formString;
+		ForcefieldBound* ffb;
+		while (!fileParser_.eofOrBlank())
+		{
+			if (!fileParser_.parseLine()) return false;
+			QString keyword = fileParser_.argc(0).toLower();
+			if (keyword == "bonds")
+			{
+				Messenger::print("Found 'bonds' block...");
+				for (n=0; n<fileParser_.argi(1); ++n)
+				{
+					if (!fileParser_.parseLine()) return false;
+					formString = fileParser_.argc(0).toLower();
+					BondFunctions::BondFunction bf = BondFunctions::bondFunction(formString);
+					if (bf == BondFunctions::nBondFunctions)
+					{
+						Messenger::print("Functional form of bond term (%s) is not present in Aten.", qPrintable(formString));
+						continue;
+					}
+					ii = fileParser_.argi(1) - 1; 
+					jj = fileParser_.argi(2) - 1;
+
+					// Does a bond definition between atom names i and j already exist?
+					if (newFF->findBond(atomNames.at(ii), atomNames.at(jj)))
+					{
+						Messenger::print("Bond %s-%s has already been created in the forcefield. Skipped...", qPrintable(atomNames.at(ii)), qPrintable(atomNames.at(jj)));
+						continue;
+					}
+
+					// Create new definition
+					ffb = newFF->addBond(bf, atomNames.at(ii), atomNames.at(jj));
+					if (bf == BondFunctions::Harmonic)
+					{
+						ffb->setParameter(BondFunctions::HarmonicK, fileParser_.argd(3));
+						ffb->setParameter(BondFunctions::HarmonicEq, fileParser_.argd(4));
+					}
+					else if (bf == BondFunctions::Morse)
+					{
+						ffb->setParameter(BondFunctions::MorseD, fileParser_.argd(3));
+						ffb->setParameter(BondFunctions::MorseK, fileParser_.argd(5));
+						ffb->setParameter(BondFunctions::MorseEq, fileParser_.argd(4));
+					}
+				}
+			}
+			else if (keyword == "constraints")
+			{
+				Messenger::print("Found 'constraints' block...");
+				for (n=0; n<fileParser_.argi(1); ++n)
+				{
+					if (!fileParser_.parseLine()) return false;
+					ii = fileParser_.argi(0) - 1; 
+					jj = fileParser_.argi(0) - 1;
+
+					// Does a constraint bond definition between atom names i and j already exist?
+					if (newFF->findBond(atomNames.at(ii), atomNames.at(jj)))
+					{
+						Messenger::print("Constraint bond %s-%s has already been created in the forcefield. Skipped...", qPrintable(atomNames.at(ii)), qPrintable(atomNames.at(jj)));
+						continue;
+					}
+
+					// Create new definition
+					newFF->addBond(BondFunctions::Constraint, atomNames.at(ii), atomNames.at(jj));
+					ffb->setParameter(BondFunctions::HarmonicK, 1000.0);
+					ffb->setParameter(BondFunctions::HarmonicEq, fileParser_.argd(2));
+				}
+			}
+			else if (keyword == "angles")
+			{
+				Messenger::print("Found 'angles' block...");
+				for (n=0; n<fileParser_.argi(1); ++n)
+				{
+					if (!fileParser_.parseLine()) return false;
+					formString = fileParser_.argc(0).toLower();
+					AngleFunctions::AngleFunction af = AngleFunctions::angleFunction(formString);
+					if (af == AngleFunctions::nAngleFunctions)
+					{
+						Messenger::print("Functional form of angle term (%s) is not present in Aten.", qPrintable(formString));
+						continue;
+					}
+					ii = fileParser_.argi(1) - 1; 
+					jj = fileParser_.argi(2) - 1;
+					kk = fileParser_.argi(3) - 1;
+					//readLine(form, i, j, k, data[1], data[2], data[3], data[4]);
+
+					// Does an angle definition between atom names i, j, and k already exist?
+					if (newFF->findAngle(atomNames.at(ii), atomNames.at(jj), atomNames.at(kk)))
+					{
+						Messenger::print("Angle %s-%s-%s has already been created in the forcefield. Skipped...", qPrintable(atomNames.at(ii)), qPrintable(atomNames.at(jj)), qPrintable(atomNames.at(kk)));
+						continue;
+					}
+
+					// Create new definition
+					ffb = newFF->addAngle(af, atomNames.at(ii), atomNames.at(jj), atomNames.at(kk));
+					if (af == AngleFunctions::Harmonic)
+					{
+						ffb->setParameter(AngleFunctions::HarmonicK, fileParser_.argd(4));
+						ffb->setParameter(AngleFunctions::HarmonicEq, fileParser_.argd(5));
+					}
+					else if (af == AngleFunctions::Cosine)
+					{
+						ffb->setParameter(AngleFunctions::CosineK, fileParser_.argd(4));
+						ffb->setParameter(AngleFunctions::CosineN, fileParser_.argd(6));
+						ffb->setParameter(AngleFunctions::CosineEq, fileParser_.argd(5));
+					}
+					else if (af == AngleFunctions::HarmonicCosine)
+					{
+						ffb->setParameter(AngleFunctions::HarmonicCosineK, fileParser_.argd(4));
+						ffb->setParameter(AngleFunctions::HarmonicCosineEq, fileParser_.argd(5));
+					}
+				}
+			}
+			else if (keyword == "dihedrals")
+			{
+				Messenger::print("Found 'dihedrals' block...");
+				for (n=0; n<fileParser_.argi(1); ++n)
+				{
+					if (!fileParser_.parseLine()) return false;
+					formString = fileParser_.argc(0).toLower();
+					TorsionFunctions::TorsionFunction tf = TorsionFunctions::torsionFunction(formString);
+					if (formString == "opls") tf = TorsionFunctions::Cos3C;
+					if (tf == TorsionFunctions::nTorsionFunctions)
+					{
+						Messenger::print("Functional form of torsion term (%s) is not present in Aten.", qPrintable(formString));
+						continue;
+					}
+					ii = fileParser_.argi(1) - 1; 
+					jj = fileParser_.argi(2) - 1;
+					kk = fileParser_.argi(3) - 1;
+					ll = fileParser_.argi(4) - 1;
+// 					readLine(form, i, j, k, l, data[1], data[2], data[3], data[4], data[5]);
+
+					// Does a torsion definition between atom names i, j, and k already exist?
+					if (newFF->findTorsion(atomNames.at(ii), atomNames.at(jj), atomNames.at(kk), atomNames.at(ll)))
+					{
+						Messenger::print("Torsion  %s-%s-%s-%s has already been created in the forcefield. Skipped...", qPrintable(atomNames.at(ii)), qPrintable(atomNames.at(jj)), qPrintable(atomNames.at(kk)), qPrintable(atomNames.at(ll)));
+						continue;
+					}
+
+					// Create new definition
+					ffb = newFF->addTorsion(tf, atomNames.at(ii), atomNames.at(jj), atomNames.at(kk), atomNames.at(ll));
+					if (tf == TorsionFunctions::Cosine)
+					{
+						ffb->setParameter(TorsionFunctions::CosineK, fileParser_.argd(5));
+						ffb->setParameter(TorsionFunctions::CosineN, fileParser_.argd(7));
+						ffb->setParameter(TorsionFunctions::CosineEq, fileParser_.argd(6));
+					}
+					else if (tf == TorsionFunctions::Cos3)
+					{
+						ffb->setParameter(TorsionFunctions::Cos3K1, fileParser_.argd(5));
+						ffb->setParameter(TorsionFunctions::Cos3K2, fileParser_.argd(6));
+						ffb->setParameter(TorsionFunctions::Cos3K3, fileParser_.argd(7));
+					}
+					else if (tf == TorsionFunctions::Cos3C)
+					{
+						ffb->setParameter(TorsionFunctions::Cos3CK0, fileParser_.argd(5));
+						ffb->setParameter(TorsionFunctions::Cos3CK1, fileParser_.argd(6));
+						ffb->setParameter(TorsionFunctions::Cos3CK2, fileParser_.argd(7));
+						ffb->setParameter(TorsionFunctions::Cos3CK3, fileParser_.argd(7));
+					}
+					if (tf != TorsionFunctions::nTorsionFunctions)
+					{
+						ffb->setElecScale(fileParser_.argd(8));
+						ffb->setVdwScale(fileParser_.argd(9));
+					}
+				}
+			}
+			else if (keyword == "finish") break;
+			else Messenger::warn("Unrecognised keyword in FIELD file - '%s'", qPrintable(keyword));
+		}
+	}
+
+	// VDW Specification
+	if (!fileParser_.parseLine()) return false;
+	if (fileParser_.argc(0).toLower() != "vdw") Messenger::warn("Didn't find 'vdw' section where expected. VDW information not converted.");
+	else
+	{
+		Messenger::print("Found 'vdw' block...");
+		for (int n=0; n<fileParser_.argi(1); ++n)
+		{
+			// Read in each line of data, searching for those where the first atomtype is equal to the second
+			if (!fileParser_.parseLine()) return false;
+			QString nameI = fileParser_.argc(0);
+// 			readLine(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
+			if (nameI != fileParser_.argc(1)) continue;
+
+			// We may have added multiple types of the same name earlier, so search the whole list explicitly
+			for (ForcefieldAtom* ffa = newFF->types(); ffa != NULL; ffa = ffa->next)
+			{
+				if (ffa->name() != nameI) continue;
+
+				// Check functional form
+				if (fileParser_.argc(2) == "lj")
+				{
+					ffa->setVdwForm(VdwFunctions::Lj); 
+					ffa->setParameter(VdwFunctions::LjEpsilon, fileParser_.argd(3));
+					ffa->setParameter(VdwFunctions::LjSigma, fileParser_.argd(4));
+// 					interDef("lj", at1.id, at1.charge, data[1], data[2]);
+				}
+				else Messenger::warn("Functional form of VDW term (%s) is not present in Aten.", qPrintable(fileParser_.argc(2)));
+			}
+		}
+	}
+
+	return true;
 }
 
 // Return whether this plugin can export data

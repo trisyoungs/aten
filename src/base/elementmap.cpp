@@ -395,6 +395,13 @@ int ElementMap::z(QString symbol)
 	return 0;
 }
 
+// Return Z of element with corresponding mass (within tolerance)
+int ElementMap::z(double targetMass, double tolerance)
+{
+	for (int n=0; n<nElements_; ++n) if (fabs(elements_[n].atomicMass - targetMass) < tolerance) return n;
+	return 0;
+}
+
 // Convert string from Z to element number
 int ElementMap::numberToZ(QString number)
 {

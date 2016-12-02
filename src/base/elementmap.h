@@ -93,6 +93,8 @@ class ElementMap
 	static void addMapping(int element, QString names);
 	// Return Z of specified element symbol
 	static int z(QString symbol);
+	// Return Z of element with corresponding mass (within tolerance)
+	static int z(double targetMass, double tolerance = 0.01);
 	// Convert string from Z to element number
 	static int numberToZ(QString number);
 	// Convert string from alpha to element number
