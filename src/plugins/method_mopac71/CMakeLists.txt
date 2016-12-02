@@ -107,7 +107,7 @@ target_include_directories(mopac71opt PRIVATE
 #
 
 if(UNIX AND NOT APPLE)
-install(TARGETS mopac71mwthod mopac71control mopac71opt
+install(TARGETS mopac71method mopac71control mopac71opt
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
 )
