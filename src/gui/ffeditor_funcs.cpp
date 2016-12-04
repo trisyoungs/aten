@@ -68,7 +68,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget* parent) : QDialog(parent)
 	
 	// Set item delegates for columns
 	int n;
-	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, ElementMap::nElements(), 1));
+	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this));
 	ui.FFEditorAtomsTable->setItemDelegateForColumn(AtomColumn::Charge, new TDoubleSpinDelegate(this));
 	for (n=AtomColumn::Data1; n<=AtomColumn::Data10; ++n) ui.FFEditorAtomsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
 	for (n=BondColumn::Data1; n<=BondColumn::Data10; ++n) ui.FFEditorBondsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
@@ -119,7 +119,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	{
 		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
-		item = new QTableWidgetItem(ElementMap::symbol(ffa->neta()->characterElement()));
+		item = new QTableWidgetItem(ElementMap::symbol(ffa->element()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Element, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Name, item);
@@ -420,7 +420,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 	// Set new data based on the column edited
 	QString text;
 	ForcefieldAtom* old;
-	int n, returnvalue;
+	int n, returnvalue, z;
 	switch (column)
 	{
 		// Forcefield TypeId
@@ -440,7 +440,12 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			break;
 		// Character element
 		case (TypeColumn::Element):
-// 			ffa->setName(qPrintable(w->text()));
+			z = ElementMap::alphaToZ(w->text());
+			ffa->setElement(z);
+			ffa->neta()->setCharacterElement(z);
+
+			// Set widget text back to reflect conversion
+			w->setText(ElementMap::symbol(ffa->element()));
 			break;
 		// Type name
 		case (TypeColumn::Name):
@@ -452,7 +457,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			break;
 		// NETA description
 		case (TypeColumn::NETAString):
-			// 			ffa->setName(qPrintable(w->text()));   //TODO
+			printf("EDITING NETA STRING IN THIS WAY IS NOT IMPLEMENTED YET.\n");
 			break;
 		// Type (text) description
 		case (TypeColumn::Description):
@@ -461,6 +466,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 		default:
 			break;
 	}
+
 	updating_ = false;
 }
 
