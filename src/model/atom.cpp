@@ -256,7 +256,7 @@ void Model::clearAtoms()
 	Atom* i = atoms_.first();
 	while (i != NULL)
 	{
-		deleteAtom(i);
+		deleteAtom(i, true);
 		i = atoms_.first();
 	}
 	Messenger::exit("Model::clearAtoms");
