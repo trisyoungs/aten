@@ -140,31 +140,43 @@ bool DLPExpressionPlugin::importData()
 
 	// First line is header information - use as FF name
 	QString line;
-	if (!fileParser_.readLine(line)) return false;
-
+  Forcefield* newFF;
+	if (!fileParser_.readLine(line)) {
+	  newFF = createForcefield(QString("unnamed field"));
+  }else{
+	  newFF = createForcefield(line);
+  }
 	// Create a new forcefield
-	Forcefield* newFF = createForcefield(line);
 
-	// Next line is energy unit
-	if (!fileParser_.parseLine() ) return false;
-	QString unitString = fileParser_.argc(1).toLower();
-	Prefs::EnergyUnit unit = Prefs::energyUnit(unitString);
-	if (unit == Prefs::nEnergyUnits)
-	{
-		Messenger::error("FIELD file energy unit (%s) is not compatible with Aten.", qPrintable(unitString));
-		return false;
+	// Next meaningful line is energy units
+	if (!fileParser_.parseLine(Parser::StripComments+Parser::SkipBlanks) ) return false;
+  QString word = fileParser_.argc(0).toLower(); 
+  if (word == "units"){
+    QString unitString = fileParser_.argc(1).toLower();
+   	Prefs::EnergyUnit unit = Prefs::energyUnit(unitString);
+    if (unit == Prefs::nEnergyUnits)
+  	{
+	  	Messenger::error("FIELD file energy unit (%s) is not compatible with Aten.", qPrintable(unitString));
+	  	return false;
+    }
+  }
+
+  int nMols;
+	// Next is number of molecule types described or multipolar data section in the file
+	if (!fileParser_.parseLine(Parser::StripComments+Parser::SkipBlanks)) return false;
+  word = fileParser_.argc(0).toLower(); 
+
+  if ((word == "mult")||(word=="multipolar")) {
+  	if (!fileParser_.parseLine(Parser::StripComments+Parser::SkipBlanks)) return false;
+  //more stuff may need to be read from here but last line needs to be a reading
+  }
+	if (fileParser_.argc(0).toLower() == "molecules"){
+	  nMols = fileParser_.argi(1);
+    Messenger::print("Number of molecule types specified in FIELD file : %i", nMols);
+  } else {
+  	Messenger::error("Didn't find 'molecules' directive where expected.");
+	  return false;
 	}
-
-	// Next is number of molecule types described in the file
-	if (!fileParser_.parseLine() ) return false;
-	if (fileParser_.argc(0).toLower() != "molecules")
-	{
-		Messenger::error("Didn't find 'molecules' directive where expected.");
-		return false;
-	}
-	int nMols = fileParser_.argi(1);
-	Messenger::print("Number of molecule types specified in FIELD file : %i", nMols);
-
 	// Loop over molecule types
 	for (int mol=0; mol<nMols; ++mol)
 	{
