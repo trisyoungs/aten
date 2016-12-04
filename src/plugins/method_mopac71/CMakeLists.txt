@@ -1,4 +1,4 @@
-if(MOPACPLUGIN)
+if(BUILD_MOPACPLUGIN)
 
 #
 # Main MOPAC 7.1 Method Plugin
@@ -77,7 +77,7 @@ set(mopac71opt_MOC_HDRS
 QT5_WRAP_CPP(mopac71opt_MOC_SRCS ${mopac71opt_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(mopac71opt_UIS
-  opttoptions.ui
+  optoptions.ui
 )
 QT5_WRAP_UI(mopac71opt_UIS_H ${mopac71opt_UIS})
 
@@ -94,7 +94,7 @@ set_target_properties(mopac71opt PROPERTIES
    COMPILE_DEFINITIONS "QT_PLUGIN"
    PREFIX ""
 )
-
+target_link_libraries(mopac71opt mopac71f90)
 target_include_directories(mopac71opt PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
@@ -118,4 +118,4 @@ endif(UNIX AND NOT APPLE)
 #
 add_subdirectory(mopac7.1)
 
-endif(MOPACPLUGIN)
+endif()
