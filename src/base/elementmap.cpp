@@ -540,11 +540,15 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt)
 			// Then, try alpha conversion
 			result = alphaToZ(query);
 			if (result != -1) break;
-			// Then, try name conversion
+			// Conversion to atomtype name in loaded FF
+			result = ffToZ(query);
+			if (result != -1) break;
+			// Single alpha character conversion
+			result = singleAlphaToZ(query);
+			if (result != -1) break;
+			// Finally, try name conversion
 			result = nameToZ(query);
 			if (result != -1) break;
-			// Finally, try FF conversion
-			result = ffToZ(query);
 			break;
 		// Name search
 		case (ElementMap::NameZMap):
