@@ -58,17 +58,17 @@ const char* ElementMap::zMapType(ElementMap::ZMapType zm)
 }
 
 /*
-// Default Element Data
-// Element radii taken from:
-//	"Covalent radii revisited", 
-//	B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez
-//	Dalton Trans., 2008 (DOI: 10.1039/b801115j)
-//	Notes: High-Spin radii taken for 1st transition elements, sp3 value taken for Carbon. Bk and beyond set to 1.50.
-//
-// Lutetium and Lawrencium are assigned to group 3, with Lanthanum and Actinium the first elements in the lanthanide and actinide series.
-*/
+ * Default Element Data
+ * Element radii taken from:
+ *	"Covalent radii revisited", 
+ *	B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez
+ *	Dalton Trans., 2008 (DOI: 10.1039/b801115j)
+ *	Notes: High-Spin radii taken for 1st transition elements, sp3 value taken for Carbon. Bk and beyond set to 1.50.
+ *
+ * Lutetium and Lawrencium are assigned to group 3, with Lanthanum and Actinium the first elements in the lanthanide and actinide series.
+ */
 
-//	  Z	Mass  		Name         		Symbol			Group	Radius  RGBA		
+//	  Z	Mass  		Name         		Symbol			Group	Radius  RGBA
 const Element ElementMap::defaultElements_[] = {
 	{ 0,	0.000,		"Dummy","DUMMY",	"XX","XX",		0,	0.00,	{ 0.5,0.5,0.5,1.0 },
 		{ 0,0,0,0,0,0,0,0,0 },	{ 0,0,0,0,0,0,0,0,0 } },

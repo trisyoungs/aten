@@ -109,30 +109,6 @@ bool DLPExpressionPlugin::canImport() const
 // Import data from the specified file
 bool DLPExpressionPlugin::importData()
 {
-// 	# Variable declaration
-// 	Forcefield ff;
-// 	FFBound ffb;
-// 	FFAtom at1, at2;
-// 	int i, j, k, l, m, n, natoms, nmols, mol, nrepeat, nbound, nvdw;
-// 	double mass, charge, qdiff, data[10];
-// 	string discard, s, keyword, form, name, names[100];
-// 
-// 	# Main dialog creation functionreduceTypes
-// 	void createDefaultDialog(Dialog ui)
-// 	{
-// 		ui.title = "DL_POLY FIELD Import Options";
-// 		widget group, w;
-// 		ui.verticalFill = TRUE;
-// 		ui.addCheck("assumeua", "Assume United Atom", 0);
-// 		ui.addCheck("reducetypes", "Reduce Types", 1);
-// 		ui.addDoubleSpin("masstol", "Mass Tolerance", 0.0, 1.0, 0.01, 0.01);
-// 		ui.addDoubleSpin("qtol", "Charge Tolerance", 0.0, 1.0, 0.01, 0.01);
-// 	}
-// 	# Execute dialog and grab values
-// 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
-// 	Dialog ui = defaultDialog();
-
-
 	// Get options
 	bool reduceTypes = FilePluginInterface::toBool(pluginOptions().value("reduceTypes"));
 	double chargeTolerance = pluginOptions().value("chargeTolerance").toDouble();
