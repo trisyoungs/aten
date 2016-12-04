@@ -22,7 +22,6 @@
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
-// #include "gui/selectfilter.h"
 #include "gui/ffeditor.h"
 #include <QFileDialog>
 
@@ -35,12 +34,14 @@ void AtenWindow::updateForcefieldsPanel(Model* sourceModel)
 
 	// Forcefields list
 	ui.ForcefieldsList->clear();
-	int n = 0;
-	for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next)
+	int count = 0;
+	for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next, ++count)
 	{
-		ui.ForcefieldsList->addItem(ff->name());
-		if (ff == aten_.currentForcefield()) ui.ForcefieldsList->setCurrentRow(n);
-		++n;
+		QListWidgetItem* item = new QListWidgetItem(ff->name());
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		item->setToolTip(QString("File: '%1'").arg(ff->filename()));
+		ui.ForcefieldsList->addItem(item);
+		if (ff == aten_.currentForcefield()) ui.ForcefieldsList->setCurrentRow(count);
 	}
 	ui.ForcefieldsManageRemoveButton->setEnabled(currentForcefield);
 	ui.ForcefieldsManageEditButton->setEnabled(currentForcefield);

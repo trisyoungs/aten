@@ -39,6 +39,8 @@ Forcefield::Forcefield() : ListItem<Forcefield>()
 {
 	// Private variables
 	energyUnit_ = Prefs::KiloJoules;
+	plugin_ = NULL;
+
 	// Create _NDEF_ type common to all FFs)
 	ForcefieldAtom* ffa = types_.add();
 	ffa->setParent(this);
@@ -81,6 +83,18 @@ void Forcefield::setFilename(QString filename)
 QString Forcefield::filename()
 {
 	return filename_;
+}
+
+// Sets the plugin used to load the Forcefield
+void Forcefield::setPlugin(FilePluginInterface* plugin)
+{
+	plugin_ = plugin;
+}
+
+// Return the plugin used to load the Forcefield
+FilePluginInterface* Forcefield::plugin() const
+{
+	return plugin_;
 }
 
 // Return internal energy unit of forcefield

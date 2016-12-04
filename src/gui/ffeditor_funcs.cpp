@@ -28,6 +28,7 @@
 #include "gui/tintegerspindelegate.hui"
 #include "ff/forcefield.h"
 #include "model/model.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/forcefieldatom.h"
 #include "base/forcefieldbound.h"
 #include "templates/variantpointer.h"
@@ -106,6 +107,9 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	// Main title
 	ui.FFEditorForcefieldLabel1->setText(ff->name());
 	ui.FFEditorForcefieldLabel2->setText(ff->filename());
+
+	// Save buttons
+	ui.SaveButton->setEnabled(ff->plugin() && ff->plugin()->name() == "Aten Forcefield Format");
 
 	// Types List
 	count = 0;
@@ -370,8 +374,8 @@ void AtenForcefieldEditor::boundFunctionChanged(QComboBox* sender, int i, Forcef
 			if (ffb->type() == ForcefieldBound::UreyBradleyInteraction) updateImpropersLabels(ffb);
 			else updateTorsionsLabels(ffb);
 			break;
-    default:
-      break;
+		default:
+			break;
 	}
 }
 
@@ -453,6 +457,8 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 		// Type (text) description
 		case (TypeColumn::Description):
 			ffa->setDescription(qPrintable(w->text()));
+			break;
+		default:
 			break;
 	}
 	updating_ = false;
@@ -545,6 +551,8 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 			n = column - AtomColumn::Data1;
 			ffa->setParameter(n, atof(qPrintable(w->text())));
 			break;
+		default:
+			break;
 	}
 	updating_ = false;
 }
@@ -627,6 +635,8 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 		case (BondColumn::Data6):
 			n = column - BondColumn::Data1;
 			ffb->setParameter(n, atof(qPrintable(w->text())));
+			break;
+		default:
 			break;
 	}
 	updating_ = false;
@@ -711,6 +721,8 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 		case (AngleColumn::Data6):
 			n = column - AngleColumn::Data1;
 			ffb->setParameter(n, atof(qPrintable(w->text())));
+			break;
+		default:
 			break;
 	}
 	updating_ = false;
@@ -805,6 +817,8 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 			n = column - TorsionColumn::Data1;
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
+		default:
+			break;
 	}
 	updating_ = false;
 }
@@ -884,6 +898,8 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetIte
 			n = column - TorsionColumn::Data1;
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
+		default:
+			break;
 	}
 	updating_ = false;
 }
@@ -961,6 +977,8 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemChanged(QTableWidget
 		case (AngleColumn::Data6):
 			n = column - AngleColumn::Data1;
 			ffb->setParameter(n, atof(qPrintable(w->text())));
+			break;
+		default:
 			break;
 	}
 	updating_ = false;

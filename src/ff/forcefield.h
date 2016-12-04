@@ -36,6 +36,7 @@ ATEN_BEGIN_NAMESPACE
 class Atom;
 class ForcefieldAtom;
 class ForcefieldBound;
+class FilePluginInterface;
 
 // Forcefield
 class Forcefield : public ListItem<Forcefield>
@@ -57,6 +58,8 @@ class Forcefield : public ListItem<Forcefield>
 	private:
 	// Title of Forcefield
 	QString name_;
+	// Plugin used to load / save the Forcefield (if any)
+	FilePluginInterface* plugin_;
 	// Filename
 	QString filename_;
 	// Energy unit of the forcefield parameters
@@ -71,6 +74,10 @@ class Forcefield : public ListItem<Forcefield>
 	void setFilename(QString filename);
 	// Return filename
 	QString filename();
+	// Sets the plugin used to load the Forcefield
+	void setPlugin(FilePluginInterface* plugin);
+	// Return the plugin used to load the Forcefield
+	FilePluginInterface* plugin() const;
 	// Return internal energy unit of forcefield
 	Prefs::EnergyUnit energyUnit();
 	// Set internal energy unit of forcefield

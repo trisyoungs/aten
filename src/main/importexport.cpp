@@ -108,7 +108,7 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 
 		// Set source filename and plugin interface used
 		ff->setFilename(filename);
-// 		ff->setPlugin(plugin);
+		ff->setPlugin(plugin);
 
 		// Pass the model pointer to Aten 
 		ownForcefield(ff);
