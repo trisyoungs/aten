@@ -5,7 +5,6 @@ set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "1")
 set(VERSION_PATCH "5")
-
 set(CMAKE_BUILD_TYPE "Release")
 
 cmake_minimum_required(VERSION 2.8.12)
@@ -23,6 +22,8 @@ include(FindREADLINE)
 include(FindBISON)
 include(FindFTGL)
 include(FindGLEXT)
+
+use_cxx11()
 
 # Find required packages for this project
 find_package(Qt5Widgets REQUIRED)
@@ -48,10 +49,9 @@ CMAKE_POLICY(SET CMP0020 NEW)
 
 # Options
 # -- MOPAC7 Plugin (requires Fortran)
-option(MOPACPLUGIN "Enable compilation of MOPAC7 method plugin" OFF)
-if(MOPACPLUGIN)
+if(BUILD_MOPACPLUGIN)
   enable_language(Fortran)
-endif(MOPACPLUGIN)
+endif()
 
 # Perform system-specific setup
 # -- Windows
@@ -63,9 +63,6 @@ if(WIN32)
     ${FTGL_INCLUDE_DIRS}
     ${GLEXT_INCLUDE_DIRS}
   )
-
-  # Set some specific C++11 related options here (set_property below does not seem to persist)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
   # Set plugin link libraries
   SET(PLUGIN_LINK_LIBS
@@ -85,6 +82,7 @@ endif(WIN32)
 # -- Unix
 if(UNIX)
   set (target_name aten)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif(UNIX)
 
 # -- OSX
@@ -95,7 +93,7 @@ if(APPLE)
   ADD_DEFINITIONS(-D_MAC)
 
   # Set some specific C++11 related options here (set_property below does not seem to persist)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
