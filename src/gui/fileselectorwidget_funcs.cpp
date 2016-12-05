@@ -109,6 +109,9 @@ void FileSelectorWidget::setCurrentDirectory(QString directory)
 void FileSelectorWidget::clearSelectedFilenames()
 {
 	selectedFilenames_.clear();
+	ui.FileView->clearSelection();
+
+	emit(selectionValid(false));
 }
 
 // Set current filename selection
@@ -127,6 +130,8 @@ void FileSelectorWidget::setSelectedFilename(QString filename)
 
 	// Update selected plugin
 	if (updatePluginFromFilename_) updatePluginFromCurrentFilename();
+
+	emit(selectionValid(selectedFilenames_.count() > 0));
 }
 
 // Set current plugin selection
