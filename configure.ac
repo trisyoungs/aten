@@ -168,6 +168,7 @@ src/plugins/Makefile
 src/plugins/interfaces/Makefile
 src/plugins/io_akf/Makefile
 src/plugins/io_cif/Makefile
+src/plugins/io_chemshell/Makefile
 src/plugins/io_cube/Makefile
 src/plugins/io_dlpoly/Makefile
 src/plugins/io_dlputils/Makefile
