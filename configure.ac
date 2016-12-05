@@ -175,6 +175,7 @@ src/plugins/io_epsr/Makefile
 src/plugins/io_ff/Makefile
 src/plugins/io_gamessus/Makefile
 src/plugins/io_gromacs/Makefile
+src/plugins/io_lammps/Makefile
 src/plugins/io_mdlmol/Makefile
 src/plugins/io_mopac/Makefile
 src/plugins/io_msi/Makefile
