@@ -268,13 +268,13 @@ bool DLPExpressionPlugin::importData()
 				{
 					if (!fileParser_.parseLine()) return false;
 					ii = fileParser_.argi(0) - 1; 
-					jj = fileParser_.argi(0) - 1;
+					jj = fileParser_.argi(1) - 1;
 
 					// Does a constraint bond definition between atom names i and j already exist?
 					if (newFF->findBond(atomNames.at(ii), atomNames.at(jj))) continue;
 
 					// Create new definition
-					newFF->addBond(BondFunctions::Constraint, atomNames.at(ii), atomNames.at(jj));
+					ffb = newFF->addBond(BondFunctions::Constraint, atomNames.at(ii), atomNames.at(jj));
 					ffb->setParameter(BondFunctions::HarmonicK, 1000.0);
 					ffb->setParameter(BondFunctions::HarmonicEq, fileParser_.argd(2));
 
