@@ -20,6 +20,15 @@ MOPAC71 needs to deallocate arrays, or a 'stop' is encountered when trying to re
 Energy minimisation (SD at least) does not appear to converge on energy.
 FileSelector fails to use selected plugin on export if filename doesn't have an extension and the "Determine by extension" check is ticked.
 
+Startup Guide TODO
+==================
+Implement startup 'tour' as a stay-on-top Window, illustrating some key concepts:
+  * Mouse button functions
+  * Space bar to toggle messages / view styles
+  * Long-press on ellipsis buttons
+  * Basic selection and manipulation
+  * Check for correctly-set ATENDATA and ATENPLUGINS?
+
 Plugin TODO
 ===========
 POVray export.
@@ -42,7 +51,6 @@ Add manual typing popup / context menu?
 
 Possible TODO
 =============
-Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Add in calculation of quantities and graphing?
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Make Model::EnergyStore a private member with accessor?
