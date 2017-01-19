@@ -2,6 +2,7 @@
         *** ChemShell Plugin Functions
         *** src/plugins/io_chemshell/chemshell_funcs.cpp
         Copyright T. Youngs 2016-2016
+	Copyright T. W. Keal 2016
 
         This file is part of Aten.
     
@@ -64,7 +65,7 @@ int ChemShellModelPlugin::category() const
 // Name of plugin
 QString ChemShellModelPlugin::name() const
 {
-	return QString("ChemShell Files");
+	return QString("ChemShell fragment files");
 }
 
 // Nickname of plugin
@@ -76,13 +77,13 @@ QString ChemShellModelPlugin::nickname() const
 // Description (long name) of plugin
 QString ChemShellModelPlugin::description() const
 {
-	return QString("Import/export for ChemShell input files");
+	return QString("Import/export for ChemShell fragment files");
 }
 
 // Related file extensions
 QStringList ChemShellModelPlugin::extensions() const
 {
-	return QStringList() << "chemshell";
+	return QStringList() << "c" << "pun" << "coo" ;
 }
 
 // Exact names
@@ -104,11 +105,78 @@ bool ChemShellModelPlugin::canImport() const
 // Import data from the specified file
 bool ChemShellModelPlugin::importData()
 {
+        bool isFragment;
+        ChemShellModelPlugin::BlockName block;
+	int nRecords;
+	int i;
+	Atom *atom;
+	Matrix matrix;
+
+	QString fragmentTitle;
+	
 	// Create a new Model to put our data in
 	createModel();
 
 	// Read in model data
-	// TODO!
+	isFragment = false;
+	while (!fileParser_.eofOrBlank()) {
+	  
+	  // Parse block description
+	  if (!fileParser_.parseLine()) break;
+	  
+	  block = ChemShellModelPlugin::blockName(fileParser_.argc(2));
+	  nRecords = fileParser_.argi(5); 
+
+	  switch (block) {
+	  case (ChemShellModelPlugin::FragmentBlock):
+	    isFragment = true;
+	    break;
+	  case (ChemShellModelPlugin::TitleBlock):
+	    if (!fileParser_.readLine(fragmentTitle)) return false;
+	    targetModel()->setName(fragmentTitle);
+	    break;
+	  case (ChemShellModelPlugin::CoordinatesBlock):
+	    for (i = 0; i < nRecords; ++i) {
+	      if (!fileParser_.parseLine()) break;
+	      atom = createAtom(targetModel(), fileParser_.argc(0), fileParser_.arg3d(1)*ANGBOHR);
+	    }
+	    break;
+	  case (ChemShellModelPlugin::AtomChargesBlock):
+	    for (i = 0; i < nRecords; ++i) {
+	      if (!fileParser_.parseLine()) break;
+	      atom = targetModel()->atom(i);
+	      atom->setCharge(fileParser_.argd(0));
+	    }
+	    break;	    
+	  case (ChemShellModelPlugin::CellVectorsBlock):
+	    for (i = 0; i < nRecords; ++i) {
+	      if (!fileParser_.parseLine()) break;
+	      matrix.setColumn(i, fileParser_.arg3d(0)*ANGBOHR, 0.0);
+	    }
+	    targetModel()->setCell(matrix);
+	    break;	    
+	  case (ChemShellModelPlugin::ConnectivityBlock):
+	    for (i = 0; i < nRecords; ++i) {
+	      if (!fileParser_.parseLine()) break;	      
+	      targetModel()->bondAtoms(fileParser_.argi(0)-1, fileParser_.argi(1)-1, Bond::Single);
+	    }
+	    break;
+	  case (ChemShellModelPlugin::nBlockNames):
+	    if (isFragment) {
+	      Messenger::print("Unrecognised block '" + fileParser_.argc(2) + \
+			       "' in ChemShell fragment file '" + fileParser_.filename() + "'. Ignoring it...");
+	      for (i = 0; i < nRecords; ++i) {
+		if (!fileParser_.parseLine()) break;
+	      }
+	    } else {
+	      /* The first block should be named fragment */
+	      Messenger::print("Error: not a ChemShell fragment file!");
+	      return false;
+	    }
+	    break;
+	  }
+
+	}
 
 	return true;
 }
@@ -122,6 +190,57 @@ bool ChemShellModelPlugin::canExport() const
 // Export data to the specified file
 bool ChemShellModelPlugin::exportData()
 {
+        bool hasCharges;
+        double tiny;
+
+  	// Get the current model pointer containing the data we are to export
+	Model* sourceModel = targetModel();
+
+	// Header
+	if (!fileParser_.writeLine("block = fragment records = 0")) return false;
+	if (!fileParser_.writeLine("block = title records = 1")) return false;
+	if (!fileParser_.writeLine(sourceModel->name())) return false;
+
+	// Atom coordinates
+	if (!fileParser_.writeLineF("block = coordinates records = %d", sourceModel->nAtoms())) return false;
+        for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+	  if (!fileParser_.writeLineF("%s  %20.14e %20.14e %20.14e ", ElementMap::symbol(i->element()),
+				      i->r().x/ANGBOHR, i->r().y/ANGBOHR, i->r().z/ANGBOHR)) return false;
+	}
+
+	// Atom charges
+        hasCharges = false;
+        tiny = 1.0e-10;
+  	// As far as I'm aware there is no flag to check that charges have been set. Add one later?
+	for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+          if (abs(i->charge()) > tiny) {
+            hasCharges = true;
+            break;
+          }
+        }
+        if (hasCharges) {
+          if (!fileParser_.writeLineF("block = atom_charges records = %d", sourceModel->nAtoms())) return false;
+          for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+            if (!fileParser_.writeLineF("%20.10f", i->charge())) return false;
+          }
+        }
+	
+	// Cell vectors
+	if (sourceModel->isPeriodic()) {
+	  Matrix axes = sourceModel->cell().axes();
+	  // TODO: 2D case
+	  if (!fileParser_.writeLineF("block = cell_vectors records = 3")) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[0]/ANGBOHR, axes[1]/ANGBOHR, axes[2]/ANGBOHR)) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[4]/ANGBOHR, axes[5]/ANGBOHR, axes[6]/ANGBOHR)) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[8]/ANGBOHR, axes[9]/ANGBOHR, axes[10]/ANGBOHR)) return false;
+	}
+	
+	// Connectivity
+	if (!fileParser_.writeLineF("block = connectivity records = %d", sourceModel->nBonds())) return false;
+	for (Bond* b = sourceModel->bonds(); b != NULL; b = b->next) {
+	  if (!fileParser_.writeLineF("%d %d", b->atomI()->id()+1, b->atomJ()->id()+1)) return false;
+	}
+
 	return true;
 }
 
@@ -165,4 +284,17 @@ bool ChemShellModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 	ChemShellExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
+}
+
+/*
+ * ChemShell functions
+ */
+
+// Block enum
+ChemShellModelPlugin::BlockName ChemShellModelPlugin::blockName(QString s)
+{
+  static QStringList blockNames = QStringList() << "fragment" << "title" << "coordinates" << "atom_charges" << "cell_vectors" << "connectivity";
+  
+  for (int i = 0; i < ChemShellModelPlugin::nBlockNames; ++i) if (s == blockNames.at(i)) return (ChemShellModelPlugin::BlockName) i;
+  return ChemShellModelPlugin::nBlockNames;
 }

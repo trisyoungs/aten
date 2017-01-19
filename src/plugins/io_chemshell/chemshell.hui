@@ -2,6 +2,7 @@
         *** ChemShell Model Plugin
         *** src/plugins/io_chemshell/chemshell.hui
         Copyright T. Youngs 2016-2016
+	Copyright T. W. Keal 2016
 
         This file is part of Aten.
     
@@ -102,6 +103,15 @@ class ChemShellModelPlugin : public QObject, public FilePluginInterface
 	bool hasExportOptions() const;
 	// Show export options dialog
 	bool showExportOptionsDialog(KVMap& targetOptions) const;
+
+	/*
+	 * ChemShell functions
+	 */
+	private:
+	// Punch file block names
+	enum BlockName { FragmentBlock, TitleBlock, CoordinatesBlock, AtomChargesBlock, CellVectorsBlock, ConnectivityBlock, nBlockNames };
+	// Return punch file block name from string
+	BlockName blockName(QString s);
 };
 
 ATEN_END_NAMESPACE
