@@ -169,7 +169,7 @@ bool ChemShellModelPlugin::importData()
 		if (!fileParser_.parseLine()) break;
 	      }
 	    } else {
-	      /* the first block should be named fragment */
+	      /* The first block should be named fragment */
 	      Messenger::print("Error: not a ChemShell fragment file!");
 	      return false;
 	    }
@@ -190,6 +190,57 @@ bool ChemShellModelPlugin::canExport() const
 // Export data to the specified file
 bool ChemShellModelPlugin::exportData()
 {
+        bool hasCharges;
+        double tiny;
+
+  	// Get the current model pointer containing the data we are to export
+	Model* sourceModel = targetModel();
+
+	// Header
+	if (!fileParser_.writeLine("block = fragment records = 0")) return false;
+	if (!fileParser_.writeLine("block = title records = 1")) return false;
+	if (!fileParser_.writeLine(sourceModel->name())) return false;
+
+	// Atom coordinates
+	if (!fileParser_.writeLineF("block = coordinates records = %d", sourceModel->nAtoms())) return false;
+        for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+	  if (!fileParser_.writeLineF("%s  %20.14e %20.14e %20.14e ", ElementMap::symbol(i->element()),
+				      i->r().x/ANGBOHR, i->r().y/ANGBOHR, i->r().z/ANGBOHR)) return false;
+	}
+
+	// Atom charges
+        hasCharges = false;
+        tiny = 1.0e-10;
+  	// As far as I'm aware there is no flag to check that charges have been set. Add one later?
+	for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+          if (abs(i->charge()) > tiny) {
+            hasCharges = true;
+            break;
+          }
+        }
+        if (hasCharges) {
+          if (!fileParser_.writeLineF("block = atom_charges records = %d", sourceModel->nAtoms())) return false;
+          for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
+            if (!fileParser_.writeLineF("%20.10f", i->charge())) return false;
+          }
+        }
+	
+	// Cell vectors
+	if (sourceModel->isPeriodic()) {
+	  Matrix axes = sourceModel->cell().axes();
+	  // TODO: 2D case
+	  if (!fileParser_.writeLineF("block = cell_vectors records = 3")) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[0]/ANGBOHR, axes[1]/ANGBOHR, axes[2]/ANGBOHR)) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[4]/ANGBOHR, axes[5]/ANGBOHR, axes[6]/ANGBOHR)) return false;
+	  if (!fileParser_.writeLineF("%20.14e %20.14e %20.14e", axes[8]/ANGBOHR, axes[9]/ANGBOHR, axes[10]/ANGBOHR)) return false;
+	}
+	
+	// Connectivity
+	if (!fileParser_.writeLineF("block = connectivity records = %d", sourceModel->nBonds())) return false;
+	for (Bond* b = sourceModel->bonds(); b != NULL; b = b->next) {
+	  if (!fileParser_.writeLineF("%d %d", b->atomI()->id()+1, b->atomJ()->id()+1)) return false;
+	}
+
 	return true;
 }
 
