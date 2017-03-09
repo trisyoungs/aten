@@ -49,6 +49,16 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 		return true;
 	}
 
+	// -- ToolPluginInterface
+	ToolPluginInterface* toolPlugin = qobject_cast<ToolPluginInterface*>(plugin);
+	if (toolPlugin)
+	{
+		toolPlugin->setPluginFilename(filename);
+		toolPlugin->setPluginStore(&pluginStore_);
+		pluginStore_.registerToolPlugin(toolPlugin);
+		return true;
+	}
+
 	return false;
 }
 

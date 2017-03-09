@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "gui/vibrations.h"
 #include "gui/glyphs.h"
+#include "gui/tmenubutton.hui"
 #include "render/fontinstance.h"
 #include <QtWidgets/QMessageBox>
 
@@ -123,6 +124,79 @@ void AtenWindow::initialUpdateAndShow()
 	ReturnValue rv;
 	aten_.updateFragmentIcons();
 	ui.BuildDrawFragmentButton->callPopupMethod("updateFragments", rv);
+
+	// Add Tool plugins to a new tab (if there are any)
+	if (aten_.pluginStore().nToolPlugins() != 0)
+	{
+		// For each tool plugin we will check its group name - this will determine the QGridLayout in the tab into which the button is added
+		RefList<QGridLayout,QString> groups;
+		const RefList<ToolPluginInterface, KVMap>& toolPlugins = aten_.pluginStore().toolPlugins(PluginTypes::GeneralToolPlugin);
+		for (RefListItem<ToolPluginInterface, KVMap>* plugin = toolPlugins.first(); plugin != NULL; plugin = plugin->next)
+		{
+			ToolPluginInterface* toolPlugin = plugin->item;
+
+			// For this plugins groupName see if we have already have a layout set up for it
+			QGridLayout* groupLayout = NULL;
+			for (RefListItem<QGridLayout,QString>* ri = groups.first(); ri != NULL; ri = ri->next) if (ri->data == toolPlugin->groupName())
+			{
+				groupLayout = ri->item;
+				break;
+			}
+			// Did we find a layout?
+			if (groupLayout == NULL)
+			{
+				groupLayout = new  QGridLayout();
+				groupLayout->setContentsMargins(0,0,0,0);
+				groupLayout->setSpacing(2);
+				groups.add(groupLayout, toolPlugin->groupName());
+			}
+			
+			// OK, now add a tool button to the layout
+			TMenuButton* menuButton = new TMenuButton();
+			menuButton->setText(toolPlugin->buttonLabel());
+			menuButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+			menuButton->setMinimumSize(40, 66);
+			menuButton->setMaximumSize(128, 66);
+			menuButton->setIcon(toolPlugin->buttonIcon());
+			menuButton->setIconSize(QSize(30, 30));
+			menuButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+			menuButton->setToolPluginInterface(toolPlugin);
+			menuButton->setToolTip(toolPlugin->description());
+			groupLayout->addWidget(menuButton, 0, groupLayout->columnCount());
+		}
+
+		// Grid layouts have been assembled, so add on group labels
+		for (RefListItem<QGridLayout,QString>* ri = groups.first(); ri != NULL; ri = ri->next)
+		{
+			QGridLayout* groupLayout = ri->item;
+			QLabel* label = new QLabel(ri->data);
+			label->setAlignment(Qt::AlignHCenter);
+			groupLayout->addWidget(label, 1, 0, 1, groupLayout->columnCount());
+		}
+
+		// Finally, create and setup a widget and layout for the new tab, and add our QGridayout(s) to it
+		QWidget* toolsTab = new QWidget();
+		QHBoxLayout* toolsLayout = new QHBoxLayout;
+		toolsLayout->setContentsMargins(2,2,2,2);
+		toolsLayout->setSpacing(4);
+		for (RefListItem<QGridLayout,QString>* ri = groups.first(); ri != NULL; ri = ri->next)
+		{
+			// Add a vertical line spacer?
+			if (ri != groups.first())
+			{
+				QFrame* line = new QFrame();
+				line->setFrameStyle(QFrame::VLine | QFrame::Sunken);
+				toolsLayout->addWidget(line);
+			}
+			toolsLayout->addLayout(ri->item);
+		}
+		// Add a horizontal spacer at the end
+		toolsLayout->addStretch();
+
+		// Finally, add the layout to the widget, and create a new tab whose page is the widget we created earlier
+		toolsTab->setLayout(toolsLayout);
+		ui.ToolPanels->addTab(toolsTab, "Plugins");
+	}
 
 	// Update everything else
 	updateWidgets(AtenWindow::AllTargets);

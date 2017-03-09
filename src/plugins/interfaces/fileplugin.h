@@ -26,8 +26,6 @@
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
-// #include "ff/forcefield.h"
-// #include "base/grid.h"
 #include "base/kvmap.h"
 #include "base/forcefieldatom.h"
 #include "base/messenger.h"

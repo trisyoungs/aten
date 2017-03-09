@@ -157,6 +157,7 @@ src/base/Makefile
 src/command/Makefile
 src/ff/Makefile
 src/gui/Makefile
+src/gui/qcustomplot/Makefile
 src/main/Makefile
 src/math/Makefile
 src/methods/Makefile
@@ -186,6 +187,7 @@ src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/method_mopac71/Makefile
 src/plugins/method_mopac71/mopac7.1/Makefile
+src/plugins/tool_test/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

@@ -1,5 +1,7 @@
 noinst_LTLIBRARIES = libgui.la libtreegui.la
 
+SUBDIRS = qcustomplot
+
 SUFFIXES: .ui .hui .qrc
 
 .ui.lo:

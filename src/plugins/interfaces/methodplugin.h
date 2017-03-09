@@ -189,14 +189,6 @@ class MethodPluginInterface : public BasePluginInterface
 	// Options specific to this plugin
 	KVMap pluginOptions_;
 
-	protected:
-	// Return conversion of supplied QString to bool
-	bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
-	}
-
 	public:
 	// Return whether the plugin has options
 	virtual bool hasOptions() = 0;

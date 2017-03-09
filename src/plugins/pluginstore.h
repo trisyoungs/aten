@@ -25,6 +25,7 @@
 #include "plugins/plugintypes.h"
 #include "plugins/interfaces/fileplugin.h"
 #include "plugins/interfaces/methodplugin.h"
+#include "plugins/interfaces/toolplugin.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE
@@ -90,11 +91,11 @@ class PluginStore
 	public:
 	// Register method plugin
 	bool registerMethodPlugin(MethodPluginInterface* plugin);
-	// Return reference list of file plugins of specified category
+	// Return reference list of method plugins of specified category
 	const RefList<MethodPluginInterface,KVMap>& methodPlugins(PluginTypes::MethodPluginCategory category) const;
 	// Return number of method plugins of specified category
 	int nMethodPlugins(PluginTypes::MethodPluginCategory category) const;
-	// Return total number of file plugins available
+	// Return total number of method plugins available
 	int nMethodPlugins() const;
 	// Show list of valid method plugin nicknames
 	void showMethodPluginNicknames(PluginTypes::MethodPluginCategory category) const;
@@ -102,6 +103,30 @@ class PluginStore
 	void showAllMethodPluginNicknames() const;
 	// Find plugin interface by nickname
 	MethodPluginInterface* findMethodPluginByNickname(PluginTypes::MethodPluginCategory category, QString nickname) const;
+
+
+	/*
+	 * Tool Plugins
+	 */
+	private:
+	// List of tool plugin objects (by category)
+	RefList<ToolPluginInterface,KVMap> toolPlugins_[PluginTypes::nToolPluginCategories];
+
+	public:
+	// Register tool plugin
+	bool registerToolPlugin(ToolPluginInterface* plugin);
+	// Return reference list of tool plugins of specified category
+	const RefList<ToolPluginInterface,KVMap>& toolPlugins(PluginTypes::ToolPluginCategory category) const;
+	// Return number of tool plugins of specified category
+	int nToolPlugins(PluginTypes::ToolPluginCategory category) const;
+	// Return total number of tool plugins available
+	int nToolPlugins() const;
+	// Show list of valid tool plugin nicknames
+	void showToolPluginNicknames(PluginTypes::ToolPluginCategory category) const;
+	// Show all tool plugins, by category, and their nicknames
+	void showAllToolPluginNicknames() const;
+	// Find plugin interface by nickname
+	ToolPluginInterface* findToolPluginByNickname(PluginTypes::ToolPluginCategory category, QString nickname) const;
 };
 
 ATEN_END_NAMESPACE

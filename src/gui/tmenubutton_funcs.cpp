@@ -22,6 +22,7 @@
 #include "gui/tmenubutton.hui"
 #include "gui/tpopupwidget.hui"
 #include "gui/mainwindow.h"
+#include "main/aten.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyle>
@@ -40,6 +41,7 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	popupWidget_ = NULL;
 	instantPopup_ = false;
 	group_ = NULL;
+	toolPluginInterface_ = NULL;
 
 	// Set popup timer delay, style, and connect slot
 	popupTimer_.setSingleShot(true);
@@ -125,6 +127,12 @@ void TMenuButton::popupWidgetHidden()
 void TMenuButton::popupWidgetChanged(int data)
 {
 	emit(popupChanged(data));
+}
+
+// Set associated ToolPluginInterface
+void TMenuButton::setToolPluginInterface(ToolPluginInterface* toolPluginInterface)
+{
+	toolPluginInterface_ = toolPluginInterface;
 }
 
 /*
@@ -451,6 +459,14 @@ void TMenuButton::buttonReleased()
 	{
 		// Signal the group of this button (if there is one) that the button has been properly clicked
 		if (group_) group_->setCurrentButton(this);
+	}
+
+	// If we have an associated ToolPluginInterface...
+	if (toolPluginInterface_)
+	{
+		atenWindow_->aten().runTool(toolPluginInterface_);
+
+		return;
 	}
 }
 

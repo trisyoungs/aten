@@ -145,7 +145,7 @@ if(WIN32)
     Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 else(WIN32)
   set(ATEN_LINK_LIBS
-    messenger gui parser treegui command methods render model undo math main fourierdata ff base sg
+    messenger gui qcustomplot parser treegui command methods render model undo math main fourierdata ff base sg
     Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 endif(WIN32)
 target_link_libraries( ${target_name} ${ATEN_LINK_LIBS})

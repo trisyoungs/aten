@@ -357,3 +357,5 @@ target_include_directories(treegui PRIVATE
   ${Qt5Widgets_INCLUDE_DIRS}
 )
 target_link_libraries(treegui plugins gui)
+
+add_subdirectory(qcustomplot)

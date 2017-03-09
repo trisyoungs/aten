@@ -57,6 +57,8 @@ void AtenAboutPlugins::updateTree(int type)
 	ui.PluginsTree->setColumnCount(1);
 
 	QTreeWidgetItem* parentItem, *groupItem, *item, *subItem;
+
+	// File plugins
 	if ((pluginType == PluginTypes::FilePlugin) || (pluginType == PluginTypes::nPluginTypes))
 	{
 		parentItem = new QTreeWidgetItem(ui.PluginsTree);
@@ -89,6 +91,63 @@ void AtenAboutPlugins::updateTree(int type)
 			}
 		}
 	}
+
+	// Method plugins
+	if ((pluginType == PluginTypes::MethodPlugin) || (pluginType == PluginTypes::nPluginTypes))
+	{
+		parentItem = new QTreeWidgetItem(ui.PluginsTree);
+		parentItem->setText(0, PluginTypes::pluginType(PluginTypes::MethodPlugin));
+		parentItem->setExpanded(true);
+
+		// Loop over file plugin categories
+		for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n)
+		{
+			PluginTypes::MethodPluginCategory category = (PluginTypes::MethodPluginCategory) n;
+
+			groupItem = new QTreeWidgetItem(parentItem);
+			groupItem->setText(0, PluginTypes::niceMethodPluginCategory(category));
+			for (RefListItem<MethodPluginInterface,KVMap>* ri = pluginStore_.methodPlugins(category).first(); ri != NULL; ri = ri->next)
+			{
+				MethodPluginInterface* plugin = ri->item;
+
+				item = new QTreeWidgetItem(groupItem);
+				item->setText(0, plugin->name() + " (" + plugin->pluginFilename() + ")");
+
+				// Add plugin information
+				subItem = new QTreeWidgetItem(item);
+				subItem->setText(0, "Description: " + plugin->description());
+			}
+		}
+	}
+
+	// Tool plugins
+	if ((pluginType == PluginTypes::ToolPlugin) || (pluginType == PluginTypes::nPluginTypes))
+	{
+		parentItem = new QTreeWidgetItem(ui.PluginsTree);
+		parentItem->setText(0, PluginTypes::pluginType(PluginTypes::ToolPlugin));
+		parentItem->setExpanded(true);
+
+		// Loop over file plugin categories
+		for (int n=0; n<PluginTypes::nToolPluginCategories; ++n)
+		{
+			PluginTypes::ToolPluginCategory category = (PluginTypes::ToolPluginCategory) n;
+
+			groupItem = new QTreeWidgetItem(parentItem);
+			groupItem->setText(0, PluginTypes::niceToolPluginCategory(category));
+			for (RefListItem<ToolPluginInterface,KVMap>* ri = pluginStore_.toolPlugins(category).first(); ri != NULL; ri = ri->next)
+			{
+				ToolPluginInterface* plugin = ri->item;
+
+				item = new QTreeWidgetItem(groupItem);
+				item->setText(0, plugin->name() + " (" + plugin->pluginFilename() + ")");
+
+				// Add plugin information
+				subItem = new QTreeWidgetItem(item);
+				subItem->setText(0, "Description: " + plugin->description());
+			}
+		}
+	}
+
 }
 
 void AtenAboutPlugins::on_CloseButton_clicked(bool checked)

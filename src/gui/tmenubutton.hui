@@ -27,6 +27,7 @@
 #include "gui/tmenubuttongroup.h"
 #include "parser/returnvalue.h"
 #include "gui/useractions.h"
+#include "plugins/interfaces/toolplugin.h"
 
 // Forward Declarations (Qt)
 class TPopupWidget;
@@ -85,6 +86,8 @@ class TMenuButton : public QToolButton
 	bool checkedBeforePressed_;
 	// Where the popup (if any) should be located relative to the button
 	TMenuButton::PopupLocation popupLocation_;
+	// Associated ToolPluginInterface, if any
+	ToolPluginInterface* toolPluginInterface_;
 
 	public:
 	// Set popup widget for button
@@ -101,6 +104,8 @@ class TMenuButton : public QToolButton
 	void popupWidgetHidden();
 	// Notify button that a widget on the popup has been changed
 	void popupWidgetChanged(int data);
+	// Set associated ToolPluginInterface
+	void setToolPluginInterface(ToolPluginInterface* toolPluginInterface);
 
 
 	/*

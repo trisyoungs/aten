@@ -201,7 +201,6 @@ const FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::Fi
 	return NULL;
 }
 
-
 /*
  * Method Plugins
  */
@@ -297,6 +296,109 @@ MethodPluginInterface* PluginStore::findMethodPluginByNickname(PluginTypes::Meth
 	for (RefListItem<MethodPluginInterface,KVMap>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		MethodPluginInterface* plugin = ri->item;
+
+		if (plugin->nickname() == nickname) return plugin;
+	}
+
+	return NULL;
+}
+
+
+/*
+ * Tool Plugins
+ */
+
+// Register tool plugin
+bool PluginStore::registerToolPlugin(ToolPluginInterface* plugin)
+{
+	if (!plugin) return false;
+
+	// Query the plugin type and category...
+	if (plugin->type() != PluginTypes::ToolPlugin)
+	{
+		Messenger::error("Refused to register plugin '" + plugin->name() + "' as a tool plugin since it presents itself as a different type.");
+		return false;
+	}
+	
+	if (plugin->category() == PluginTypes::nToolPluginCategories)
+	{
+		Messenger::error("Plugin has unrecognised category - not registered.\n");
+		return false;
+	}
+
+	// Store the reference to the plugin 
+	toolPlugins_[plugin->category()].add(plugin);
+	Messenger::print(Messenger::Verbose, "Registered new tool plugin:");
+	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
+	Messenger::print(Messenger::Verbose, "   Category : %s", PluginTypes::niceToolPluginCategory( (PluginTypes::ToolPluginCategory) plugin->category()));
+	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));
+
+	++logPoint_;
+
+	return true;
+}
+
+// Return reference list of tool plugins of specified category
+const RefList<ToolPluginInterface,KVMap>& PluginStore::toolPlugins(PluginTypes::ToolPluginCategory category) const
+{
+	return toolPlugins_[category];
+}
+
+// Return number of tool plugins of specified category
+int PluginStore::nToolPlugins(PluginTypes::ToolPluginCategory category) const
+{
+	return toolPlugins_[category].nItems();
+}
+
+// Return total number of tool plugins available
+int PluginStore::nToolPlugins() const
+{
+	int count = 0;
+	for (int n=0; n<PluginTypes::nToolPluginCategories; ++n) count += toolPlugins_[n].nItems();
+	return count;
+}
+
+// Show list of valid tool plugin nicknames
+void PluginStore::showToolPluginNicknames(PluginTypes::ToolPluginCategory category) const
+{
+	Messenger::print("Available tool plugins for %s:", PluginTypes::toolPluginCategory(category));
+
+	// Determine longest nickname of all the plugins of the specified category and type, and make a reflist of them while we're at it
+	int maxLength = 0;
+	for (RefListItem<ToolPluginInterface,KVMap>* ri = toolPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		ToolPluginInterface* plugin = ri->item;
+
+		if (plugin->nickname().length() > maxLength) maxLength = plugin->nickname().length();
+	}
+
+	// Output list (or special case if no plugins of the specified type were found...
+	if (toolPlugins_[category].nItems() == 0)
+	{
+		Messenger::print("  <None Available>");
+		return;
+	}
+	else for (RefListItem<ToolPluginInterface,KVMap>* ri = toolPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		ToolPluginInterface* plugin = ri->item;
+
+		Messenger::print(QString("\t%1    %2").arg(plugin->nickname(), maxLength).arg(plugin->name()));
+	}
+}
+
+// Show all tool plugins, by category, and their nicknames
+void PluginStore::showAllToolPluginNicknames() const
+{
+	for (int n=0; n<PluginTypes::nToolPluginCategories; ++n) showToolPluginNicknames((PluginTypes::ToolPluginCategory) n);
+}
+
+// Find tool plugin interface by nickname
+ToolPluginInterface* PluginStore::findToolPluginByNickname(PluginTypes::ToolPluginCategory category, QString nickname) const
+{
+	// Loop over loaded tool plugins of the specified category
+	for (RefListItem<ToolPluginInterface,KVMap>* ri = toolPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		ToolPluginInterface* plugin = ri->item;
 
 		if (plugin->nickname() == nickname) return plugin;
 	}
