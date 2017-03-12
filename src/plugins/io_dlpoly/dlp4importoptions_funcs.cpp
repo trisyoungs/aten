@@ -1,7 +1,7 @@
 /*
 	*** DL_POLY_4 Import Options Functions
 	*** src/gui/io_dlp4/dlp4importoptions_funcs.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 	Copyright A.M. Elena 2016-2016
 
 	This file is part of Aten.

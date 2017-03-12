@@ -1,7 +1,7 @@
 /*
 	*** Main Window - Forcefields Panel Functions
 	*** src/gui/mainwindow_panel_forcefields.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 

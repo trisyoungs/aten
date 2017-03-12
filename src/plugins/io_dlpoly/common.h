@@ -1,7 +1,7 @@
 /*
         *** Common functions for DL_POLY plugins
         *** src/plugins/io_dlpoly/common.h
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
         Copyright A. M. Elena 2016-2016
 
         This file is part of Aten.

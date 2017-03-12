@@ -1,7 +1,7 @@
 /*
 	*** DL_POLY_2 Export Options Dialog
 	*** src/plugins/io_dlpoly/dlp2exportoptions.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 	Copyright A. M. Elena 2016-2016
 
 	This file is part of Aten.

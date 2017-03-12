@@ -1,7 +1,7 @@
 /*
 	*** XYZ Import Options Dialog
 	*** src/plugins/io_xyz/xyzimportoptions.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
