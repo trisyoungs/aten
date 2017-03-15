@@ -70,6 +70,12 @@ QString CUBEModelPlugin::nickname() const
 	return QString("cube");
 }
 
+// Return whether the plugin is enabled
+bool CUBEModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString CUBEModelPlugin::description() const
 {

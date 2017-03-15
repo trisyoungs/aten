@@ -75,6 +75,12 @@ QString RMCProfile6ModelPlugin::nickname() const
 	return QString("rmc6f");
 }
 
+// Return whether the plugin is enabled
+bool RMCProfile6ModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString RMCProfile6ModelPlugin::description() const
 {

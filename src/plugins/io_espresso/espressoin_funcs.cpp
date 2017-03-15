@@ -70,6 +70,12 @@ QString QEInModelPlugin::nickname() const
 	return QString("espresso");
 }
 
+// Return whether the plugin is enabled
+bool QEInModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString QEInModelPlugin::description() const
 {

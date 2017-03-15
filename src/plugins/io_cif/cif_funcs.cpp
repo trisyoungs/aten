@@ -71,6 +71,12 @@ QString CIFModelPlugin::nickname() const
 	return QString("cif");
 }
 
+// Return whether the plugin is enabled
+bool CIFModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString CIFModelPlugin::description() const
 {

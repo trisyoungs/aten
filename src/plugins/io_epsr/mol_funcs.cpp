@@ -84,6 +84,12 @@ QString EPSRMolModelPlugin::nickname() const
 	return QString("epsrmol");
 }
 
+// Return whether the plugin is enabled
+bool EPSRMolModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString EPSRMolModelPlugin::description() const
 {

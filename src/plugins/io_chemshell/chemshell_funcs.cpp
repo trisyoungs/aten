@@ -74,6 +74,12 @@ QString ChemShellModelPlugin::nickname() const
 	return QString("chemshell");
 }
 
+// Return whether the plugin is enabled
+bool ChemShellModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString ChemShellModelPlugin::description() const
 {

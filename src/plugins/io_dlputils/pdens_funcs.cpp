@@ -70,6 +70,12 @@ QString PDensGridPlugin::nickname() const
 	return QString("pdens");
 }
 
+// Return whether the plugin is enabled
+bool PDensGridPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString PDensGridPlugin::description() const
 {

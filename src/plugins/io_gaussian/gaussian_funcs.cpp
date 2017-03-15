@@ -70,6 +70,12 @@ QString GaussianModelPlugin::nickname() const
 	return QString("gaussian");
 }
 
+// Return whether the plugin is enabled
+bool GaussianModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString GaussianModelPlugin::description() const
 {

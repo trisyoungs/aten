@@ -78,6 +78,12 @@ QString DLPExpressionPlugin::nickname() const
 	return QString("dlpolyfield");
 }
 
+// Return whether the plugin is enabled
+bool DLPExpressionPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString DLPExpressionPlugin::description() const
 {

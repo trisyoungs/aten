@@ -71,6 +71,12 @@ QString AtenExpressionPlugin::nickname() const
 	return QString("ff");
 }
 
+// Return whether the plugin is enabled
+bool AtenExpressionPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString AtenExpressionPlugin::description() const
 {

@@ -79,6 +79,12 @@ QString DLP4TrajectoryPlugin::nickname() const
 	return QString("dlpoly4his");
 }
 
+// Return whether the plugin is enabled
+bool DLP4TrajectoryPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString DLP4TrajectoryPlugin::description() const
 {

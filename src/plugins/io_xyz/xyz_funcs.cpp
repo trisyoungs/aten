@@ -76,6 +76,12 @@ QString XYZModelPlugin::nickname() const
 	return QString("xyz");
 }
 
+// Return whether the plugin is enabled
+bool XYZModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString XYZModelPlugin::description() const
 {

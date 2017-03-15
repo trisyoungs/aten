@@ -81,6 +81,12 @@ QString DLP2TrajectoryPlugin::nickname() const
 	return QString("dlpoly2his");
 }
 
+// Return whether the plugin is enabled
+bool DLP2TrajectoryPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString DLP2TrajectoryPlugin::description() const
 {

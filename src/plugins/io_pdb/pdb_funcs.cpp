@@ -78,6 +78,12 @@ QString PDBModelPlugin::nickname() const
 	return QString("pdb");
 }
 
+// Return whether the plugin is enabled
+bool PDBModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString PDBModelPlugin::description() const
 {

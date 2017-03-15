@@ -89,6 +89,12 @@ QString EPSRAtoModelPlugin::nickname() const
 	return QString("epsrato");
 }
 
+// Return whether the plugin is enabled
+bool EPSRAtoModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString EPSRAtoModelPlugin::description() const
 {

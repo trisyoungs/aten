@@ -83,6 +83,12 @@ QString MOPACControlModelPlugin::nickname() const
 	return QString("mopaccontrol");
 }
 
+// Return whether the plugin is enabled
+bool MOPACControlModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString MOPACControlModelPlugin::description() const
 {

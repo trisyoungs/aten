@@ -83,6 +83,12 @@ QString DLP2ModelPlugin::nickname() const
     return QString ( "dlpoly2" );
 }
 
+// Return whether the plugin is enabled
+bool DLP2ModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString DLP2ModelPlugin::description() const
 {

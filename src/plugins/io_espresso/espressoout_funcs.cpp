@@ -64,6 +64,12 @@ QString QEOutModelPlugin::nickname() const
 	return QString("espresso");
 }
 
+// Return whether the plugin is enabled
+bool QEOutModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString QEOutModelPlugin::description() const
 {

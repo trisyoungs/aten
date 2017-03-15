@@ -64,6 +64,8 @@ class MOPAC71MethodPlugin : public QObject, public MethodPluginInterface
 	QString name() const;
 	// Return nickname of plugin
 	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
 	// Return description (long name) of plugin
 	QString description() const;
 

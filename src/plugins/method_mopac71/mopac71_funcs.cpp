@@ -74,6 +74,12 @@ QString MOPAC71MethodPlugin::nickname() const
 	return QString("mopac71");
 }
 
+// Return whether the plugin is enabled
+bool MOPAC71MethodPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString MOPAC71MethodPlugin::description() const
 {

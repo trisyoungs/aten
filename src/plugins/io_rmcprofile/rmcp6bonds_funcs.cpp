@@ -72,6 +72,12 @@ QString RMCProfile6BondsModelPlugin::nickname() const
 	return QString("rmc6bonds");
 }
 
+// Return whether the plugin is enabled
+bool RMCProfile6BondsModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString RMCProfile6BondsModelPlugin::description() const
 {

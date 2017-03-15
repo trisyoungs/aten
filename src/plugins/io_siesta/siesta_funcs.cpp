@@ -70,6 +70,12 @@ QString SiestaModelPlugin::nickname() const
 	return QString("siesta");
 }
 
+// Return whether the plugin is enabled
+bool SiestaModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString SiestaModelPlugin::description() const
 {

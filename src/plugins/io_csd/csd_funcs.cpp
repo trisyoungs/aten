@@ -70,6 +70,12 @@ QString CSDModelPlugin::nickname() const
 	return QString("csd");
 }
 
+// Return whether the plugin is enabled
+bool CSDModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString CSDModelPlugin::description() const
 {

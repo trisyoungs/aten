@@ -71,6 +71,12 @@ QString MOPACArcModelPlugin::nickname() const
 	return QString("mopacarc");
 }
 
+// Return whether the plugin is enabled
+bool MOPACArcModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString MOPACArcModelPlugin::description() const
 {

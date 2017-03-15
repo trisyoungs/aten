@@ -109,8 +109,6 @@ class ToolPluginInterface : public BasePluginInterface
 	 * Tool Definition
 	 */
 	protected:
-	// Options specific to this plugin
-	KVMap pluginOptions_;
 	// Dialog for tool (if there is one)
 	QDialog* dialog_;
 
@@ -121,8 +119,6 @@ class ToolPluginInterface : public BasePluginInterface
 	virtual QIcon buttonIcon() const = 0;
 	// Return group name for tool (used to group similar tools together)
 	virtual QString groupName() const = 0;
-	// Return whether the tool is enabled (appears in the GUI)
-	virtual bool isEnabled() const = 0;
 	// Return whether the tool has a dialog
 	virtual bool hasDialog() const = 0;
 	// Show the dialog for the tool

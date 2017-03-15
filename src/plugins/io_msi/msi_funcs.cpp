@@ -70,6 +70,12 @@ QString MSIModelPlugin::nickname() const
 	return QString("msi");
 }
 
+// Return whether the plugin is enabled
+bool MSIModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString MSIModelPlugin::description() const
 {

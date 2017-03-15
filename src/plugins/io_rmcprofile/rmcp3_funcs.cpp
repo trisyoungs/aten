@@ -73,6 +73,12 @@ QString RMCProfile3ModelPlugin::nickname() const
 	return QString("rmcp3???");
 }
 
+// Return whether the plugin is enabled
+bool RMCProfile3ModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString RMCProfile3ModelPlugin::description() const
 {

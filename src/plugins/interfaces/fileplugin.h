@@ -31,6 +31,8 @@
 #include "base/messenger.h"
 #include "base/fileparser.h"
 #include "base/namespace.h"
+#include "base/grid.h"
+#include "ff/forcefield.h"
 #include "templates/reflist.h"
 #include <QStringList>
 #include <QtPlugin>
@@ -617,8 +619,6 @@ class FilePluginInterface : public BasePluginInterface
 	protected:
 	// Standard options
 	FilePluginStandardImportOptions standardOptions_;
-	// Options specific to this plugin
-	KVMap pluginOptions_;
 
 	public:
 	// Return whether the plugin has import options
@@ -643,39 +643,6 @@ class FilePluginInterface : public BasePluginInterface
 	const FilePluginStandardImportOptions standardOptions() const
 	{
 		return standardOptions_;
-	}
-	// Set plugin option
-	bool setOption(QString optionName, QString optionValue)
-	{
-		// Search for this option in pluginOptions_
-		KVPair* pair = pluginOptions_.search(optionName);
-		if (pair) pair->setValue(optionValue);
-		else
-		{
-			Messenger::error("Option '" + optionName + "' is not recognised by this plugin.");
-			Messenger::error("Available options are: " + pluginOptions_.keys());
-			return false;
-		}
-		return true;
-	}
-	// Set plugin options
-	bool setOptions(KVMap options)
-	{
-		bool result = true;
-		for (KVPair* pair = options.pairs(); pair != NULL; pair = pair->next) if (!setOption(pair->key(), pair->value())) result = false;
-
-		return result;
-	}
-	// Return options specific to this plugin (read-only)
-	const KVMap& pluginOptions()
-	{
-		return pluginOptions_;
-	}
-	// Return conversion of supplied QString to bool
-	static bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "true") || (string.toLower() == "on")) return true;
-		return false;
 	}
 };
 

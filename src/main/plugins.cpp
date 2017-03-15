@@ -33,6 +33,9 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
+		// If the plugin is disabled, don't register it
+		if (!filePlugin->enabled()) return true;
+
 		filePlugin->setPluginFilename(filename);
 		filePlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerFilePlugin(filePlugin);
@@ -43,6 +46,9 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
 	if (methodPlugin)
 	{
+		// If the plugin is disabled, don't register it
+		if (!methodPlugin->enabled()) return true;
+
 		methodPlugin->setPluginFilename(filename);
 		methodPlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerMethodPlugin(methodPlugin);
@@ -53,6 +59,9 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 	ToolPluginInterface* toolPlugin = qobject_cast<ToolPluginInterface*>(plugin);
 	if (toolPlugin)
 	{
+		// If the plugin is disabled, don't register it
+		if (!toolPlugin->enabled()) return true;
+
 		toolPlugin->setPluginFilename(filename);
 		toolPlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerToolPlugin(toolPlugin);

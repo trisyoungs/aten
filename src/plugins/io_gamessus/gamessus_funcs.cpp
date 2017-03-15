@@ -71,6 +71,12 @@ QString GAMESSUSModelPlugin::nickname() const
 	return QString("gamus");
 }
 
+// Return whether the plugin is enabled
+bool GAMESSUSModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString GAMESSUSModelPlugin::description() const
 {

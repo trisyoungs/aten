@@ -81,6 +81,12 @@ QString DLP4DefectsPlugin::nickname() const
 	return QString("dlpoly4def");
 }
 
+// Return whether the plugin is enabled
+bool DLP4DefectsPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString DLP4DefectsPlugin::description() const
 {

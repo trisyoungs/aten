@@ -112,6 +112,12 @@ QString AKFModelPlugin::nickname() const
 	return QString("akf");
 }
 
+// Return whether the plugin is enabled
+bool AKFModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString AKFModelPlugin::description() const
 {

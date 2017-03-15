@@ -70,6 +70,12 @@ QString SurfaceGridPlugin::nickname() const
 	return QString("dlpsurf");
 }
 
+// Return whether the plugin is enabled
+bool SurfaceGridPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString SurfaceGridPlugin::description() const
 {

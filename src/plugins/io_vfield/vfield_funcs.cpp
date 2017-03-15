@@ -70,6 +70,12 @@ QString VFieldModelPlugin::nickname() const
 	return QString("vfield");
 }
 
+// Return whether the plugin is enabled
+bool VFieldModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString VFieldModelPlugin::description() const
 {

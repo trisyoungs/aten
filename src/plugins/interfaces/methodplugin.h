@@ -185,10 +185,6 @@ class MethodPluginInterface : public BasePluginInterface
 	/*
 	 * Options
 	 */
-	protected:
-	// Options specific to this plugin
-	KVMap pluginOptions_;
-
 	public:
 	// Return whether the plugin has options
 	virtual bool hasOptions() = 0;

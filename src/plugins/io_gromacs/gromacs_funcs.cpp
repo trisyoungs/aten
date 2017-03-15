@@ -70,6 +70,12 @@ QString GROMACSModelPlugin::nickname() const
 	return QString("gromacs");
 }
 
+// Return whether the plugin is enabled
+bool GROMACSModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString GROMACSModelPlugin::description() const
 {

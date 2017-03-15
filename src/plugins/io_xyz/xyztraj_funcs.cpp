@@ -73,6 +73,12 @@ QString XYZTrajectoryPlugin::nickname() const
 	return QString("xyz");
 }
 
+// Return whether the plugin is enabled
+bool XYZTrajectoryPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString XYZTrajectoryPlugin::description() const
 {

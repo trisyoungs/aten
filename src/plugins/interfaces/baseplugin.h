@@ -23,10 +23,8 @@
 #define ATEN_BASEPLUGININTERFACE_H
 
 #include "plugins/plugintypes.h"
-#include "model/model.h"
-#include "ff/forcefield.h"
-#include "base/grid.h"
 #include "base/kvmap.h"
+#include "base/messenger.h"
 #include "templates/list.h"
 #include <QStringList>
 
@@ -76,6 +74,8 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	virtual QString description() const = 0;
 	// Return nickname of plugin
 	virtual QString nickname() const = 0;
+	// Return whether plugin is enabled
+	virtual bool enabled() const = 0;
 
 
 	/*
@@ -97,15 +97,13 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	// Options specific to this plugin
 	KVMap pluginOptions_;
 
-	protected:
-	// Return conversion of supplied QString to bool
-	bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
-	}
-
 	public:
+	// Return conversion of supplied QString to bool
+	static bool toBool(QString string)
+	{
+		if ((string.toInt() == 1) || (string.toLower() == "true") || (string.toLower() == "on")) return true;
+		return false;
+	}
 	// Set plugin option
 	bool setOption(QString optionName, QString optionValue)
 	{

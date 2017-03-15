@@ -79,6 +79,12 @@ QString TestToolPlugin::nickname() const
 	return QString("testtool");
 }
 
+// Return whether the plugin is enabled
+bool TestToolPlugin::enabled() const
+{
+	return false;
+}
+
 // Description (long name) of plugin
 QString TestToolPlugin::description() const
 {

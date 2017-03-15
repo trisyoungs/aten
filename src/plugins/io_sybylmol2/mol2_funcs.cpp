@@ -70,6 +70,12 @@ QString Mol2ModelPlugin::nickname() const
 	return QString("mol2");
 }
 
+// Return whether the plugin is enabled
+bool Mol2ModelPlugin::enabled() const
+{
+	return true;
+}
+
 // Description (long name) of plugin
 QString Mol2ModelPlugin::description() const
 {
