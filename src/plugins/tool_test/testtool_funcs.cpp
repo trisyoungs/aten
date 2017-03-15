@@ -178,5 +178,18 @@ bool TestToolPlugin::runTool()
 		model->endUndoState();
 	}
 
+	// Update the display
+	emit(updateWidgets(0));
+
 	return true;
+}
+
+/*
+ * QObject / Signals
+ */
+
+// Return interface as QObject
+QObject* TestToolPlugin::object()
+{
+	return this;
 }

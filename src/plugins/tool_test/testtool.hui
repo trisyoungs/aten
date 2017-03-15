@@ -86,6 +86,17 @@ class TestToolPlugin : public QObject, public ToolPluginInterface
 	void showDialog();
 	// Run the tool with the current settings
 	bool runTool();
+
+
+	/*
+	 * QObject / Signals
+	 */
+	public:
+	// Return interface as QObject
+	QObject* object();
+
+	signals:
+	void updateWidgets(int);
 };
 
 ATEN_END_NAMESPACE

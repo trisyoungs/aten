@@ -161,6 +161,7 @@ void AtenWindow::initialUpdateAndShow()
 			menuButton->setIconSize(QSize(30, 30));
 			menuButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 			menuButton->setToolPluginInterface(toolPlugin);
+			connect(toolPlugin->object(), SIGNAL(updateWidgets(int)), this, SLOT(updateWidgets(int)));
 			menuButton->setToolTip(toolPlugin->description());
 			groupLayout->addWidget(menuButton, 0, groupLayout->columnCount());
 		}

@@ -129,6 +129,17 @@ class ToolPluginInterface : public BasePluginInterface
 	virtual void showDialog() = 0;
 	// Run the tool with the current settings
 	virtual bool runTool() = 0;
+
+
+	/*
+	 * QObject / Signals
+	 */
+	public:
+	// Return interface as QObject
+	virtual QObject* object() = 0;
+
+	// Derived classes must implement the following signals:
+	//   void updateWidgets(int);
 };
 
 ATEN_END_NAMESPACE
