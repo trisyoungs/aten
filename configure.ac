@@ -183,6 +183,7 @@ src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
 src/plugins/io_rmcprofile/Makefile
 src/plugins/io_sybylmol2/Makefile
+src/plugins/io_test/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/method_mopac71/Makefile
