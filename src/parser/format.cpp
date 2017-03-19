@@ -57,7 +57,7 @@ FormatChunk::ChunkType FormatChunk::type()
 	return type_;
 }
 
-// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+// Return C-style format stRing* or* plain text data if chunktype is PlainTextChunk
 QString FormatChunk::cFormat()
 {
 	return cFormat_;
@@ -528,7 +528,7 @@ ParseChunk::ChunkType ParseChunk::type()
 	return type_;
 }
 
-// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+// Return C-style format stRing* or* plain text data if chunktype is PlainTextChunk
 QString ParseChunk::cFormat()
 {
 	return cFormat_;

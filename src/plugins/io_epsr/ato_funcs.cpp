@@ -468,7 +468,7 @@ bool EPSRAtoModelPlugin::exportData()
 			if (mol == 0)
 			{
 				// Need ring information for the pattern....
-				p->findRings();
+				p->findRings(prefs.maxRingSize(), -1);
 				for (RefListItem<Bond,int>* ri = uniqueBonds.first(); ri != NULL; ri = ri->next)
 				{
 					Bond* bij = ri->item;

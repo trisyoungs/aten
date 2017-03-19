@@ -1,0 +1,106 @@
+/*
+        *** Rings Tool Plugin
+        *** src/plugins/tool_rings/ringstool.hui
+        Copyright T. Youngs 2016-2017
+
+        This file is part of Aten.
+    
+        Aten is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or 
+        (at your option) any later version.
+                               
+        Aten is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_RINGSTOOLPLUGIN_H
+#define ATEN_RINGSTOOLPLUGIN_H
+
+#include "plugins/interfaces/toolplugin.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations
+/* none */
+
+// Test Tool Plugin
+class RingsToolPlugin : public QObject, public ToolPluginInterface
+{
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.ToolPluginInterface.v1")
+	Q_INTERFACES(AtenSpace::ToolPluginInterface)
+
+
+	public:
+	// Constructor
+	RingsToolPlugin();
+	// Destructor
+	~RingsToolPlugin();
+
+
+	/*
+	 * Instance Handling
+	 */
+	private:
+	// Return a copy of the plugin object
+	BasePluginInterface* makeCopy() const;
+
+
+	/*
+	 * Definition
+	 */
+	public:
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
+ 	// Return category of plugin
+	int category() const;
+	// Return name of plugin
+	QString name() const;
+	// Return nickname of plugin
+	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
+	// Return description (long name) of plugin
+	QString description() const;
+
+
+	/*
+	 * Tool Definition
+	 */
+	public:
+	// Return button label to use in GUI
+	QString buttonLabel() const;
+	// Return icon for button in GUI
+	QIcon buttonIcon() const;
+	// Return group name for tool (used to group similar tools together)
+	QString groupName() const;
+	// Return whether the tool is enabled (appears in the GUI)
+	bool isEnabled() const;
+	// Return whether the tool has a dialog
+	bool hasDialog() const;
+	// Show the dialog for the tool
+	void showDialog();
+	// Run the tool with the current settings
+	bool runTool();
+
+
+	/*
+	 * QObject / Signals
+	 */
+	public:
+	// Return interface as QObject
+	QObject* object();
+
+	signals:
+	void updateWidgets(int);
+};
+
+ATEN_END_NAMESPACE
+
+#endif

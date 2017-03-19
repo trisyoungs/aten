@@ -293,9 +293,11 @@ class Pattern : public ListItem<Pattern>
 	// Create the shell of the energy expression
 	bool createExpression(bool vdwOnly = false, bool allowDummy = false, Forcefield* defaultForcefield = NULL);
 	// Create the connectivity and scaling matrices
-	void createMatrices();
+	void createMatrices(bool forceFull = false);
 	// Update scaling matrices
 	void updateScaleMatrices();
+	// Return connectivity distance between atom indices specified
+	int connectivity(int i, int j);
 	// Return number of bonds in one molecule of the pattern
 	int nBonds() const;
 	// Return number of angles in one molecule of the pattern
@@ -409,9 +411,9 @@ class Pattern : public ListItem<Pattern>
 	// List of rings in one molecule of the pattern
 	List<Ring> rings_;
 	// Recursive ring-search routine
-	bool ringSearch(Atom* i, Ring *currentpath);
+	bool ringSearch(Atom* i, Ring* currentpath, int maxRings);
 	// Search existing ring list for existence of supplied ring
-	bool isRingInList(Ring *source);
+	bool isRingInList(Ring* source);
 
 	public:
 	// Returns a pointer to the ring list structure
@@ -419,7 +421,7 @@ class Pattern : public ListItem<Pattern>
 	// Return number of rings in current pattern
 	int nRings();
 	// Returns the first ring in the ring list
-	Ring *rings();
+	Ring* rings();
 	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
 	bool atomsInRing(int i, int j = -1);
 	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
@@ -431,7 +433,9 @@ class Pattern : public ListItem<Pattern>
 	// Assign forcefield atom types
 	bool typeAtoms();
 	// Locate ring structures in the pattern
-	void findRings();
+	void findRings(int maxRingSize, int maxRings);
+	// Locate ring structures in the pattern from a specific atom
+	void findRingsFrom(int atomIndex, int maxRingSize, int maxRings);
 	// Augment atoms in pattern
 	void augment();
 	// Return total bond order penalty of atoms in one molecule of the pattern

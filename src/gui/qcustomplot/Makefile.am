@@ -11,6 +11,6 @@ clean-local:
 	-rm -f ui_* *.o moc_*.cpp qcustomplot.cpp
 
 
-libqcustomplot_la_SOURCES = qcustomplot_funcs.cpp
+libqcustomplot_la_SOURCES = qcustomplot.hui qcustomplot_funcs.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I../../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@

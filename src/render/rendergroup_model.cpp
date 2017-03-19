@@ -507,7 +507,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			if (p->rings() == NULL) continue;
 
 			// Cycle over rings
-			for (Ring *r = p->rings(); r != NULL; r = r->next)
+			for (Ring* r = p->rings(); r != NULL; r = r->next)
 			{
 				if (r->type() != Ring::AromaticRing) continue;
 				

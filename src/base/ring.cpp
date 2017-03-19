@@ -333,7 +333,7 @@ void Ring::finalise()
 }
 
 // Copy ring
-void Ring::copy(Ring *source)
+void Ring::copy(Ring* source)
 {
 	// Copy the data in source to the current ring.
 	atoms_.clear();

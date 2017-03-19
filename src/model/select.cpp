@@ -639,7 +639,7 @@ void Model::selectRadial(Atom* target, double radius)
 	// Select all atoms which are within the distance 'radius' from atom 'target'
 	Messenger::enter("Model::selectRadial");
 	Atom* i = atoms_.first();
-	printf("Selection radius is %8.4f Angstroms\n",radius);
+// 	printf("Selection radius is %8.4f Angstroms\n",radius);
 	while (i != NULL)
 	{
 		if (i == target) selectAtom(i);

@@ -266,7 +266,7 @@ int Neta::matchAtom(Atom* i, List<Ring>* rings, Model* parent)
 	RefList<Atom,int> boundList;
 	i->addBoundToRefList(&boundList);
 	RefList<Ring,int> ringList;
-	if (targetRingList_) for (Ring *r = targetRingList_->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringList.add(r);
+	if (targetRingList_) for (Ring* r = targetRingList_->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringList.add(r);
 	RefList<Atom,int> path;
 	int score = description_->score(i, &boundList, &ringList, description_, path, 0);
 // 	printf("Score is %i\n", score);
@@ -838,7 +838,7 @@ int NetaBoundNode::score(Atom* target, RefList<Atom,int>* nbrs, RefList<Ring,int
 				ri->item->addBoundToRefList(&boundList);
 				// Construct new ringlist
 				RefList<Ring,int> ringList;
-				for (Ring *r = parent()->targetRingList()->first(); r != NULL; r = r->next) if (r->containsAtom(ri->item)) ringList.add(r);
+				for (Ring* r = parent()->targetRingList()->first(); r != NULL; r = r->next) if (r->containsAtom(ri->item)) ringList.add(r);
 				path.add(target);
 				boundscore = innerNeta_->score(ri->item, &boundList, &ringList, this, path, level+1);
 				path.removeLast();
@@ -912,7 +912,7 @@ int NetaKeywordNode::score(Atom* target, RefList<Atom,int>* nbrs, RefList<Ring,i
 			else
 			{
 				totalscore = 1;
-				for (Ring *r = parent()->targetRingList()->first(); r != NULL; r = r->next) if (r->containsAtom(target)) totalscore = -1;
+				for (Ring* r = parent()->targetRingList()->first(); r != NULL; r = r->next) if (r->containsAtom(target)) totalscore = -1;
 			}
 			break;
 		case (Neta::NonAromaticKeyword):
@@ -1245,7 +1245,7 @@ NetaRingNode::~NetaRingNode()
 }
 
 // Retrieve current ring under consideration
-Ring *NetaRingNode::currentRing()
+Ring* NetaRingNode::currentRing()
 {
 	return currentRing_;
 }

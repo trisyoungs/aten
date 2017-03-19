@@ -106,23 +106,24 @@ AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for r
 
 # Set up compilation for Qt GUI
 if test "$with_qt" = "framework"; then
-  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework OpenGL"
-  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
+  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework QtPrintSupport -framework OpenGL"
+  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore -FQtPrintSupport"
 fi
 if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, Qt5Gui >= 5.0.0)
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
+  PKG_CHECK_MODULES(QTPRINT, Qt5PrintSupport >= 5.0.0)
 fi
 
 # Finalise substitution strings
-ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
-ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS"
+ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS $QTPRINT_LIBS -lreadline -lGL -lfreetype"
+ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS" # -DQCUSTOMPLOT_COMPILE_LIBRARY -DQCUSTOMPLOT_USE_LIBRARY"
 ATEN_LDFLAGS="$LDFLAGS"
 if test "$with_nordynamic" = "no"; then
   ATEN_LDFLAGS+=" -rdynamic "
 fi
-ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
+ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS $QTPRINT_CFLAGS -I$RLINCDIR"
 
 # Perform Makefile substitutions
 AC_SUBST(ATEN_LDLIBS)

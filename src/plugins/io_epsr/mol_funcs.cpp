@@ -320,7 +320,7 @@ bool EPSRMolModelPlugin::exportData()
 	Pattern dummyPattern;
 	dummyPattern.setParent(targetModel());
 	dummyPattern.initialise(0, 0, 1, targetModel()->nAtoms());
-	dummyPattern.findRings();
+	dummyPattern.findRings(prefs.maxRingSize(), -1);
 	for (Bond* b = targetModel()->bonds(); b != NULL; b = b->next)
 	{
 		Atom* i = b->atomI();
