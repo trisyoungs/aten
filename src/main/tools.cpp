@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Setup and run specified ToolPluginInterface
-void Aten::runTool(ToolPluginInterface* plugin, KVMap pluginOptions, bool showDialog)
+bool Aten::runTool(ToolPluginInterface* plugin, KVMap pluginOptions, bool showDialog)
 {
 	Messenger::enter("Aten::runTool");
 
@@ -38,12 +38,15 @@ void Aten::runTool(ToolPluginInterface* plugin, KVMap pluginOptions, bool showDi
 	for (Model* m = models_.first(); m != NULL; m = m->next) plugin->addModel(m);
 
 	// If requested, and the plugin has one, show the dialog
-	if (showDialog && plugin->hasDialog()) plugin->showDialog();
-	else plugin->runTool();
+	bool result = true;
+	if (showDialog && plugin->hasDialog()) result = plugin->showDialog();
+	else result = plugin->runTool();
 
 	// Update the whole GUI
 	atenWindow_->updateWidgets(AtenWindow::AllTargets);
 
 	Messenger::exit("Aten::runTool");
+
+	return result;
 }
 

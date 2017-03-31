@@ -1217,6 +1217,11 @@ CommandData Commands::data_[Commands::nCommands] = {
 		"",
 		"Print program version information" },
 
+	// Tool commands
+	{ "runTool",		"C",		VTypes::IntegerData,
+		"string toolName[,option=value,...]",
+		"Run the specified tool, setting options if provided" },
+
 	// Trajectory commands
 	{ "addFrame",		"c",		VTypes::ModelData,
 		"string name = null",

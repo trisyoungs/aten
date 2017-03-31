@@ -293,7 +293,7 @@ class Pattern : public ListItem<Pattern>
 	// Create the shell of the energy expression
 	bool createExpression(bool vdwOnly = false, bool allowDummy = false, Forcefield* defaultForcefield = NULL);
 	// Create the connectivity and scaling matrices
-	void createMatrices(bool forceFull = false);
+	void createMatrices(bool forceFull = false, bool quiet = false);
 	// Update scaling matrices
 	void updateScaleMatrices();
 	// Return connectivity distance between atom indices specified

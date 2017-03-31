@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="ringstool_icons">
+  <qresource prefix="springstool_icons">
     <file>icon.svg</file>
   </qresource>
 </RCC>

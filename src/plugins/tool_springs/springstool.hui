@@ -1,6 +1,6 @@
 /*
-        *** Rings Tool Plugin
-        *** src/plugins/tool_rings/ringstool.hui
+        *** SPRings Tool Plugin
+        *** src/plugins/tool_springs/springstool.hui
         Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_RINGSTOOLPLUGIN_H
-#define ATEN_RINGSTOOLPLUGIN_H
+#ifndef ATEN_SPRINGSTOOLPLUGIN_H
+#define ATEN_SPRINGSTOOLPLUGIN_H
 
 #include "plugins/interfaces/toolplugin.h"
 
@@ -30,7 +30,7 @@ ATEN_BEGIN_NAMESPACE
 /* none */
 
 // Test Tool Plugin
-class RingsToolPlugin : public QObject, public ToolPluginInterface
+class SPRingsToolPlugin : public QObject, public ToolPluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.ToolPluginInterface.v1")
@@ -39,9 +39,9 @@ class RingsToolPlugin : public QObject, public ToolPluginInterface
 
 	public:
 	// Constructor
-	RingsToolPlugin();
+	SPRingsToolPlugin();
 	// Destructor
-	~RingsToolPlugin();
+	~SPRingsToolPlugin();
 
 
 	/*
@@ -85,7 +85,7 @@ class RingsToolPlugin : public QObject, public ToolPluginInterface
 	// Return whether the tool has a dialog
 	bool hasDialog() const;
 	// Show the dialog for the tool
-	void showDialog();
+	bool showDialog();
 	// Run the tool with the current settings
 	bool runTool();
 

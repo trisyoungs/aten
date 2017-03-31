@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 	if (!MrAten.parseCliEarly(argc, argv)) return -1;
 
 	/* Print GPL license information */
-	Messenger::print("Aten version %s, Copyright (C) 2007-2016 T. Youngs.", ATENVERSION);
+	Messenger::print("Aten version %s, Copyright (C) 2007-2017 T. Youngs.", ATENVERSION);
 	Messenger::print("Git repository is <https://github.com/trisyoungs/aten.git>.");
 	Messenger::print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.");
 	Messenger::print("Aten comes with ABSOLUTELY NO WARRANTY.");

@@ -126,13 +126,13 @@ bool TestToolPlugin::hasDialog() const
 }
 
 // Show the dialog for the tool
-void TestToolPlugin::showDialog()
+bool TestToolPlugin::showDialog()
 {
 	// Check if a dialog actually exists
 	if (dialog_ == NULL)
 	{
 		Messenger::error("No dialog is associated to the tool '%s'\n", qPrintable(name()));
-		return;
+		return false;
 	}
 
 	// Cast the dialog_ pointer into our custom class
@@ -140,6 +140,7 @@ void TestToolPlugin::showDialog()
 	if (!testToolDialog)
 	{
 		Messenger::error("Error casting tool dialog into custom class for the tool '%s'\n", qPrintable(name()));
+		return false;
 	}
 	testToolDialog->applyPluginOptions();
 	testToolDialog->exec();

@@ -85,7 +85,7 @@ class TestToolPlugin : public QObject, public ToolPluginInterface
 	// Return whether the tool has a dialog
 	bool hasDialog() const;
 	// Show the dialog for the tool
-	void showDialog();
+	bool showDialog();
 	// Run the tool with the current settings
 	bool runTool();
 

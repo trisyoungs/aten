@@ -1,6 +1,6 @@
 /*
-	*** Rings Tool Dialog Functions
-	*** src/gui/tool_rings/ringstooldialog_funcs.cpp
+	*** SPRings Tool Dialog Functions
+	*** src/gui/tool_springs/springstooldialog_funcs.cpp
 	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
@@ -19,29 +19,37 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/tool_rings/ringstooldialog.h"
+#include "plugins/tool_springs/springstooldialog.h"
+#include "gui/qcustomplot/qcustomplot.hui"
 
 // Constructor
-RingsToolDialog::RingsToolDialog(ToolPluginInterface& targetInterface, KVMap& pluginOptions) : QDialog(NULL), targetInterface_(targetInterface), pluginOptions_(pluginOptions)
+SPRingsToolDialog::SPRingsToolDialog(ToolPluginInterface& targetInterface, KVMap& pluginOptions) : QDialog(NULL), targetInterface_(targetInterface), pluginOptions_(pluginOptions)
 {
 	ui.setupUi(this);
 
 	// Initialise the icon resource
-	Q_INIT_RESOURCE(ringstool_icons);
+	Q_INIT_RESOURCE(springstool_icons);
+
+	// Set up plot
+	QCustomPlot* customPlot = ui.PlotWidget->plot();
+	customPlot->xAxis->setLabel("Ring Size");
+	customPlot->yAxis->setLabel("Frequency");
+	customPlot->xAxis->setRange(1, 10);
+	customPlot->yAxis->setRange(0, 100);
 }
 
 /*
  * Widget Functions
  */
 
-void RingsToolDialog::on_CloseButton_clicked(bool checked)
+void SPRingsToolDialog::on_CloseButton_clicked(bool checked)
 {
 	// Close the dialog, storing UI options before we close
 	setPluginOptions();
 	accept(); 
 }
 
-void RingsToolDialog::on_RunButton_clicked(bool checked)
+void SPRingsToolDialog::on_RunButton_clicked(bool checked)
 {
 	// Set options before we call the run method
 	setPluginOptions();
@@ -50,7 +58,7 @@ void RingsToolDialog::on_RunButton_clicked(bool checked)
 }
 
 // Apply plugin options to UI controls
-void RingsToolDialog::applyPluginOptions()
+void SPRingsToolDialog::applyPluginOptions()
 {
 	ui.LinkElementEdit->setText(pluginOptions_.value("linkElement"));
 	ui.ElementEdit->setText(pluginOptions_.value("element"));
@@ -58,10 +66,11 @@ void RingsToolDialog::applyPluginOptions()
 	ui.CalculateForAllCheck->setChecked(pluginOptions_.value("calculateForAll") == "true");
 	ui.MaxRingSizeSpin->setValue(pluginOptions_.value("maxRingSize").toInt());
 	ui.MaxDistanceSpin->setValue(pluginOptions_.value("maxDistance").toDouble());
+	ui.DebugCheck->setChecked(pluginOptions_.value("debug") == "true");
 }
 
 // Set plugin options from UI controls
-void RingsToolDialog::setPluginOptions()
+void SPRingsToolDialog::setPluginOptions()
 {
 	pluginOptions_.add("element", ui.ElementEdit->text());
 	pluginOptions_.add("linkElement", ui.LinkElementEdit->text());
@@ -69,4 +78,5 @@ void RingsToolDialog::setPluginOptions()
 	pluginOptions_.add("calculateForAll", ui.CalculateForAllCheck->isChecked() ? "true" : "false");
 	pluginOptions_.add("maxRingSize", QString::number(ui.MaxRingSizeSpin->value()));
 	pluginOptions_.add("maxDistance", QString::number(ui.MaxDistanceSpin->value()));
+	pluginOptions_.add("debug", ui.DebugCheck->isChecked() ? "true" : "false");
 }

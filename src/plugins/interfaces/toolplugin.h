@@ -122,7 +122,7 @@ class ToolPluginInterface : public BasePluginInterface
 	// Return whether the tool has a dialog
 	virtual bool hasDialog() const = 0;
 	// Show the dialog for the tool
-	virtual void showDialog() = 0;
+	virtual bool showDialog() = 0;
 	// Run the tool with the current settings
 	virtual bool runTool() = 0;
 

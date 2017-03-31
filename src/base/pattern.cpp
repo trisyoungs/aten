@@ -699,7 +699,7 @@ void Pattern::deleteExpression()
 }
 
 // Create connectivity and scaling matrices for molecules in pattern
-void Pattern::createMatrices(bool forceFull)
+void Pattern::createMatrices(bool forceFull, bool quiet)
 {
 	Messenger::enter("Pattern::createMatrices");
 	int n, m, a1, a2;
@@ -715,14 +715,14 @@ void Pattern::createMatrices(bool forceFull)
 	elecScaleMatrix_ = new double*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 
-	Messenger::print("Connectivity matrix.....initialising....");
+	if (!quiet) Messenger::print("Connectivity matrix.....initialising....");
 	for (n=0; n<nAtoms_; ++n)
 		for (m=0; m<nAtoms_; ++m) conMatrix_[n][m] = 0;
 
 	// Since the full transformation to the connectivity matrix is quite intensive, we will only do this for patterns containing less than 1000 atoms
 	if (forceFull || (nAtoms_ < 1000))
 	{
-		Messenger::print("seeding.....");
+		if (!quiet) Messenger::print("seeding.....");
 		// First, build up the bond matrix
 		Atom* i = firstAtom_;
 		int ii = i->id();
@@ -742,7 +742,7 @@ void Pattern::createMatrices(bool forceFull)
 // 		}
 
 		// Now, transform into the connectivity matrix.
-		Messenger::print("transforming (full).....");
+		if (!quiet) Messenger::print("transforming (full).....");
 		for (a1=0; a1<nAtoms_; a1++)
 		{
 			for (a2=0; a2<nAtoms_; a2++)
@@ -774,7 +774,7 @@ void Pattern::createMatrices(bool forceFull)
 	else
 	{
 		// Create minimal transformation matrix, using only bond, angle, and torsion data
-		Messenger::print("transforming (minimal).....");
+		if (!quiet) Messenger::print("transforming (minimal).....");
 
 		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
 		Atom* i = firstAtom_;
@@ -842,7 +842,7 @@ void Pattern::createMatrices(bool forceFull)
 			conMatrix_[pb->atomId(3)][pb->atomId(0)] = 3;
 		}
 	}
-	Messenger::print("done.");
+	if (!quiet) Messenger::print("done.");
 
 // 	printf("Connectivity Matrix\n");
 // 	for (n=0; n<nAtoms_; n++)

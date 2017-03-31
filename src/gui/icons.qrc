@@ -60,8 +60,8 @@
   </qresource>
   <qresource prefix="/aten">
     <file>icons/aten_preferences.svg</file>
-    <file>icons/aten_aboutplugins.svg</file>
     <file>icons/aten_storedefault.svg</file>
+    <file>icons/aten_about.svg</file>
     <file>icons/aten_reloadplugins.svg</file>
   </qresource>
   <qresource prefix="image">

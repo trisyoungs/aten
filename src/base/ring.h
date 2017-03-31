@@ -70,6 +70,8 @@ class Ring : public ListItem<Ring>
 	Pattern* parent();
 	// Return first referenced atom
 	RefListItem<Atom,int>* atoms() const;
+	// Return array of referenced atoms
+	RefListItem<Atom,int>** atomArray();
 	// Return last referenced atom
 	RefListItem<Atom,int>* lastAtom() const;
 	// Return first referenced bond

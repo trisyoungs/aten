@@ -474,6 +474,9 @@ void Commands::initPointers()
 	pointers_[Seed] = &AtenSpace::Commands::function_Seed;
 	pointers_[Version] = &AtenSpace::Commands::function_Version;
 	
+	// Tool Commands
+	pointers_[RunTool] = &AtenSpace::Commands::function_RunTool;
+
 	// Trajectory Commands
 	pointers_[AddFrame] = &AtenSpace::Commands::function_AddFrame;
 	pointers_[ClearTrajectory] = &AtenSpace::Commands::function_ClearTrajectory;

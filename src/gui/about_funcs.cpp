@@ -1,6 +1,6 @@
 /*
-	*** About Plugins Dialog
-	*** src/gui/aboutplugins_funcs.cpp
+	*** About Dialog
+	*** src/gui/about_funcs.cpp
 	Copyright T. Youngs 2013-2017
 
 	This file is part of Aten.
@@ -19,17 +19,40 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/aboutplugins.h"
+#include "gui/about.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include "main/version.h"
 #include "plugins/pluginstore.h"
+#include "gui/qcustomplot/qcustomplot.hui"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-AtenAboutPlugins::AtenAboutPlugins(AtenWindow& parent) : QDialog(&parent), atenWindow_(parent), pluginStore_(parent.aten().pluginStore())
+AtenAbout::AtenAbout(AtenWindow& parent) : QDialog(&parent), atenWindow_(parent), pluginStore_(parent.aten().pluginStore())
 {
 	ui.setupUi(this);
+
+	// Set version string in label
+	ui.AtenVersionLabel->setText(QString("Aten version %1").arg(ATENVERSION));
+
+	// Setup plot
+	PlotData data;
+	data.setTitles("QCustomPlot");
+	QVector<double>& x = data.x(), &y = data.y();
+	
+	for (int i=0; i<101; ++i)
+	{
+		x.append(i/50.0 - 1); // x goes from -1 to 1
+		y.append( (i/50.0 - 1)*(i/50.0 - 1) ); // let's plot a quadratic function
+	}
+	
+	ui.PlotWidget->addData(data);
+	ui.PlotWidget->plot()->xAxis->setLabel("X");
+	ui.PlotWidget->plot()->yAxis->setLabel("Y");
+	ui.PlotWidget->plot()->xAxis->setRange(-1, 1);
+	ui.PlotWidget->plot()->yAxis->setRange(0, 1);
+	ui.PlotWidget->plot()->replot();
 
 	// Populate plugin types combo
 	for (int n=0; n<PluginTypes::nPluginTypes; ++n) ui.TypeCombo->addItem( PluginTypes::pluginType((PluginTypes::PluginType) n) );
@@ -40,7 +63,7 @@ AtenAboutPlugins::AtenAboutPlugins(AtenWindow& parent) : QDialog(&parent), atenW
 }
 
 // Destructor
-AtenAboutPlugins::~AtenAboutPlugins()
+AtenAbout::~AtenAbout()
 {
 }
 
@@ -49,7 +72,7 @@ AtenAboutPlugins::~AtenAboutPlugins()
  */
 
 // Update tree with plugins of specified type
-void AtenAboutPlugins::updateTree(int type)
+void AtenAbout::updateTree(int type)
 {
 	PluginTypes::PluginType pluginType = (PluginTypes::PluginType) type;
 
@@ -150,7 +173,7 @@ void AtenAboutPlugins::updateTree(int type)
 
 }
 
-void AtenAboutPlugins::on_CloseButton_clicked(bool checked)
+void AtenAbout::on_CloseButton_clicked(bool checked)
 {
 	accept();
 }

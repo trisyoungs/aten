@@ -151,7 +151,7 @@ template <class T, class D> class RefList
 	// Swap the two items specified
 	void swap(T* item1, T* item2);
 	// Return array of items
-	RefListItem<T,D>* *array();
+	RefListItem<T,D>** array();
 };
 
 /*!

@@ -1,6 +1,6 @@
 /*
-	*** About Plugins Dialog
-	*** src/gui/aboutplugins.h
+	*** About Dialog
+	*** src/gui/about.h
 	Copyright T. Youngs 2013-2017
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATENABOUTPLUGINS_H
-#define ATEN_ATENABOUTPLUGINS_H
+#ifndef ATEN_ATENABOUT_H
+#define ATEN_ATENABOUT_H
 
-#include "gui/ui_aboutplugins.h"
+#include "gui/ui_about.h"
 #include "base/namespace.h"
 #include <QDialog>
 
@@ -38,14 +38,14 @@ ATEN_USING_NAMESPACE
 // Forward Declarations (Qt)
 class AtenWindow;
 
-class AtenAboutPlugins : public QDialog
+class AtenAbout : public QDialog
 {
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
 	private:
 	// Main form declaration
-	Ui::AboutPluginsDialog ui;
+	Ui::AboutDialog ui;
 	// Reference to main window
 	AtenWindow& atenWindow_;
 	// Reference to plugin store
@@ -53,8 +53,8 @@ class AtenAboutPlugins : public QDialog
 
 	public:
 	// Constructor / Destructor
-	AtenAboutPlugins(AtenWindow& parent);
-	~AtenAboutPlugins();
+	AtenAbout(AtenWindow& parent);
+	~AtenAbout();
 
 
 	/*

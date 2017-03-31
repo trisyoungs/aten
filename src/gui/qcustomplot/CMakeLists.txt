@@ -3,12 +3,14 @@
 # Meta-Objects
 SET(qcustomplot_MOC_HDRS
   qcustomplot.hui
+  tcustomplot.hui
 )
 QT5_WRAP_CPP(qcustomplot_MOC_SRCS ${qcustomplot_MOC_HDRS})
 
 # Source files
 set(qcustomplot_SRCS
   qcustomplot_funcs.cpp
+  tcustomplot_funcs.cpp
 )
 
 # Target 'qcustomplot'

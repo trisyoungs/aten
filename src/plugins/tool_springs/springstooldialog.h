@@ -1,6 +1,6 @@
 /*
-	*** Rings Tool Dialog
-	*** src/plugins/tool_rings/ringstooldialog.h
+	*** SPRings Tool Dialog
+	*** src/plugins/tool_springs/springstooldialog.h
 	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
@@ -24,26 +24,26 @@
 
 #include "base/kvmap.h"
 #include "plugins/interfaces/toolplugin.h"
-#include "plugins/tool_rings/ui_ringstooldialog.h"
+#include "plugins/tool_springs/ui_springstooldialog.h"
 
 ATEN_USING_NAMESPACE
 
 // Forward Declarations (Aten)
 /* None */
 
-// Rings Tool Dialog
-class RingsToolDialog : public QDialog
+// SPRings Tool Dialog
+class SPRingsToolDialog : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	RingsToolDialog(ToolPluginInterface& targetInterface, KVMap& pluginOptions);
+	SPRingsToolDialog(ToolPluginInterface& targetInterface, KVMap& pluginOptions);
+	// Main form declaration
+	Ui::SPRingsToolDialog ui;
 
 	private:
-	// Main form declaration
-	Ui::RingsToolDialog ui;
 	// Reference to the source plugin calling the dialog
 	ToolPluginInterface& targetInterface_;
 	// Reference to KVMap of plugin options stored in plugin

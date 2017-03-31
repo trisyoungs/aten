@@ -112,6 +112,12 @@ RefListItem<Atom,int>* Ring::atoms() const
 	return atoms_.first();
 }
 
+// Return array of referenced atoms
+RefListItem<Atom,int>** Ring::atomArray()
+{
+	return atoms_.array();
+}
+
 // Return last referenced atom
 RefListItem<Atom,int>* Ring::lastAtom() const
 {

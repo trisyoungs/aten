@@ -189,7 +189,7 @@ src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/method_mopac71/Makefile
 src/plugins/method_mopac71/mopac7.1/Makefile
-src/plugins/tool_rings/Makefile
+src/plugins/tool_springs/Makefile
 src/plugins/tool_test/Makefile
 src/sg/Makefile
 src/templates/Makefile

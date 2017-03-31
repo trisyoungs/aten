@@ -548,7 +548,7 @@ class Aten
 	 */
 	public:
 	// Setup and run specified ToolPluginInterface
-	void runTool(ToolPluginInterface* plugin, KVMap pluginOptions = KVMap(), bool showDialog = true);
+	bool runTool(ToolPluginInterface* plugin, KVMap pluginOptions = KVMap(), bool showDialog = true);
 };
 
 ATEN_END_NAMESPACE

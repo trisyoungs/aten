@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RingsToolDialog</class>
- <widget class="QDialog" name="RingsToolDialog">
+ <class>SPRingsToolDialog</class>
+ <widget class="QDialog" name="SPRingsToolDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,11 +16,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>SP Rings Tool</string>
+   <string>SP SPRings Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="ringstool_icons.qrc">
-    <normaloff>:/ringstool_icons/icon.svg</normaloff>:/ringstool_icons/icon.svg</iconset>
+   <iconset resource="springstool_icons.qrc">
+    <normaloff>:/springstool_icons/icon.svg</normaloff>:/springstool_icons/icon.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
@@ -87,7 +87,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Element comprising rings</string>
+          <string>Element comprising springs</string>
          </property>
         </widget>
        </item>
@@ -124,7 +124,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0" colspan="2">
+       <item row="8" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <spacer name="horizontalSpacer_2">
@@ -173,12 +173,18 @@
          </item>
         </layout>
        </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="MaxRingSizeSpin"/>
+       </item>
        <item row="5" column="0" colspan="2">
         <widget class="QCheckBox" name="CalculateForAllCheck">
          <property name="text">
           <string>Calculate for all loaded models</string>
          </property>
         </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QDoubleSpinBox" name="MaxDistanceSpin"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_4">
@@ -187,12 +193,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QSpinBox" name="MaxRingSizeSpin"/>
-       </item>
-       <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="MaxDistanceSpin"/>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
@@ -200,10 +200,17 @@
          </property>
         </widget>
        </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="DebugCheck">
+         <property name="text">
+          <string>Debug output</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
-      <widget class="QCustomPlot" name="widget" native="true">
+      <widget class="TPlotWidget" name="PlotWidget" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -261,14 +268,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QCustomPlot</class>
+   <class>TPlotWidget</class>
    <extends>QWidget</extends>
-   <header>gui/qcustomplot/qcustomplot.hui</header>
+   <header>gui/qcustomplot/tplotwidget.hui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="ringstool_icons.qrc"/>
+  <include location="springstool_icons.qrc"/>
  </resources>
  <connections/>
 </ui>

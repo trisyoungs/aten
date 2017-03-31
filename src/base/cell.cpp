@@ -131,7 +131,6 @@ Model* UnitCell::parent()
 bool UnitCell::copy(UnitCell* source)
 {
 	if (source == NULL) return false;
-	source->print();
 	(*this) = (*source);
 	return true;
 }
