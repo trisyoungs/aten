@@ -9,6 +9,8 @@ QT5_WRAP_CPP(qcustomplot_MOC_SRCS ${qcustomplot_MOC_HDRS})
 
 # Source files
 set(qcustomplot_SRCS
+  plotdata.cpp
+  plotdatastyle.cpp
   qcustomplot_funcs.cpp
   tcustomplot_funcs.cpp
 )

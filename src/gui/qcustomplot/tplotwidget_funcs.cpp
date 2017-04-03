@@ -24,57 +24,6 @@
 #include <QToolButton>
 #include "gui/qcustomplot/qcustomplot.hui"
 
-/*
- * PlotData
- */
-
-// Constructor
-PlotData::PlotData(QString title) : title_(title)
-{
-}
-
-// Copy Constructor
-PlotData::PlotData(const PlotData& source)
-{
-	(*this) = source;
-}
-
-// Assignment Operator
-PlotData& PlotData::operator=(const PlotData& source)
-{
-	title_ = source.title_;
-	x_ = source.x_;
-	y_ = source.y_;
-}
-
-// Set titles for data and axes
-void PlotData::setTitles(QString title)
-{
-	title_ = title;
-}
-
-// Return X data
-QVector<double>& PlotData::x()
-{
-	return x_;
-}
-
-// Return Y data
-QVector<double>& PlotData::y()
-{
-	return y_;
-}
-
-// Return title of the data
-QString PlotData::title()
-{
-	return title_;
-}
-
-/*
- * TPlotWidget
- */
-
 // Constructor
 TPlotWidget::TPlotWidget(QWidget* parent) : QWidget(parent)
 {
@@ -130,21 +79,29 @@ QCustomPlot* TPlotWidget::plot()
  */
 
 // Add the specified data source to the QCustomPlot
-QCPGraph* TPlotWidget::addData(PlotData& source)
+QCPGraph* TPlotWidget::addData(PlotData& source, PlotDataStyle::DataStyle style)
 {
 	// Copy the source data
 	PlotData* data = data_.add();
 	(*data) = source;
 
+	// Add a new graph to the plot
 	QCPGraph* graph = plot_->addGraph();
 	graph->setData(data->x(), data->y());
 	graph->setName(data->title());
+
+	// Set the style of the graph
+	QPen pen;
+	QBrush brush;
+	PlotDataStyles::penAndBrush(style, pen, brush);
+	graph->setPen(pen);
+	graph->setBrush(brush);
 
 	plot_->replot();
 }
 
 // Add the specified data source as a bar chart to the QCustomPlot
-QCPBars* TPlotWidget::addBarsData(PlotData& source, bool group)
+QCPBars* TPlotWidget::addBarsData(PlotData& source, bool group, PlotDataStyle::DataStyle style)
 {
 	// Copy the source data
 	PlotData* data = data_.add();
@@ -167,4 +124,13 @@ QCPBars* TPlotWidget::addBarsData(PlotData& source, bool group)
 	}
 
 	plot_->replot();
+}
+
+/*
+ * Slots
+ */
+
+// Clear button clicked
+void TPlotWidget::clearButtonClicked(bool checked)
+{
 }

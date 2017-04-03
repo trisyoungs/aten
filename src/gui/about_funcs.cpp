@@ -38,7 +38,7 @@ AtenAbout::AtenAbout(AtenWindow& parent) : QDialog(&parent), atenWindow_(parent)
 
 	// Setup plot
 	PlotData data;
-	data.setTitles("QCustomPlot");
+	data.setTitle("QCustomPlot");
 	QVector<double>& x = data.x(), &y = data.y();
 	
 	for (int i=0; i<101; ++i)
