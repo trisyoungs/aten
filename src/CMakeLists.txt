@@ -20,6 +20,7 @@ target_link_libraries(aten PRIVATE
 	fourierdata
 	treegui
 	gui
+	qcustomplot
 	base
 	sg
 	math
