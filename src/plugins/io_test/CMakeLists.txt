@@ -1,6 +1,6 @@
 # Meta-Objects
 set(xyztest_MOC_HDRS
-  xyztest.h
+  xyztest.hui
 )
 QT5_WRAP_CPP(xyztest_MOC_SRCS ${xyztest_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 

@@ -29,6 +29,7 @@ use_cxx11()
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
 find_package(READLINE REQUIRED)
 # -- Force first look for Bison to be /usr/local/bin, since version provided by XCode on OSX is too old (v2.3) 
 find_package(BISON PATHS /usr/local/bin NO_DEFAULT_PATH QUIET)
@@ -69,6 +70,7 @@ if(WIN32)
     aten
     Qt5::Widgets
     Qt5::Core
+    Qt5::PrintSupport
   )
 
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
@@ -142,11 +144,11 @@ target_include_directories(${target_name} PRIVATE
 if(WIN32)
   set(ATEN_LINK_LIBS
     aten
-    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+    Qt5::Widgets Qt5::Core Qt5::PrintSupport ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 else(WIN32)
   set(ATEN_LINK_LIBS
     messenger gui qcustomplot parser treegui command methods render model undo math main fourierdata ff base sg
-    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+    Qt5::Widgets Qt5::Core Qt5::PrintSupport ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 endif(WIN32)
 target_link_libraries( ${target_name} ${ATEN_LINK_LIBS})
 

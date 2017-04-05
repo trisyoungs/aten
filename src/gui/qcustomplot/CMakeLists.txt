@@ -3,7 +3,7 @@
 # Meta-Objects
 SET(qcustomplot_MOC_HDRS
   qcustomplot.hui
-  tcustomplot.hui
+  tplotwidget.hui
 )
 QT5_WRAP_CPP(qcustomplot_MOC_SRCS ${qcustomplot_MOC_HDRS})
 
@@ -12,7 +12,7 @@ set(qcustomplot_SRCS
   plotdata.cpp
   plotdatastyle.cpp
   qcustomplot_funcs.cpp
-  tcustomplot_funcs.cpp
+  tplotwidget_funcs.cpp
 )
 
 # Target 'qcustomplot'
@@ -20,7 +20,7 @@ add_library(qcustomplot STATIC
   ${qcustomplot_SRCS}
   ${qcustomplot_MOC_SRCS}
 )
-target_include_directories(gui PRIVATE
+target_include_directories(qcustomplot PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Widgets_INCLUDE_DIRS}
