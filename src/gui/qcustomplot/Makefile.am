@@ -14,3 +14,5 @@ clean-local:
 libqcustomplot_la_SOURCES = plotdata.cpp plotdatastyle.cpp qcustomplot.hui qcustomplot_funcs.cpp tplotwidget.hui tplotwidget_funcs.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I../../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@
+
+noinst_HEADERS = plotdata.h plotdatastyle.h
