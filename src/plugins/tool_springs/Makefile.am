@@ -32,3 +32,4 @@ AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
 noinst_HEADERS = springstooldialog.h
 
+EXTRA_DIST = icon.svg
