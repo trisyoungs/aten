@@ -14,6 +14,7 @@ target_include_directories(plugins PRIVATE
 target_link_libraries(plugins)
 
 add_subdirectory(io_akf)
+add_subdirectory(io_chemshell)
 add_subdirectory(io_cif)
 #add_subdirectory(io_csd)
 add_subdirectory(io_cube)
