@@ -188,7 +188,7 @@ Format::Format(QString cFormat, RefListItem<TreeNode,int>* firstarg)
 							Messenger::print("Format '%s' expects a pointer, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
 							isValid_ = false;
 						}
-						else if ((prevPrevChar == '\0') || (prevPrevChar == 'h'))
+						else if ((prevPrevChar.isNull()) || (prevPrevChar == 'h'))
 						{
 							if (type == VTypes::IntegerData) break;
 							Messenger::print("Format '%s' expects an integer, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
@@ -210,7 +210,7 @@ Format::Format(QString cFormat, RefListItem<TreeNode,int>* firstarg)
 							Messenger::print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.");
 							isValid_ = false;
 						}
-						else if (prevPrevChar == '\0')
+						else if (prevPrevChar.isNull())
 						{
 							if (type == VTypes::DoubleData) break;
 							Messenger::print("Format '%s' expects a real, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
@@ -226,7 +226,7 @@ Format::Format(QString cFormat, RefListItem<TreeNode,int>* firstarg)
 					case ('r'):
 						restOfLine = true;
 					case ('s'):
-						if (prevPrevChar != '\0')
+						if (! prevPrevChar.isNull())
 						{
 							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
 							isValid_ = false;

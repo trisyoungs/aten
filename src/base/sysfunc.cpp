@@ -36,38 +36,39 @@ ATEN_USING_NAMESPACE
 void removeComments(QString& line)
 {
 	QChar c, quoteChar = '\0';
+	static const QChar nullChar = '\0', doubleQuoteChar = '"', singleQuoteChar = '\'', escapeChar = '\\', slashChar = '/', hashChar = '#';
 	bool escaped = false;
-// 	for (c = s; *c != '\0'; ++c)
+
 	for (int n=0; n<line.length(); ++n)
 	{
 		// Get current char
 		c = line.at(n);
 
 		// Remember current quoting info...
-		if (c == '"')
+		if (c == doubleQuoteChar)
 		{
-			if (quoteChar == '\0') quoteChar = '"';
-			else if (quoteChar == '"') quoteChar = '\0';
+			if (quoteChar == nullChar) quoteChar = '"';
+			else if (quoteChar == doubleQuoteChar) quoteChar = '\0';
 		}
-		if (c == '\'')
+		if (c == singleQuoteChar)
 		{
-			if (quoteChar == '\0') quoteChar = '\'';
-			else if (quoteChar == '\'') quoteChar = '\0';
+			if (quoteChar == nullChar) quoteChar = '\'';
+			else if (quoteChar == singleQuoteChar) quoteChar = '\0';
 		}
-		if ((c == '#') && (!escaped) && (quoteChar == '\0'))
+		if ((c == hashChar) && (!escaped) && (quoteChar == nullChar))
 		{
 			line.chop(line.length()-n);
 			break;
 		}
-		else if ((c == '/') && (!escaped) && (quoteChar == '\0'))
+		else if ((c == slashChar) && (!escaped) && (quoteChar == nullChar))
 		{
-			if (line.at(n+1) == '/')
+			if (line.at(n+1) == slashChar)
 			{
 				line.chop(line.length()-n);
 				break;
 			}
 		}
-		escaped = (c == '\\');
+		escaped = (c == escapeChar);
 	}
 }
 

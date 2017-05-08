@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 bool Commands::function_AfterStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).section(c->argc(1), 1));	// ATEN2 TODO Test this
-	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
+	if (c->hasArg(2) && c->argb(2) && (!rv.asString().isEmpty())) rv.set(c->argc(0));
 	return true;
 }
 
@@ -65,7 +65,7 @@ bool Commands::function_AToI(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_BeforeStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).section(c->argc(1), 0, 0) ); // ATEN2 TODO Test this
-	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
+	if (c->hasArg(2) && c->argb(2) && (!rv.asString().isEmpty())) rv.set(c->argc(0));
 	return true;
 }
 
