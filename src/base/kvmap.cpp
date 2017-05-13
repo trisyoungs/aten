@@ -103,6 +103,18 @@ void KVMap::add(QString key, QString value)
 	else kvp->setValue(value);
 }
 
+// Set (existing) key/value pair (from int)
+void KVMap::add(QString key, int value)
+{
+	add(key, QString::number(value));
+}
+
+// Set (existing) key/value pair (from double)
+void KVMap::add(QString key, double value)
+{
+	add(key, QString::number(value));
+}
+
 // Return comma-separated list of keys
 QString KVMap::keys()
 {

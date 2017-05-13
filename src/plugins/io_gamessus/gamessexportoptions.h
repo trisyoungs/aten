@@ -30,7 +30,7 @@ ATEN_USING_NAMESPACE
 // Forward Declarations (Aten)
 /* none */
 
-// XYZ Export Options Dialog
+// GAMESS-US Export Options Dialog
 class GAMESSUSExportOptionsDialog : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
