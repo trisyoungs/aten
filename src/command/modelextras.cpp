@@ -30,6 +30,7 @@ ATEN_USING_NAMESPACE
 bool Commands::function_NewBasisShell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
 	// Get shell type argument
 	BasisShell::BasisShellType bft = BasisShell::basisShellType(c->argc(1), true);
 	if (bft == BasisShell::nBasisShellTypes) return false;

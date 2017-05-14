@@ -1,13 +1,15 @@
 # Meta-Objects
 set(gamessus_MOC_HDRS
   gamessus.hui
-  gamessexportoptions.ui
+  gamessuslog.hui
+  gamessusexportoptions.ui
 )
 QT5_WRAP_CPP(gamessus_MOC_SRCS ${gamessus_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 add_library(gamessus MODULE
-  gamessexportoptions_funcs.cpp
+  gamessusexportoptions_funcs.cpp
   gamessus_funcs.cpp
+  gamessuslog_funcs.cpp
   ${gamessus_MOC_SRCS}
 )
 target_link_libraries(gamessus

@@ -19,7 +19,8 @@ clean-local:
 	-rm -f gamessus.cpp
 
 # AKF Model plugin
-gamessus_la_SOURCES = gamessexportoptions.ui gamessexportoptions_funcs.cpp gamessus.hui gamessus_funcs.cpp
+gamessus_la_SOURCES = gamessusexportoptions.ui gamessusexportoptions_funcs.cpp gamessus.hui gamessus_funcs.cpp
+gamessus_la_SOURCES = gamessuslog.hui gamessuslog_funcs.cpp
 gamessus_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

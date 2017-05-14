@@ -136,7 +136,12 @@ class FileParser
 			if (!readLine(line)) break;
 
 			// Check for string
-			if (line.contains(string)) return true;
+			if (line.contains(string))
+			{
+				// Parse line before we go...
+				parser_.getArgsDelim(Parser::Defaults, line);
+				return true;
+			}
 		}
 
 		// Rewind file to previous position if not found
@@ -187,6 +192,7 @@ class FileParser
 	{
 		return (parser_.getDoubleArray(array, nValues) == 0);
 	}
+
 
 	/*
 	 * Formatted Write Functions

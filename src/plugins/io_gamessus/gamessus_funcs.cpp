@@ -1,6 +1,6 @@
 /*
         *** GAMESS-US Model Plugin Functions
-        *** src/plugins/io_gamessus/gamess_funcs.cpp
+        *** src/plugins/io_gamessus/gamessus_funcs.cpp
         Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
