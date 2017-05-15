@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.projectaten.Aten.desktop</id>
+  <name>Aten</name>
+  <summary>Aten - Atomic configuration builder and editor</summary>
+  <developer_name>Tristan Youngs</developer_name>
+  <description>
+  <p>
+Aten provides a clean graphical user interface allowing the intuitive editing and creation of input coordinates for computational chemistry / physics codes. It allows periodic (i.e. condensed) and non-periodic (i.e. gas-phase) models and systems to be created either from scratch or from existing coordinate files. Molecular mechanics forcefields of standard functional forms may be loaded and used to minimise existing systems or create (through Monte Carlo techniques) new multi-component configurations. Periodic systems may be stretched, scaled, and repeated, and symmetry operators applied. Molecular dynamics trajectories may be loaded, viewed, frames edited, and properties calculated.
+  </p>
+</description>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <url type="bugtracker">https://www.projectaten.com</url>
+  <url type="donation">https://www.projectaten.com</url>
+  <url type="faq">https://www.projectaten.com</url>
+  <url type="help">https://www.projectaten.com</url>
+  <url type="homepage">https://www.projectaten.com</url>
+  <screenshots>
+    <screenshot>
+      <caption>Building bukytubes with Aten</caption>
+      <image height="250" width="450">https://www.projectaten.com/user/pages/aten/_features1/construct.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <caption>Aten's main window</caption>
+      <image height="1147" width="1920">https://www.projectaten.com/user/pages/aten/_content/aten.jpg</image>
+    </screenshot>
+  </screenshots>
+  <metadata>
+    <value key="X-SuSE-translate">false</value>
+  </metadata>
+</component>
