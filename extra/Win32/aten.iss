@@ -4,7 +4,7 @@
 #define MyAppName "Aten"
 #define MyAppVersion "2.1.5"
 #define MyAppPublisher "Tristan Youngs"
-#define MyAppURL "http://www.projectaten.net/"
+#define MyAppURL "https://www.projectaten.com/"
 #define MyAppExeName "Aten.exe"
 
 ; Locations of bin directories of Qt, GnuWin(32), and MinGW(32)
