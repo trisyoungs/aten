@@ -51,19 +51,19 @@ int Model::nCartesianBasisFunctions()
 }
 
 // Add new eigenvevtor to the list
-Eigenvector *Model::addEigenvector()
+Eigenvector* Model::addEigenvector()
 {
 	return eigenvectors_.add();
 }
 
 // Return the first eigenvevtor in the list
-Eigenvector *Model::eigenvectors()
+Eigenvector* Model::eigenvectors()
 {
 	return eigenvectors_.first();
 }
 
 // Return the n'th eigenvector in the list
-Eigenvector *Model::eigenvector(int n)
+Eigenvector* Model::eigenvector(int n)
 {
 	return eigenvectors_[n];
 }
@@ -87,7 +87,7 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 		Messenger::exit("Model::eigenvectorDensityAt");
 		return 0.0;
 	}
-	Eigenvector *evec = eigenvectors_[id];
+	Eigenvector* evec = eigenvectors_[id];
 	double* eigenvec = evec->eigenvector();
 	for (BasisShell *bas = basisShells_.first(); bas != NULL; bas = bas->next)
 	{

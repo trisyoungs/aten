@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_gamessus/gamessexportoptions.h"
+#include "plugins/io_gamessus/gamessusexportoptions.h"
 
 // Constructor
 GAMESSUSExportOptionsDialog::GAMESSUSExportOptionsDialog(KVMap& pluginOptions) : QDialog(NULL), pluginOptions_(pluginOptions)

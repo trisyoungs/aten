@@ -20,7 +20,7 @@
 */
 
 #include "plugins/io_gamessus/gamessus.hui"
-#include "plugins/io_gamessus/gamessexportoptions.h"
+#include "plugins/io_gamessus/gamessusexportoptions.h"
 #include "model/model.h"
 
 // Constructor
@@ -617,10 +617,10 @@ bool GAMESSUSModelPlugin::exportData()
 	if ((gbasis == "STO") || (gbasis == "N21") || (gbasis == "N31") || (gbasis == "N311"))
 	{
 		line = QString(" $BASIS GBASIS=%1 NGAUSS=%2").arg(gbasis).arg(pluginOptions_.value("basis_ngauss").toInt());
-		if (pluginOptions_.value("basis_ndfunc").toInt() != 0) line += " NDFUNC=" + pluginOptions_.value("basis_ndfunc").toInt();
-		if (pluginOptions_.value("basis_npfunc").toInt() != 0) line += " NPFUNC=" + pluginOptions_.value("basis_npfunc").toInt();
-		if (pluginOptions_.value("basis_nffunc").toInt() != 0) line += " NFFUNC=" + pluginOptions_.value("basis_nffunc").toInt();
-		fileParser_.writeLineF("%s $END", qPrintable(line));
+		if (pluginOptions_.value("basis_ndfunc").toInt() != 0) line += QString(" NDFUNC=%1").arg(pluginOptions_.value("basis_ndfunc").toInt());
+		if (pluginOptions_.value("basis_npfunc").toInt() != 0) line += QString(" NPFUNC=%1").arg(pluginOptions_.value("basis_npfunc").toInt());
+		if (pluginOptions_.value("basis_nffunc").toInt() != 0) line += QString(" NFFUNC=%1").arg(pluginOptions_.value("basis_nffunc").toInt());
+		fileParser_.writeLine(line + " $END");
 
 		line = QString();
 		

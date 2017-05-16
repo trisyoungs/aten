@@ -128,11 +128,11 @@ bool GAMESSUSLogModelPlugin::importData()
 		fileParser_.skipLines();
 		while (!fileParser_.eofOrBlank())   //e,discard,rx,ry,rz) != 0) newAtom(e,rx,ry,rz);
 		{
-			if (!fileParser_.parseLine()) return false;
-			createAtom(targetModel, fileParser_.argc(0), fileParser_.arg3d(2));
-
 			// Line with no arguments signals end of coordinates
+			if (!fileParser_.parseLine()) return false;
 			if (fileParser_.nArgs() == 0) break;
+
+			createAtom(targetModel, fileParser_.argc(0), fileParser_.arg3d(2));
 		};
 		targetModel->bohrToAngstrom();
 	}
@@ -151,22 +151,22 @@ bool GAMESSUSLogModelPlugin::importData()
 		if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
 // 		readLineF("%s %s %i %f %r", e, name, n, exponent, line);
 
-		// Messenger::print("%s %s %i %f [%s]\n", e, name, n, exponent, line);
+		// Messenger::print("%s %s %i %f [%s]", e, name, n, exponent, line);
 		int lastshell = -1, count = 0;
 		BasisShell* bas = NULL;
 		while (fileParser_.argc(0) != "TOTAL")
 		{
 			// Start of a new atom?
-			if (fileParser_.argi(2) == 0)
+			if (fileParser_.nArgs() == 1)
 			{
 				++count;
 				lastshell = 0;
-				Messenger::print("Found start of atom %i, which is element %s\n", count, qPrintable(fileParser_.argc(0)));
+				Messenger::print("Found start of atom %i, which is element %s", count, qPrintable(fileParser_.argc(0)));
 			}
 			else
 			{
 				// Create new basis shell?
-				// if (lastshell != shell) Messenger::print("Lastn (%i) is != shell (%i), so creating a new shell...\n", lastshell, shell);
+				// if (lastshell != shell) Messenger::print("Lastn (%i) is != shell (%i), so creating a new shell...", lastshell, shell);
 				if (lastshell != fileParser_.argi(0))
 				{
 					BasisShell::BasisShellType bft = BasisShell::basisShellType(fileParser_.argc(1), true);
@@ -189,14 +189,14 @@ bool GAMESSUSLogModelPlugin::importData()
 			}
 
 			// Get next line, ignoring blanks
-			if (!fileParser_.eofOrBlank()) return false;
+			if (fileParser_.eofOrBlank()) return false;
 			if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
-			// Messenger::print("%s %s %i %f [%s]\n", e, name, n, exponent, line);
+			// Messenger::print("%s %s %i %f [%s]", e, name, n, exponent, line);
 		}
 
 		// We end up with the 'TOTAL NUMBER OF BASIS SET SHELLS' line (beginning at 'SET...'), so we can do a check
-		Messenger::print("         Number of basis set shells read in : %i\n", targetModel->nBasisShells());
-		Messenger::print("            --> number specified in logfile : %i\n", fileParser_.argi(7));
+		Messenger::print("         Number of basis set shells read in : %i", targetModel->nBasisShells());
+		Messenger::print("            --> number specified in logfile : %i", fileParser_.argi(7));
 		if (fileParser_.argi(7) != targetModel->nBasisShells())
 		{
 			Messenger::error("Failed to read in basis set information.");
@@ -205,8 +205,8 @@ bool GAMESSUSLogModelPlugin::importData()
 
 		// Also, check the total number of cartesian basis functions
 		if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
-		Messenger::print("Number of implied cartesian basis functions : %i\n", targetModel->nCartesianBasisFunctions());
-		Messenger::print("            --> number specified in logfile : %i\n", fileParser_.argi(7));
+		Messenger::print("Number of implied cartesian basis functions : %i", targetModel->nCartesianBasisFunctions());
+		Messenger::print("            --> number specified in logfile : %i", fileParser_.argi(7));
 		if (fileParser_.argi(7) != targetModel->nCartesianBasisFunctions())
 		{
 			Messenger::error("Failed to read in basis set information.");
@@ -234,7 +234,7 @@ bool GAMESSUSLogModelPlugin::importData()
 		++nStructures;
 		fileParser_.skipLines(2);
 		Model* frame = createFrame();
-		frame->setName(QString("Frame %i").arg(nStructures));
+		frame->setName(QString("Frame %1").arg(nStructures));
 		for (int n=0; n<nAtoms; ++n)
 		{
 			if (!fileParser_.parseLine()); 		//readLine(e,discard,rx,ry,rz);
@@ -243,6 +243,7 @@ bool GAMESSUSLogModelPlugin::importData()
 	}
 
 	// Molecular orbitals?
+	fileParser_.rewind();
 	if (fileParser_.find("MOLECULAR ORBITALS"))
 	{
 		fileParser_.skipLines(2);
@@ -263,7 +264,7 @@ bool GAMESSUSLogModelPlugin::importData()
 		{
 			// Use orbital numbers as a sanity check
 			if (!fileParser_.parseLine()) return false;
-			if (fileParser_.argi(0) == 0) break;
+			if (fileParser_.nArgs() == 0) break;
 			else if (n != fileParser_.argi(0))
 			{
 				Messenger::print("Failed to read in MO information at orbital number %i", n);
@@ -280,14 +281,15 @@ bool GAMESSUSLogModelPlugin::importData()
 			for (int l=0; l<5; ++l)
 			{
 				if ((l+n) > targetModel->nBasisShells()) break;
-				Messenger::print(Messenger::Verbose, " -- Created MO number %i with eigenvalue %f\n", l+n, orb_nrg[l]);
+				Messenger::print(Messenger::Verbose, " -- Created MO number %i with eigenvalue %f", l+n, orb_nrg[l]);
 				orbs[l] = targetModel->addEigenvector();
+				orbs[l]->initialise(targetModel->nCartesianBasisFunctions());
 				orbs[l]->setEigenvalue(orb_nrg[l]);
 				orbs[l]->setName(orb_symm[l]);
 			}
 
 			// Next lines contain coefficients...
-			for (int count=1; count<=targetModel->nCartesianBasisFunctions(); ++count)
+			for (int count=0; count<targetModel->nCartesianBasisFunctions(); ++count)
 			{
 				if (!fileParser_.parseLine()) return false;
 // 				readLine(discard,e,shell,type,orb_coeff[1], orb_coeff[2], orb_coeff[3], orb_coeff[4], orb_coeff[5]);
@@ -308,7 +310,7 @@ bool GAMESSUSLogModelPlugin::importData()
 		if (fileParser_.find("THIS IS NOT A STATIONARY POINT"))
 		{
 			fileParser_.skipLines(3);
-			Messenger::print(" *** The frequencies correspond to a non-stationary point.\n");
+			Messenger::print(" *** The frequencies correspond to a non-stationary point.");
 		}
 		else fileParser_.skipLines(2);
 
@@ -329,7 +331,7 @@ bool GAMESSUSLogModelPlugin::importData()
 // 			if (!fileParser_.parseLine()) return false;
 // 			if (n != fileParser_.argi(0))
 // 			{
-// 				Messenger::print("Failed to read in vibration information at vibration number %i (read [%s] from file)\n", n, fileParser_.argi(0));
+// 				Messenger::print("Failed to read in vibration information at vibration number %i (read [%s] from file)", n, fileParser_.argi(0));
 // 				break;
 // 			}
 // 
@@ -349,7 +351,7 @@ bool GAMESSUSLogModelPlugin::importData()
 // 			{
 // 				if ((l+n-1) > 3*m.nAtoms()) break;
 // 				if (contains(vib_imag[l],"I")) vib_freq[l] = -vib_freq[l];
-// 				verbose("Created vibration number %i with frequency %f\n", l+n-1, vib_freq[l]);
+// 				verbose("Created vibration number %i with frequency %f", l+n-1, vib_freq[l]);
 // 				vibs[l] = m.newVibration();
 // 				vibs[l].frequency = vib_freq[l];
 // 			}
@@ -372,7 +374,7 @@ bool GAMESSUSLogModelPlugin::importData()
 // 			// Skip over Sayvetz information
 // 			fileParser_.skipLine(11);
 // 		}
-// 		Messenger::print("Read in data for %i vibrations.\n", m.nVibrations());
+// 		Messenger::print("Read in data for %i vibrations.", m.nVibrations());
 	}
 
 	// Atomic Charges
@@ -393,7 +395,7 @@ bool GAMESSUSLogModelPlugin::importData()
 				if (!fileParser_.parseLine()) return false;
 				i->setCharge(fileParser_.argd(1));
 			}
-			Messenger::print("Found and read in ESP charges.\n");
+			Messenger::print("Found and read in ESP charges.");
 		}
 	}
 
