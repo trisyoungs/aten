@@ -1,6 +1,6 @@
 /*
 	*** GAMESS-US Export Options Dialog
-	*** src/plugins/io_gamessus/gamessexportoptions.h
+	*** src/plugins/io_gamessus/gamessusexportoptions.h
 	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
@@ -23,7 +23,7 @@
 #define ATEN_GAMESSUSEXPORTOPTIONS_H
 
 #include "base/kvmap.h"
-#include "plugins/io_gamessus/ui_gamessexportoptions.h"
+#include "plugins/io_gamessus/ui_gamessusexportoptions.h"
 
 ATEN_USING_NAMESPACE
 

@@ -237,7 +237,7 @@ bool GAMESSUSLogModelPlugin::importData()
 		frame->setName(QString("Frame %1").arg(nStructures));
 		for (int n=0; n<nAtoms; ++n)
 		{
-			if (!fileParser_.parseLine()); 		//readLine(e,discard,rx,ry,rz);
+			if (!fileParser_.parseLine()) return false; 		//readLine(e,discard,rx,ry,rz);
 			createAtom(frame, fileParser_.argc(0), fileParser_.arg3d(2));
 		}
 	}

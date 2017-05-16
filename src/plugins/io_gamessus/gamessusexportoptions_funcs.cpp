@@ -1,6 +1,6 @@
 /*
 	*** GAMESS-US Export Options Functions
-	*** src/plugins/io_gamessus/gamessexportoptions_funcs.cpp
+	*** src/plugins/io_gamessus/gamessusexportoptions_funcs.cpp
 	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
