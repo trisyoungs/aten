@@ -89,7 +89,7 @@ void Aten::setDirectories()
 	QStringList dataDirPaths;
 	if (dataDir_ != QDir()) dataDirPaths << dataDir_.path();
 	else if (getenv("ATENDATA") != NULL) dataDirPaths << getenv("ATENDATA");
-	dataDirPaths << QApplication::applicationDirPath();
+	dataDirPaths << QApplication::applicationDirPath() + "/data";
 	dataDirPaths << QApplication::applicationDirPath() + "/../share/aten";
 	dataDirPaths << QApplication::applicationDirPath() + "/../SharedSupport";
 	dataDirPaths << QApplication::applicationDirPath() + "/..";
