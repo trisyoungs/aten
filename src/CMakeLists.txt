@@ -20,6 +20,7 @@ target_link_libraries(aten PRIVATE
 	fourierdata
 	treegui
 	gui
+	qcustomplot
 	base
 	sg
 	math
@@ -35,6 +36,7 @@ target_link_libraries(aten PRIVATE
 	"-Wl,--no-whole-archive"
 	Qt5::Widgets
 	Qt5::Core
+	Qt5::PrintSupport
 	${FTGL_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${FREETYPE_LIBRARIES}

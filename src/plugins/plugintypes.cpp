@@ -1,7 +1,7 @@
 /*
         *** Plugin Types
         *** src/plugins/plugintypes.cpp
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2007-2017
 
         This file is part of Aten.
     
@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Plugin type
-const char* PluginTypeStrings[] = { "File (Import/Export)", "Method (Calculations etc.)" };
+const char* PluginTypeStrings[] = { "File (Import/Export)", "Method (Enhancements to built-in methods)", "Tool (General Functionality Extension)" };
 
 // Return name of file type
 const char* PluginTypes::pluginType(PluginTypes::PluginType type)
@@ -66,7 +66,7 @@ const char* PluginTypes::filePluginType(PluginTypes::FilePluginType type)
  */
 
 // Method plugin categories
-const char* MethodPluginCategories[] = { "Optimisation" };
+const char* MethodPluginCategories[] = { "Charge", "General", "Optimisation" };
 
 // Return capitalised single-word name of method plugin category
 const char* PluginTypes::niceMethodPluginCategory(MethodPluginCategory category)
@@ -79,4 +79,22 @@ const char* PluginTypes::methodPluginCategory(MethodPluginCategory category)
 {
 	return qPrintable(QString(MethodPluginCategories[category]).toLower());
 }
-	
+
+/*
+ * Tool Plugins
+ */
+
+// Tool plugin categories
+const char* ToolPluginCategories[] = { "General" };
+
+// Return capitalised single-word name of tool plugin category
+const char* PluginTypes::niceToolPluginCategory(ToolPluginCategory category)
+{
+	return ToolPluginCategories[category];
+}
+
+// Return single-word name of tool plugin category
+const char* PluginTypes::toolPluginCategory(ToolPluginCategory category)
+{
+	return qPrintable(QString(ToolPluginCategories[category]).toLower());
+}

@@ -1,7 +1,7 @@
 /*
 	*** Aten's master structure
 	*** src/main/aten.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -541,6 +541,14 @@ class Aten
 	bool importExpression(QString filename, const FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
 	// Export expression
 	bool exportExpression(Model* sourceModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());
+
+
+	/*
+	 * Tools
+	 */
+	public:
+	// Setup and run specified ToolPluginInterface
+	bool runTool(ToolPluginInterface* plugin, KVMap pluginOptions = KVMap(), bool showDialog = true);
 };
 
 ATEN_END_NAMESPACE

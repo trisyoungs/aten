@@ -1,7 +1,7 @@
 /*
         *** MOPAC 7.1 Control File Plugin Functions
         *** src/plugins/method_mopac71/mopac71control_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -72,6 +72,12 @@ QString MOPAC71ControlModelPlugin::name() const
 QString MOPAC71ControlModelPlugin::nickname() const
 {
 	return QString("mopac71control");
+}
+
+// Return whether the plugin is enabled
+bool MOPAC71ControlModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

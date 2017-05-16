@@ -1,7 +1,7 @@
 /*
         *** ChemShell Plugin Functions
         *** src/plugins/io_chemshell/chemshell_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 	Copyright T. W. Keal 2016
 
         This file is part of Aten.
@@ -72,6 +72,12 @@ QString ChemShellModelPlugin::name() const
 QString ChemShellModelPlugin::nickname() const
 {
 	return QString("chemshell");
+}
+
+// Return whether the plugin is enabled
+bool ChemShellModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

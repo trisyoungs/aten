@@ -1,7 +1,7 @@
 /*
 	*** Line Parsing Routines
 	*** src/base/lineparser.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -235,7 +235,7 @@ void LineParser::seekg(std::streampos pos)
 {
 	if (inputFile_ != NULL)
 	{
-		if (inputFile_->eof()) inputFile_->clear();
+		if (inputFile_->eof() || inputFile_->fail()) inputFile_->clear();
 		inputFile_->seekg(pos);
 	}
 	else printf("Warning: LineParser tried to seekg() on a non-existent input file.\n");
@@ -259,8 +259,10 @@ void LineParser::rewind()
 bool LineParser::eofOrBlank() const
 {
 	if (inputFile_ == NULL) return true;
+
 	// Simple check first - is this the end of the file?
 	if (inputFile_->eof()) return true;
+
 	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
 	std::streampos pos = inputFile_->tellg();
 	
@@ -280,8 +282,10 @@ bool LineParser::eofOrBlank() const
 		result = false;
 		break;
 	} while (1);
+
+	// Return to original position
 	inputFile_->seekg(pos);
-	
+
 	return result;
 }
 

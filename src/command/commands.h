@@ -1,7 +1,7 @@
 /*
 	*** Command Functions
-	*** src/parser/commands.h
-	Copyright T. Youngs 2007-2016
+	*** src/command/commands.h
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -515,6 +515,9 @@ class Commands
 		Seed,
 		Version,
 
+		// Tool Commands
+		RunTool,
+
 		// Trajectory Commands
 		AddFrame,
 		ClearTrajectory,
@@ -546,7 +549,7 @@ class Commands
 		TranslateCell,
 		TranslateWorld,
 
-		// View
+		// View Commands
 		AxisRotateView,
 		GetView,
 		Orthographic,
@@ -953,6 +956,8 @@ class Commands
 	bool function_SearchCommands(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Seed(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Version(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	// Tool Commands
+	bool function_RunTool(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Trajectory Commands
 	bool function_AddFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv);

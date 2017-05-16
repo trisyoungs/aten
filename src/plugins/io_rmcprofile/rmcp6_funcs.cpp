@@ -1,7 +1,7 @@
 /*
         *** RMCProfile V6 Plugin Functions
         *** src/plugins/io_rmcprofile/rmcp6_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -73,6 +73,12 @@ QString RMCProfile6ModelPlugin::name() const
 QString RMCProfile6ModelPlugin::nickname() const
 {
 	return QString("rmc6f");
+}
+
+// Return whether the plugin is enabled
+bool RMCProfile6ModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

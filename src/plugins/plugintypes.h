@@ -1,7 +1,7 @@
 /*
         *** Plugin Types
         *** src/plugins/plugintypes.h
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2007-2017
 
         This file is part of Aten.
     
@@ -34,7 +34,7 @@ class PluginTypes
 {
 	public:
 	// Basic Plugin types
-	enum PluginType { FilePlugin, MethodPlugin, nPluginTypes };
+	enum PluginType { FilePlugin, MethodPlugin, ToolPlugin, nPluginTypes };
 	// Return single-word name of plugin type
 	static const char* pluginType(PluginType type);
 
@@ -65,6 +65,18 @@ class PluginTypes
 	static const char* niceMethodPluginCategory(MethodPluginCategory category);
 	// Return single-word name of method plugin category
 	static const char* methodPluginCategory(MethodPluginCategory category);
+
+
+	/*
+	 * Tool Plugin
+	 */
+	public:
+	// Tool plugin category
+	enum ToolPluginCategory { GeneralToolPlugin, nToolPluginCategories };
+	// Return capitalised single-word name of tool plugin category
+	static const char* niceToolPluginCategory(ToolPluginCategory category);
+	// Return single-word name of tool plugin category
+	static const char* toolPluginCategory(ToolPluginCategory category);
 };
 
 ATEN_END_NAMESPACE

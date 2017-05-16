@@ -1,7 +1,7 @@
 /*
 	*** ZMatrix Definition
 	*** src/base/zmatrix.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -30,6 +30,7 @@ ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class Atom;
+class LineParser;
 class Model;
 class ZMatrix;
 
@@ -106,6 +107,8 @@ class ZMatrix
 	void setVariable(Variable* v, double value);
 	// Print zmatrix
 	void print();
+	// Print zmatrix to specified LineParser
+	void print(LineParser& parser);
 };
 
 ATEN_END_NAMESPACE

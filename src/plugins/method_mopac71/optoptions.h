@@ -1,7 +1,7 @@
 /*
 	*** MOPAC 7.1 Control File Export Options Dialog
 	*** src/plugins/method_mopac71/controlexportoptions.h
-	Copyright T. Youngs 2016-2016
+	Copyright T. Youngs 2016-2017
 
 	This file is part of Aten.
 

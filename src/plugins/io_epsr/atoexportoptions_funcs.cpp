@@ -1,7 +1,7 @@
 /*
 	*** EPSR Ato Export Options Functions
 	*** src/gui/io_epsr/atoexportoptions_funcs.cpp
-	Copyright T. Youngs 2016-2016
+	Copyright T. Youngs 2016-2017
 
 	This file is part of Aten.
 

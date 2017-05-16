@@ -1,7 +1,7 @@
 /*
         *** Siesta Model Plugin Functions
         *** src/plugins/io_siesta/siesta_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -68,6 +68,12 @@ QString SiestaModelPlugin::name() const
 QString SiestaModelPlugin::nickname() const
 {
 	return QString("siesta");
+}
+
+// Return whether the plugin is enabled
+bool SiestaModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

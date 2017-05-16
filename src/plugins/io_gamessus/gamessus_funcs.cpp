@@ -1,7 +1,7 @@
 /*
         *** GAMESS-US Model Plugin Functions
-        *** src/plugins/io_gamessus/gamess_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        *** src/plugins/io_gamessus/gamessus_funcs.cpp
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -20,12 +20,109 @@
 */
 
 #include "plugins/io_gamessus/gamessus.hui"
+#include "plugins/io_gamessus/gamessusexportoptions.h"
 #include "model/model.h"
 
 // Constructor
 GAMESSUSModelPlugin::GAMESSUSModelPlugin()
 {
 	// Setup plugin options
+	// -- General control options group ($CONTRL)
+	pluginOptions_.add("contrl_runtyp", "OPTIMIZE");
+	pluginOptions_.add("contrl_scftyp", "RHF");
+	pluginOptions_.add("contrl_mult", 1);
+	pluginOptions_.add("contrl_charge", 0);
+	pluginOptions_.add("contrl_exetyp", "RUN");
+	pluginOptions_.add("contrl_relwfn", "NONE");
+	pluginOptions_.add("contrl_maxit", 30);
+	pluginOptions_.add("contrl_zmt", 0);
+	pluginOptions_.add("cart_symbols", ".TRUE.");
+	// -- DFT options
+	pluginOptions_.add("contrl_dfttyp", "NONE");
+	pluginOptions_.add("dftgrid", "GRID");
+	pluginOptions_.add("contrl_tddft", "NONE");
+	// --Post-HF Methods
+	pluginOptions_.add("contrl_mplevl", "0");
+	pluginOptions_.add("contrl_cityp", "NONE");
+	pluginOptions_.add("contrl_cctyp", "NONE");
+	// --Other options
+	pluginOptions_.add("contrl_pp", "NONE");
+	pluginOptions_.add("contrl_isphere", 0);
+	// -- Basis set specification ($BASIS)
+	pluginOptions_.add("basis_gbasis", "N31");
+	pluginOptions_.add("basis_ngauss", 6);
+	pluginOptions_.add("basis_ndfunc", 0);
+	pluginOptions_.add("basis_npfunc", 0);
+	pluginOptions_.add("basis_nffunc", 0);
+	pluginOptions_.add("basis_diffsp", 0);
+	pluginOptions_.add("basis_diffs", 0);
+
+	// -- System options ($SYSTEM)
+	pluginOptions_.add("system_mwords", 100);
+	pluginOptions_.add("system_memddi", 100);
+	pluginOptions_.add("system_timlim", 2880);
+
+	// -- Stationary point location options ($STATPT)
+	pluginOptions_.add("statpt_method", "SCHLEGEL");
+	pluginOptions_.add("statpt_opttol", 0.0001);
+	pluginOptions_.add("statpt_nstep", 20);
+	pluginOptions_.add("statpt_ifolow", 1);
+	pluginOptions_.add("statpt_hess", "GUESS");
+	pluginOptions_.add("statpt_ihrep", 0);
+	pluginOptions_.add("statpt_ststep", 0.01);
+	pluginOptions_.add("statpt_hssend", 0);
+	pluginOptions_.add("statpt_stpt", "0");
+	pluginOptions_.add("statpt_ifreez", "");
+
+	// -- Intrinsic reaction coordinate run ($IRC)
+	pluginOptions_.add("irc_forwrd", "1");
+	pluginOptions_.add("irc_saddle", "1");
+	pluginOptions_.add("irc_stride", "0.3");
+	pluginOptions_.add("irc_npoint", "1");
+	pluginOptions_.add("irc_pace", "GS2");
+
+	// -- Electron density calculation ($ELDENS)
+	pluginOptions_.add("eldens_ieden", 0);
+	pluginOptions_.add("eldens_morb", 0);
+	pluginOptions_.add("eldens_where", "NUCLEI");
+	pluginOptions_.add("eldens_output", "BOTH");
+
+	// -- Electrostatic potential calculation ($ELPOT)
+	pluginOptions_.add("elpot_iepot", 0);
+	pluginOptions_.add("elpot_where", "NUCLEI");
+	pluginOptions_.add("elpot_output", "BOTH");
+
+	// -- Point selection ($PDC)
+	pluginOptions_.add("pdc_ptsel", "GEODESIC");
+	pluginOptions_.add("pdc_constr", "DIPOLE");
+
+	// -- Grid specification ($GRID), placed in 'opts' tabs
+	pluginOptions_.add("grid_modgrd", 0);
+	pluginOptions_.add("grid_size", 0.25);
+	pluginOptions_.add("grid_originx", -10.0);
+	pluginOptions_.add("grid_originy", -10.0);
+	pluginOptions_.add("grid_originz", -10.0); 
+	pluginOptions_.add("grid_xvecx", 10.0);
+	pluginOptions_.add("grid_xvecy", -10.0);
+	pluginOptions_.add("grid_xvecz", -10.0);
+	pluginOptions_.add("grid_yvecx", -10.0);
+	pluginOptions_.add("grid_yvecy", 10.0);
+	pluginOptions_.add("grid_yvecz", -10.0);
+	pluginOptions_.add("grid_zvecx", -10.0);
+	pluginOptions_.add("grid_zvecy", -10.0);
+	pluginOptions_.add("grid_zvecz", 10.0);
+
+	// -- PCM options ($PCM), placed in 'opts' tab
+	pluginOptions_.add("pcm_solvnt", "NONE");
+	pluginOptions_.add("pcm_rsolv", 0.1);
+	pluginOptions_.add("pcm_eps", 20.0);
+	pluginOptions_.add("pcm_epsinf", 20.0);
+	pluginOptions_.add("pcm_tce", 20.0);
+	pluginOptions_.add("pcm_vmol", 20.0);
+	pluginOptions_.add("pcm_sten", 20.0);
+	pluginOptions_.add("pcm_dsten", 20.0);
+	pluginOptions_.add("pcm_cmf", 20.0);
+	pluginOptions_.add("pcm_icav", 0);
 }
 
 // Destructor
@@ -69,6 +166,12 @@ QString GAMESSUSModelPlugin::name() const
 QString GAMESSUSModelPlugin::nickname() const
 {
 	return QString("gamus");
+}
+
+// Return whether the plugin is enabled
+bool GAMESSUSModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin
@@ -473,272 +576,134 @@ bool GAMESSUSModelPlugin::importData()
 //	finaliseModel();
 //}
 //
-//filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
-//{
-//	# GUI Control Definitions
-//	# Main dialog creation function
-//	void createDefaultDialog(Dialog ui)
-//	{
-//		ui.title = "GAMESS-US Export Options";
-//		widget group, group2, w, w2, tabs, page;
-//
-//		# General control options group ($CONTRL)
-//		# -- General method options
-//		group = ui.addGroup("jobgroup", "Job Control ($CONTRL)", 1, 1);
-//		group2 = group.addGroup("rungroup", "Method", 1, 1, 0, 1);
-//		group2.addCombo("contrl_runtyp", "Run Type", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, 1, 1);
-//		group2.addCombo("contrl_scftyp", "SCF Type", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, 1, 2);
-//		group2.addIntegerSpin("contrl_mult", "Multiplicity", 1, 8, 1, 1, 1, 3);
-//		group2.addIntegerSpin("contrl_charge", "Charge", -1000, 1000, 1, 0, 1, 4);
-//		group2.addCombo("contrl_exetyp", "Exe Type", "RUN,CHECK,DEBUG", 1, 3, 1);
-//		group2.addCombo("contrl_relwfn", "Rel. Wfn.", "NONE,DK,RESC,NESC", 1, 3, 2);
-//		group2.addIntegerSpin("contrl_maxit", "Max SCF It.", 1, 1000, 10, 30, 3, 3);
-//		group2.addCheck("contrl_zmt", "ZMatrix", 0, 3, 4);
-//		group2.addCheck("cart_symbols", "Use Symbols", 1, 4, 4);
-//		# -- DFT options
-//		group2 = group.addGroup("dftgroup", "DFT", 2, 1, 0, 1);
-//		string griddfttypes = "NONE,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,EDF1,PW91,PBE,revPBE,RPBE,PBEsol,HCTH93,HCTH120,HCTH147,HCTH407,SOGGA,MOHLYP,B97-D,BHHLYP,B3PW91,B3LYP,B3LYP1,B97,B97-1,B97-2,B97-3,B97-K,B98,PBE0,X3LYP,CAMB3LYP,wB97,wB97X,wB97X-D,B2PLYP,wB97X-2,wB97X-2L,VS98,PKZB,tHCTH,tHCTHhyb,BMK,TPSS,TPSSh,TPSSm,revTPSS,M05,M05-2X,M06,M06-L,M06-2X,M06-HF,M08-HX,M08-SO";
-//		string gridfreedfttypes = "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP";
-//		group2.addCombo("contrl_dfttyp", "Type", griddfttypes, 1, 1, 1);
-//		w = group2.addCombo("dftgrid", "Method", "GRID,GRIDFREE", 1, 1, 2);
-//		w.onInteger(1, 1, "sendstring", "contrl_dfttyp", "items", griddfttypes);
-//		w.onInteger(2, 2, "sendstring", "contrl_dfttyp", "items", gridfreedfttypes);
-//		w.onInteger(1, 2, "sendinteger", "contrl_dfttyp", "value", 2);
-//		group2.addCombo("contrl_tddft", "TDDFT Type", "NONE,EXCITE", 1, 1, 3);
-//		group2.addSpacer(TRUE,TRUE,1,4,1);
-//		# -- Post-HF Methods
-//		group2 = group.addGroup("postgroup", "Post-HF", 3, 1, 0, 0);
-//		group2.addCombo("contrl_mplevl", "MP Level", "0,2", 1, 5, 2);
-//		group2.addCombo("contrl_cityp", "CI Type", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, 7, 2);
-//		group2.addCombo("contrl_cctyp", "CC Type", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, 7, 3);
-//		# -- Other options
-//		group2 = group.addGroup("miscgroup", "Misc", 3, 2, 0, 0);
-//		group2.addCombo("contrl_pp", "Pseudo", "NONE,READ,SBKJC,HW,MCP", 1, 1, 1);
-//		group2.addCheck("contrl_isphere", "ISPHERE", 0, 3, 1);
-//
-//		# Basis set specification ($BASIS)
-//		group = ui.addGroup("basisgroup", "Basis Set ($BASIS)", 1, 3);
-//		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
-//
-//		group2 = group.addGroup("suppbasisgroup", "Segmented Basis Options", 1, 2);
-//		group2.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 6, 1, 6, 1, 1);
-//		group2.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
-//		group2.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
-//		group2.addIntegerSpin("basis_nffunc", "NFFUNC", 0, 1, 1, 0, 7, 1);
-//		group2.addCheck("basis_diffsp", "DIFFSP", 0, 1, 2);
-//		group2.addCheck("basis_diffs", "DIFFS", 0, 3, 2);
-//		w.onInteger(1, 10, "sendbool", "suppbasisgroup", "enabled");
-//		w.onInteger(3, 6, "sendbool", "basis_ngauss", "enabled");
-//		w.onInteger(1, 10, "sendinteger", "contrl_isphere", "value", 0);
-//		w.onInteger(11, 40, "sendinteger", "contrl_isphere", "value", 1);
-//		w.onInteger(41, 42, "sendinteger", "contrl_isphere", "value", 0);
-//		w.onInteger(43, 45, "sendinteger", "contrl_isphere", "value", 1);
-//		w.onInteger(46, 52, "sendinteger", "contrl_isphere", "value", 0);
-//
-//		# Tabs containing various options
-//		tabs = ui.addTabs("optiontabs", 1, 4);
-//		
-//		# System options ($SYSTEM)
-//		page = tabs.addPage("systempage", "$SYSTEM");
-//		page.addIntegerSpin("system_mwords", "MWORDS", 1, 100000, 10, 100);
-//		page.addIntegerSpin("system_memddi", "MEMDDI", 0, 100000, 10, 100);
-//		page.addIntegerSpin("system_timlim", "TIMLIM", 1, 100000, 10, 2880);
-//
-//		# Stationary point location options ($STATPT)
-//		page = tabs.addPage("page_statpt", "$STATPT");
-//		page.addCombo("statpt_method", "METHOD", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, 1, 1);
-//		page.addDoubleSpin("statpt_opttol", "OPTTOL", 0.0, 1.0, 0.0001, 0.0001, 3, 1);
-//		page.addIntegerSpin("statpt_nstep", "NSTEP", 1, 1000000, 5, 20, 5, 1);
-//		page.addIntegerSpin("statpt_ifolow", "IFOLOW", 1, 100000, 1, 1, 7, 1); 
-//		page.addCombo("statpt_hess", "HESS", "GUESS,READ,RDAB,RDALL,CALC", 1, 1, 2);
-//		page.addIntegerSpin("statpt_ihrep", "IHREP", 0, 1000, 1, 0, 3, 2);
-//		page.addDoubleSpin("statpt_ststep", "STSTEP", 0.0, 1.0, 0.005, 0.01, 5, 2);
-//		page.addCheck("statpt_hssend", "HSSEND", 0, 7, 2);
-//		page.addCheck("statpt_stpt", "Stationary Point", 0, 8, 2);
-//		page.addEdit("statpt_ifreez", "IFREEZ", "", 1, 3, 6);
-//
-//		# Intrinsic reaction coordinate run ($IRC)
-//		page = tabs.addPage("page_irc", "$IRC");
-//		page.addCheck("irc_forwrd", "FORWRD", 1, 1, 1);
-//		page.addCheck("irc_saddle", "SADDLE", 1, 2, 1);
-//		page.addDoubleSpin("irc_stride", "STRIDE", 0.001, 1.0, 0.05, 0.3, 3, 1);
-//		page.addIntegerSpin("irc_npoint", "NPOINT", 1, 1000, 5, 1, 5, 1);
-//		page.addCombo("irc_pace", "PACE", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, 7, 1);
-//
-//		# Electron density calculation ($ELDENS)
-//		page = tabs.addPage("page_eldens", "$ELDENS");
-//		page.addCheck("eldens_ieden", "Calculate?", 0, 1, 1);
-//		page.addIntegerSpin("eldens_morb", "MORB", 0, 10000, 1, 0, 3, 1);
-//		page.addCombo("eldens_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID", 2, 5, 1);
-//		page.addCombo("eldens_output", "OUTPUT", "PUNCH,PAPER,BOTH", 3, 7, 1);
-//
-//		# Electrostatic potential calculation ($ELPOT)
-//		page = tabs.addPage("page_elpot", "$ELPOT");
-//		page.addCheck("elpot_iepot", "Calculate?", 0, 1, 1);
-//		page.addCombo("elpot_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, 3, 1);
-//		page.addCombo("elpot_output", "OUTPUT", "PUNCH,PAPER,BOTH,NONE", 3, 5, 1);
-//
-//		# Point selection ($PDC)
-//		page = tabs.addPage("page_pdc", "$PDC");
-//		page.addCombo("pdc_ptsel", "PTSEL", "GEODESIC,CONNOLLY,CHELPG", 1, 1, 1);
-//		page.addCombo("pdc_constr", "CONSTR", "NONE,CHARGE,DIPOLE,QUPOLE", 2, 3, 1);
-//
-//		# Grid specification ($GRID), placed in 'opts' tabs
-//		page = tabs.addPage("page_grid", "$GRID");
-//		w = page.addCheck("grid_modgrd", "3D Grid", 0, 1, 1);
-//		page.addDoubleSpin("grid_size", "Grid Increment", 0.00001, 2.0, 0.1, 0.25, 2, 1);
-//		group = page.addGroup("ogroup", "ORIGIN", 1, 2);
-//		group.addDoubleSpin("grid_originx", "X", -1000.0, 1000.0, 1.0, -10.0, 1, 3);
-//		group.addDoubleSpin("grid_originy", "Y", -1000.0, 1000.0, 1.0, -10.0, 1, 4);
-//		group.addDoubleSpin("grid_originz", "Z", -1000.0, 1000.0, 1.0, -10.0, 1, 5); 
-//		group = page.addGroup("xgroup", "XVEC", 3, 2);
-//		group.addDoubleSpin("grid_xvecx", "X", -1000.0, 1000.0, 1.0,  10.0, 3, 3);
-//		group.addDoubleSpin("grid_xvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 3, 4);
-//		group.addDoubleSpin("grid_xvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 3, 5);
-//		group = page.addGroup("ygroup", "YVEC", 5, 2);
-//		group.addDoubleSpin("grid_yvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 5, 3);
-//		group.addDoubleSpin("grid_yvecy", "Y", -1000.0, 1000.0, 1.0,  10.0, 5, 4);
-//		group.addDoubleSpin("grid_yvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 5, 5);
-//		group = page.addGroup("zgroup", "ZVEC", 7, 2);
-//		group.addDoubleSpin("grid_zvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 7, 3);
-//		group.addDoubleSpin("grid_zvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 7, 4);
-//		group.addDoubleSpin("grid_zvecz", "Z", -1000.0, 1000.0, 1.0,  10.0, 7, 5);
-//		group.enabled = FALSE;
-//		w.onInteger(1, 2, "sendbool", "zgroup", "enabled");
-//
-//		# PCM options ($PCM), placed in 'opts' tab
-//		page = tabs.addPage("page_pcm", "$PCM");
-//		w = page.addCombo("pcm_solvnt", "Solvent", "NONE,INPUT,'WATER (H2O)',CH3OH,'CLFORM (CHCl3)','METHYCL (CH2Cl2)','BENZENE (C6H6)','CLBENZ (C6H5Cl)','NEPTANE (C7H16)','ANILINE (C6H5NH2)',C2H5OH,'CTCL (CCl4)','12DCLET (C2H4Cl2)','TOLUENE (C6H5CH3)','NITMET (CH3NO2)','CYCHEX (C6H12)','ACETONE (CH3COCH3)',THF,'DMSO (DMETSOX)'", 1, 1, 1);
-//		group = page.addGroup("pcminputgroup", "Custom Solvent Definition", 1, 2, 5, 0);
-//		group.enabled = FALSE;
-//		ui.widget("pcm_solvnt").onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
-//		group.addDoubleSpin("pcm_rsolv", "Radius", 0.0, 100.0, 0.1, 3.0);
-//		group.addDoubleSpin("pcm_eps", "EPS", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_epsinf", "EPSINF", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_tce", "TCE", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_vmol", "VMOL", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_sten", "STEN", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_dsten", "DSTEN", 0.0, 10000.0, 1.0, 20.0);
-//		group.addDoubleSpin("pcm_cmf", "CMF", 0.0, 10000.0, 1.0, 20.0);
-//		w.onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
-//		w = page.addCheck("pcm_icav", "Calculate cavitation energy", 0, 3, 1);
-//		w.onInteger(0, 1, "sendbool", "pcm_tce", "enabled");
-//		w.onInteger(0, 1, "sendbool", "pcm_vmol", "enabled");
-//		w.onInteger(0, 1, "sendbool", "pcm_sten", "enabled");
-//		w.onInteger(0, 1, "sendbool", "pcm_dsten", "enabled");
-//		w.onInteger(0, 1, "sendbool", "pcm_cmf", "enabled");
-//	}
-//	# Execute dialog
-//	if (!showDefaultDialog()) error("Options dialog canceled.\n");
-//	Dialog ui = defaultDialog();
-//
-//	#
-//	# Write Data
-//	#
-//	string line;
-//	# Write $CONTRL line(s)
-//	writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asInteger("contrl_zmt") ? "ZMAT" : "UNIQUE", ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
-//	line = "";
-//	if (ui.asString("contrl_dfttyp") != "NONE") line += " DFTTYP=" + ui.asString("contrl_dfttyp");
-//	if (ui.asString("contrl_tddft") != "NONE") line += " TDDFT=" + ui.asString("contrl_tddft");
-//	if (ui.asString("contrl_mplevl") != "0") line += " MPLEVL=" + ui.asString("contrl_mplevl");
-//	if (ui.asString("contrl_cityp") != "NONE") line += " CITYP=" + ui.asString("contrl_cityp");
-//	if (ui.asString("contrl_cctyp") != "NONE") line += " CCTYP=" + ui.asString("contrl_cctyp");
-//	if (ui.asString("contrl_pp") != "NONE") line += " ECPTYP=" + ui.asString("contrl_pp");
-//	if (ui.asInteger("contrl_maxit") != 30) line += " MAXIT=" + ui.asString("contrl_maxit");
-//	if (ui.asInteger("contrl_isphere") == 1) line += " ISPHER=1";
-//	if (line != "") writeLineF(" $CONTRL%s $END\n", line);
-//
-//	# Write $SYSTEM line
-//	writeLineF(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END\n", ui.asInteger("system_memddi"), ui.asInteger("system_timlim"), ui.asInteger("system_mwords"));
-//
-//	# Write $BASIS line(s)
-//	if (ui.isRange("basis_gbasis", 3, 6))
-//	{
-//		sprintf(line, "GBASIS=%s NGAUSS=%i", ui.asString("basis_gbasis"), ui.asInteger("basis_ngauss"));
-//		if (ui.asInteger("basis_ndfunc") != 0) line += " NDFUNC=" + ui.asString("basis_ndfunc");
-//		if (ui.asInteger("basis_npfunc") != 0) line += " NPFUNC=" + ui.asString("basis_npfunc");
-//		if (ui.asInteger("basis_nffunc") != 0) line += " NFFUNC=" + ui.asString("basis_nffunc");
-//		writeLineF(" $BASIS %s $END\n", line);
-//		if (ui.isString("basis_diffsp", ".TRUE.") || ui.isString("basis_diffs", ".TRUE.")) writeLineF(" $BASIS DIFFSP=%s DIFFS=%s $END\n", ui.asString("basis_diffsp"), ui.asString("basis_diffs"));
-//	}
-//	else writeLineF(" $BASIS GBASIS=%s $END\n", ui.asString("basis_gbasis"));
-//
-//	# Write additional groups, depending on job type
-//	if (ui.isString("contrl_runtyp", "OPTIMIZE") || ui.isString("contrl_runtyp", "SADPOINT"))
-//	{
-//		writeVarF(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", ui.asString("statpt_method"), ui.asInteger("statpt_nstep"), ui.asDouble("statpt_opttol"), ui.asString("statpt_hess"));
-//		if (ui.asInteger("statpt_ihrep") != 0) line += " IHREP=" + ui.asString("statpt_ihrep");
-//		if (ui.isString("statpt_hssend", ".TRUE.")) line += " HSSEND=.TRUE.";
-//		writeLineF("%s $END\n", line);
-//		if (ui.isString("contrl_runtyp", "SADPOINT")) writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", ui.asInteger("statpt_ifolow"), ui.asString("statpt_stpt"), ui.asDouble("statpt_ststep"));
-//		if (!ui.isString("statpt_ifreez", "")) writeLineF(" $STATPT IFREEZ(1)=%s $END\n", ui.asString("statpt_ifreez"));
-//	}
-//	else if (ui.isString("contrl_runtyp", "IRC")) writeLineF(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", ui.asString("irc_pace"), ui.asString("irc_forwrd"), ui.asString("irc_saddle"), ui.asDouble("irc_stride"), ui.asInteger("irc_npoint"));
-//
-//	# Write $ELDENS if required
-//	if (ui.asInteger("eldens_ieden")) writeLineF(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", ui.asInteger("eldens_morb"), ui.asString("eldens_where"), ui.asString("eldens_output"));
-//
-//	# Write $ELPOT if required
-//	if (ui.asInteger("elpot_iepot"))
-//	{
-//		writeLineF(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", ui.asString("elpot_where"), ui.asString("elpot_output"));
-//		if (ui.isString("elpot_where", "PDC")) writeLineF(" $PDC PTSEL=%s CONSTR=%s $END\n", ui.asString("pdc_ptsel"), ui.asString("pdc_constr"));
-//	}
-//
-//	# Write $GRID if required
-//	if (ui.isString("eldens_where", "GRID") || ui.isString("elpot_where", "GRID"))
-//	{
-//		writeLineF(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", ui.asInteger("grid_modgrd"), ui.asDouble("grid_size"));
-//		writeLineF(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", ui.asDouble("grid_originx"), ui.asDouble("grid_originy"), ui.asDouble("grid_originz"));
-//		writeLineF(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", ui.asDouble("grid_xvecx"), ui.asDouble("grid_xvecy"), ui.asDouble("grid_xvecz"));
-//		writeLineF(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", ui.asDouble("grid_yvecx"), ui.asDouble("grid_yvecy"), ui.asDouble("grid_yvecz"));
-//		if (ui.asInteger("grid_modgrd")) writeLineF(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", ui.asDouble("grid_zvecx"), ui.asDouble("grid_zvecy"), ui.asDouble("grid_zvecz"));
-//	}
-//
-//	# Write $PCM if required
-//	if (ui.asString("pcm_solvnt") != "NONE")
-//	{
-//		writeVarF(line, " $PCM SOLVNT=%s", beforeStr(ui.asString("pcm_solvnt"), " "));
-//		if (ui.asInteger("pcm_icav")) line += " ICAV=" + ui.asString("pcm_icav");
-//		writeLineF("%s $END\n", line);
-//		if (ui.isString("pcm_solvnt", "INPUT"))
-//		{
-//			writeLineF(" $PCM RSOLV=%f EPS=%f EPSINF=%f", ui.asDouble("pcm_rsolv"), ui.asDouble("pcm_eps"), ui.asDouble("pcm_epsinf"));
-//			if (ui.asInteger("pcm_icav")) writeLineF(" TCE=%f VMOL=%f STEN=%f DSTEN=%f CMF=%f $END\n", ui.asDouble("pcm_tce"), ui.asDouble("pcm_vmol"), ui.asDouble("pcm_sten"), ui.asDouble("pcm_dsten"), ui.asDouble("pcm_cmf"));
-//			else writeLineF(" $END\n");
-//		}
-//	}
-//
-//	# Write $GUESS, and $SCF groups
-//	writeLine(" $GUESS GUESS=HUCKEL $END");
-//	writeLine(" $SCF DIRSCF=.TRUE. $END");
-//
-//	# Now for the DATA section
-//	writeLine(" $DATA");
-//	writeLine(aten.frame.name);
-//	writeLine("C1");
-//	if (ui.asInteger("contrl_zmt") == 0)
-//	{
-//		if (ui.asInteger("cart_symbols")) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
-//		else for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
-//	}
-//	else writeZMatrix(aten.frame);
-//	writeLine(" $END");
-//}
+
 	return false;
 }
 
 // Return whether this plugin can export data
 bool GAMESSUSModelPlugin::canExport() const
 {
-	return false;
+	return true;
 }
 
 // Export data to the specified file
 bool GAMESSUSModelPlugin::exportData()
 {
-	return false;
+	Model* m = targetModel();
+
+// 		w = page.addCombo("pcm_solvnt", "Solvent", "NONE,INPUT,'WATER (H2O)',CH3OH,'CLFORM (CHCl3)','METHYCL (CH2Cl2)','BENZENE (C6H6)','CLBENZ (C6H5Cl)','NEPTANE (C7H16)','ANILINE (C6H5NH2)',C2H5OH,'CTCL (CCl4)','12DCLET (C2H4Cl2)','TOLUENE (C6H5CH3)','NITMET (CH3NO2)','CYCHEX (C6H12)','ACETONE (CH3COCH3)',THF,'DMSO (DMETSOX)'", 1, 1, 1);
+
+	// Write $CONTRL line(s)
+	QString scftyp = pluginOptions_.value("contrl_scftyp"), runtyp = pluginOptions_.value("contrl_runtyp"), zmt = pluginOptions_.value("contrl_zmt").toInt() ? "ZMAT" : "UNIQUE";
+	int icharg = pluginOptions_.value("contrl_charge").toInt(), mult = pluginOptions_.value("contrl_mult").toInt();
+	fileParser_.writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END", qPrintable(scftyp), qPrintable(runtyp), qPrintable(zmt), icharg, mult);
+
+	QString line;
+	if (pluginOptions_.value("contrl_dfttyp") != "NONE") line += " DFTTYP=" + pluginOptions_.value("contrl_dfttyp");
+	if (pluginOptions_.value("contrl_tddft") != "NONE") line += " TDDFT=" + pluginOptions_.value("contrl_tddft");
+	if (pluginOptions_.value("contrl_mplevl") != "0") line += " MPLEVL=" + pluginOptions_.value("contrl_mplevl");
+	if (pluginOptions_.value("contrl_cityp") != "NONE") line += " CITYP=" + pluginOptions_.value("contrl_cityp");
+	if (pluginOptions_.value("contrl_cctyp") != "NONE") line += " CCTYP=" + pluginOptions_.value("contrl_cctyp");
+	if (pluginOptions_.value("contrl_pp") != "NONE") line += " ECPTYP=" + pluginOptions_.value("contrl_pp");
+	if (pluginOptions_.value("contrl_maxit").toInt() != 30) line += " MAXIT=" + pluginOptions_.value("contrl_maxit");
+	if (pluginOptions_.value("contrl_isphere").toInt() == 1) line += " ISPHER=1";
+	if (!line.isEmpty()) fileParser_.writeLineF(" $CONTRL%s $END", qPrintable(line));
+
+	// Write $SYSTEM line
+	fileParser_.writeLineF(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END", pluginOptions_.value("system_memddi").toInt(), pluginOptions_.value("system_timlim").toInt(), pluginOptions_.value("system_mwords").toInt());
+
+	// Write $BASIS line(s)
+	QString gbasis = pluginOptions_.value("basis_gbasis");
+	if ((gbasis == "STO") || (gbasis == "N21") || (gbasis == "N31") || (gbasis == "N311"))
+	{
+		line = QString(" $BASIS GBASIS=%1 NGAUSS=%2").arg(gbasis).arg(pluginOptions_.value("basis_ngauss").toInt());
+		if (pluginOptions_.value("basis_ndfunc").toInt() != 0) line += QString(" NDFUNC=%1").arg(pluginOptions_.value("basis_ndfunc").toInt());
+		if (pluginOptions_.value("basis_npfunc").toInt() != 0) line += QString(" NPFUNC=%1").arg(pluginOptions_.value("basis_npfunc").toInt());
+		if (pluginOptions_.value("basis_nffunc").toInt() != 0) line += QString(" NFFUNC=%1").arg(pluginOptions_.value("basis_nffunc").toInt());
+		fileParser_.writeLine(line + " $END");
+
+		line = QString();
+		
+		if (pluginOptions_.value("basis_diffsp").toInt()) line += " DIFFSP=.TRUE.";
+		if (pluginOptions_.value("basis_diffs").toInt()) line += " DIFFS=.TRUE.";
+		if (!line.isEmpty()) fileParser_.writeLine( QString(" $BASIS %1 $END").arg(line) );
+	}
+	else fileParser_.writeLine( QString(" $BASIS GBASIS=%1 $END").arg(pluginOptions_.value("basis_gbasis")) );
+
+	// Write additional groups, depending on job type
+	if ((pluginOptions_.value("contrl_runtyp") == "OPTIMIZE") || (pluginOptions_.value("contrl_runtyp") == "SADPOINT"))
+	{
+		line = QString(" $STATPT METHOD=%1 NSTEP=%2 OPTTOL=%3 HESS=%4"). arg(pluginOptions_.value("statpt_method")).arg(pluginOptions_.value("statpt_nstep").toInt()).arg( pluginOptions_.value("statpt_opttol").toDouble()).arg(pluginOptions_.value("statpt_hess"));
+		if (pluginOptions_.value("statpt_ihrep").toInt() != 0) line += " IHREP=" + pluginOptions_.value("statpt_ihrep");
+		if (pluginOptions_.value("statpt_hssend") == ".TRUE.") line += " HSSEND=.TRUE.";
+		fileParser_.writeLineF("%s $END", qPrintable(line));
+		if (pluginOptions_.value("contrl_runtyp") == "SADPOINT") fileParser_.writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END", pluginOptions_.value("statpt_ifolow").toInt(), qPrintable(pluginOptions_.value("statpt_stpt")), pluginOptions_.value("statpt_ststep").toDouble());
+		if (pluginOptions_.value("statpt_ifreez") != "") fileParser_.writeLineF(" $STATPT IFREEZ(1)=%s $END", qPrintable(pluginOptions_.value("statpt_ifreez")));
+	}
+	else if (pluginOptions_.value("contrl_runtyp") == "IRC")
+	{
+		line = QString(" $IRC PACE=%s FORWRD=%s SADDLE=%s").arg(pluginOptions_.value("irc_pace"), pluginOptions_.value("irc_forwrd"), pluginOptions_.value("irc_saddle"));
+		line += QString(" STRIDE=%f").arg(pluginOptions_.value("irc_stride").toDouble());
+		fileParser_.writeLine(line);
+		line += QString(" NPOINT=%i $END").arg(pluginOptions_.value("irc_npoint").toInt());
+	}
+
+	// Write $ELDENS if required
+	if (pluginOptions_.value("eldens_ieden").toInt()) fileParser_.writeLineF(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END", pluginOptions_.value("eldens_morb").toInt(), qPrintable(pluginOptions_.value("eldens_where")), qPrintable(pluginOptions_.value("eldens_output")));
+
+	// Write $ELPOT if required
+	if (pluginOptions_.value("elpot_iepot").toInt())
+	{
+		fileParser_.writeLineF(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END", qPrintable(pluginOptions_.value("elpot_where")), qPrintable(pluginOptions_.value("elpot_output")));
+		if (pluginOptions_.value("elpot_where") == "PDC") fileParser_.writeLineF(" $PDC PTSEL=%s CONSTR=%s $END", qPrintable(pluginOptions_.value("pdc_ptsel")), qPrintable(pluginOptions_.value("pdc_constr")));
+	}
+
+	// Write $GRID if required
+	if ((pluginOptions_.value("eldens_where") == "GRID") || (pluginOptions_.value("elpot_where") == "GRID"))
+	{
+		fileParser_.writeLineF(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END", pluginOptions_.value("grid_modgrd").toInt(), pluginOptions_.value("grid_size").toDouble());
+		fileParser_.writeLineF(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END", pluginOptions_.value("grid_originx").toDouble(), pluginOptions_.value("grid_originy").toDouble(), pluginOptions_.value("grid_originz").toDouble());
+		fileParser_.writeLineF(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END", pluginOptions_.value("grid_xvecx").toDouble(), pluginOptions_.value("grid_xvecy").toDouble(), pluginOptions_.value("grid_xvecz").toDouble());
+		fileParser_.writeLineF(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END", pluginOptions_.value("grid_yvecx").toDouble(), pluginOptions_.value("grid_yvecy").toDouble(), pluginOptions_.value("grid_yvecz").toDouble());
+		if (pluginOptions_.value("grid_modgrd").toInt()) fileParser_.writeLineF(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END", pluginOptions_.value("grid_zvecx").toDouble(), pluginOptions_.value("grid_zvecy").toDouble(), pluginOptions_.value("grid_zvecz").toDouble());
+	}
+
+	// Write $PCM if required
+	if (pluginOptions_.value("pcm_solvnt") != "NONE")
+	{
+		line = QString(" $PCM SOLVNT=%s").arg(pluginOptions_.value("pcm_solvnt").section(QChar(' '), 0));
+		if (pluginOptions_.value("pcm_icav").toInt()) line += QString(" ICAV=%i").arg(pluginOptions_.value("pcm_icav").toInt());
+		fileParser_.writeLineF("%s $END", qPrintable(line));
+		if (pluginOptions_.value("pcm_solvnt") == "INPUT")
+		{
+			fileParser_.writeLineF(" $PCM RSOLV=%f EPS=%f EPSINF=%f", pluginOptions_.value("pcm_rsolv").toDouble(), pluginOptions_.value("pcm_eps").toDouble(), pluginOptions_.value("pcm_epsinf").toDouble());
+			if (pluginOptions_.value("pcm_icav").toInt()) fileParser_.writeLineF(" TCE=%f VMOL=%f STEN=%f DSTEN=%f CMF=%f $END", pluginOptions_.value("pcm_tce").toDouble(), pluginOptions_.value("pcm_vmol").toDouble(), pluginOptions_.value("pcm_sten").toDouble(), pluginOptions_.value("pcm_dsten").toDouble(), pluginOptions_.value("pcm_cmf").toDouble());
+			else fileParser_.writeLineF(" $END");
+		}
+	}
+
+	// Write $GUESS, and $SCF groups
+	fileParser_.writeLine(" $GUESS GUESS=HUCKEL $END");
+	fileParser_.writeLine(" $SCF DIRSCF=.TRUE. $END");
+
+	// Now for the DATA section
+	fileParser_.writeLine(" $DATA");
+	fileParser_.writeLine(m->name());
+	fileParser_.writeLine("C1");
+	if (pluginOptions_.value("contrl_zmt") == "0")
+	{
+		if (pluginOptions_.value("cart_symbols") == ".TRUE.") for (Atom* i = m->atoms(); i != NULL; i = i->next) fileParser_.writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f", ElementMap::symbol(i->element()), i->element()*1.0, i->r().x, i->r().y, i->r().z);
+		else for (Atom* i = m->atoms(); i != NULL; i = i->next) fileParser_.writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f", ElementMap::name(i->element()), i->element()*1.0, i->r().x, i->r().y, i->r().z);
+	}
+	else
+	{
+		ZMatrix* zmat = m->zMatrix();
+		zmat->print();
+	}
+
+	fileParser_.writeLine(" $END");
+
+	return true;
 }
 
 // Import next partial data chunk
@@ -772,12 +737,13 @@ bool GAMESSUSModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 // Return whether the plugin has export options
 bool GAMESSUSModelPlugin::hasExportOptions() const
 {
-	return false;
+	return true;
 }
 
 // Show export options dialog
 bool GAMESSUSModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	return false;
+	GAMESSUSExportOptionsDialog optionsDialog(targetOptions);
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
  

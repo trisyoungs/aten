@@ -1,7 +1,7 @@
 /*
  *** Common functions for DL_POLY plugins
  *** src/plugins/io_dlpoly/common.cpp
- Copyright T. Youngs 2016-2016
+ Copyright T. Youngs 2016-2017
  Copyright A. M. Elena 2016-2016
 
  This file is part of Aten.
@@ -130,7 +130,7 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
   } while ( (!parser.eofOrBlank()) );
 
   // Shift atoms by half-cell
-  bool shift = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
+  bool shift = BasePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
   if (shift && targetModel->isPeriodic())
   {
     targetModel->selectAll(true);
@@ -211,8 +211,8 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
 
   // Write atom information
   int k=1;
-  bool useTypeNames = FilePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
-  bool shift = (FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell")) && sourceModel->isPeriodic());
+  bool useTypeNames = BasePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
+  bool shift = (BasePluginInterface::toBool(plugin->pluginOptions().value("shiftCell")) && sourceModel->isPeriodic());
   Vec3<double> r;
 
   for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
@@ -385,7 +385,7 @@ bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileP
   // Create atoms - if we read in atom information in the header we will have the names and masses
   // If these arrays are empty, use the parent model. If it doesn't contain enough atoms, create a dummy atom
   Atom* i = targetModel->parent()->atoms(), *j;
-  bool shiftCell = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
+  bool shiftCell = BasePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
   Vec3<double> r;
   for (int n = 0; n<nAtoms; ++n)
   {
@@ -612,7 +612,7 @@ bool DLPOLYPluginCommon::readDEFECTSModel ( FilePluginInterface* plugin, FilePar
   if (nDef>0){
 
     if (nInter>0){
-      int readInter=FilePluginInterface::toBool(plugin->pluginOptions().value("interstitial"));  
+      int readInter=BasePluginInterface::toBool(plugin->pluginOptions().value("interstitial"));  
       if (readInter){
         do {
           if ( !parser.parseLine() ) {
@@ -635,7 +635,7 @@ bool DLPOLYPluginCommon::readDEFECTSModel ( FilePluginInterface* plugin, FilePar
     }
 
     if (nVac>0) {
-      int readVac=FilePluginInterface::toBool(plugin->pluginOptions().value("vacancy"));  
+      int readVac=BasePluginInterface::toBool(plugin->pluginOptions().value("vacancy"));  
       if (readVac){
         do {
           if ( !parser.parseLine() ) {
@@ -658,7 +658,7 @@ bool DLPOLYPluginCommon::readDEFECTSModel ( FilePluginInterface* plugin, FilePar
     }
 
     // Shift atoms by half-cell
-    bool shift = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
+    bool shift = BasePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
     if (shift && targetModel->isPeriodic())
     {
       targetModel->selectAll(true);

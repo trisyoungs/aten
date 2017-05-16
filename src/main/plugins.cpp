@@ -1,7 +1,7 @@
 /*
 	*** Aten Plugins
 	*** src/main/plugins.cpp
-	Copyright T. Youngs 2016-2016
+	Copyright T. Youngs 2016-2017
 
 	This file is part of Aten.
 
@@ -33,6 +33,9 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
+		// If the plugin is disabled, don't register it
+		if (!filePlugin->enabled()) return true;
+
 		filePlugin->setPluginFilename(filename);
 		filePlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerFilePlugin(filePlugin);
@@ -43,9 +46,25 @@ bool Aten::registerPlugin(QObject* plugin, QString filename)
 	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
 	if (methodPlugin)
 	{
+		// If the plugin is disabled, don't register it
+		if (!methodPlugin->enabled()) return true;
+
 		methodPlugin->setPluginFilename(filename);
 		methodPlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerMethodPlugin(methodPlugin);
+		return true;
+	}
+
+	// -- ToolPluginInterface
+	ToolPluginInterface* toolPlugin = qobject_cast<ToolPluginInterface*>(plugin);
+	if (toolPlugin)
+	{
+		// If the plugin is disabled, don't register it
+		if (!toolPlugin->enabled()) return true;
+
+		toolPlugin->setPluginFilename(filename);
+		toolPlugin->setPluginStore(&pluginStore_);
+		pluginStore_.registerToolPlugin(toolPlugin);
 		return true;
 	}
 

@@ -1,7 +1,7 @@
 /*
 	*** Atom ring
 	*** src/base/ring.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -110,6 +110,12 @@ RefListItem<Atom,int>* Ring::getPrev(RefListItem<Atom,int>* ri) const
 RefListItem<Atom,int>* Ring::atoms() const
 {
 	return atoms_.first();
+}
+
+// Return array of referenced atoms
+RefListItem<Atom,int>** Ring::atomArray()
+{
+	return atoms_.array();
 }
 
 // Return last referenced atom
@@ -333,7 +339,7 @@ void Ring::finalise()
 }
 
 // Copy ring
-void Ring::copy(Ring *source)
+void Ring::copy(Ring* source)
 {
 	// Copy the data in source to the current ring.
 	atoms_.clear();

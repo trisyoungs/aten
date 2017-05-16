@@ -1,7 +1,7 @@
 /*
 	*** Line Stipple
 	*** src/base/linestipple.h
-	Copyright T. Youngs 2013-2016
+	Copyright T. Youngs 2013-2017
 
 	This file is part of Aten.
 

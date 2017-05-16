@@ -1,7 +1,7 @@
 /*
 	*** Model Primitive Generation
 	*** src/gui/viewer_model.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -507,7 +507,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			if (p->rings() == NULL) continue;
 
 			// Cycle over rings
-			for (Ring *r = p->rings(); r != NULL; r = r->next)
+			for (Ring* r = p->rings(); r != NULL; r = r->next)
 			{
 				if (r->type() != Ring::AromaticRing) continue;
 				

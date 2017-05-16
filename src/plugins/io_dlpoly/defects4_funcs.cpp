@@ -1,7 +1,7 @@
 /*
         *** DL_POLY_4 Defects Plugin Functions
         *** src/plugins/io_dlpoly/defects4_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
         Copyright A.M. Elena 2016-2016
 
         This file is part of Aten.
@@ -79,6 +79,12 @@ QString DLP4DefectsPlugin::name() const
 QString DLP4DefectsPlugin::nickname() const
 {
 	return QString("dlpoly4def");
+}
+
+// Return whether the plugin is enabled
+bool DLP4DefectsPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

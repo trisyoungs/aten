@@ -1,7 +1,7 @@
 /*
 	*** Periodic Cell Definition
 	*** src/base/cell.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -131,7 +131,6 @@ Model* UnitCell::parent()
 bool UnitCell::copy(UnitCell* source)
 {
 	if (source == NULL) return false;
-	source->print();
 	(*this) = (*source);
 	return true;
 }

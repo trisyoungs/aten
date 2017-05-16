@@ -1,7 +1,7 @@
 /*
 	*** Key/Value map class
 	*** src/base/kvmap.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -101,6 +101,18 @@ void KVMap::add(QString key, QString value)
 		pairs_.own(kvp);
 	}
 	else kvp->setValue(value);
+}
+
+// Set (existing) key/value pair (from int)
+void KVMap::add(QString key, int value)
+{
+	add(key, QString::number(value));
+}
+
+// Set (existing) key/value pair (from double)
+void KVMap::add(QString key, double value)
+{
+	add(key, QString::number(value));
 }
 
 // Return comma-separated list of keys

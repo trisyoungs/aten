@@ -1,7 +1,7 @@
 /*
         *** MOPAC7.1 Method Plugin Functions
         *** src/plugins/method_mopac71/mopac71_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -72,6 +72,12 @@ QString MOPAC71MethodPlugin::name() const
 QString MOPAC71MethodPlugin::nickname() const
 {
 	return QString("mopac71");
+}
+
+// Return whether the plugin is enabled
+bool MOPAC71MethodPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

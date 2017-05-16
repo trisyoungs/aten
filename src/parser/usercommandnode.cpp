@@ -1,7 +1,7 @@
 /*
 	*** User Command Node
 	*** src/parser/usercommandnode.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 

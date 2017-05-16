@@ -1,7 +1,7 @@
 /*
 	*** Aten Import/Export Functions
 	*** src/main/importexport.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -219,6 +219,8 @@ bool Aten::exportModel(Model* sourceModel, QString filename, const FilePluginInt
 				Messenger::exit("Aten::exportModel");
 				return false;
 			}
+
+			pluginOptions = atenWindow_->saveModelDialog().selectedPluginOptions();
 		}
 	}
 
@@ -440,6 +442,8 @@ bool Aten::exportExpression(Model* sourceModel, QString filename, const FilePlug
 				Messenger::exit("Aten::exportExpression");
 				return false;
 			}
+
+			pluginOptions = atenWindow_->saveExpressionDialog().selectedPluginOptions();
 		}
 	}
 

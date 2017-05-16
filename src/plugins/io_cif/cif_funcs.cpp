@@ -1,7 +1,7 @@
 /*
         *** CIF Model Plugin Functions
         *** src/plugins/io_cif/cif_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -69,6 +69,12 @@ QString CIFModelPlugin::name() const
 QString CIFModelPlugin::nickname() const
 {
 	return QString("cif");
+}
+
+// Return whether the plugin is enabled
+bool CIFModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

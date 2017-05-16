@@ -4,7 +4,7 @@ AC_PREREQ(2.60)
 
 
 # Set program name, version and source directory
-m4_define([ATEN_VERSION],[2.1.5])
+m4_define([ATEN_VERSION],[2.1.6])
 AC_INIT([aten], ATEN_VERSION)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -106,23 +106,24 @@ AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for r
 
 # Set up compilation for Qt GUI
 if test "$with_qt" = "framework"; then
-  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework OpenGL"
-  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
+  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework QtPrintSupport -framework OpenGL"
+  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore -FQtPrintSupport"
 fi
 if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, Qt5Gui >= 5.0.0)
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
+  PKG_CHECK_MODULES(QTPRINT, Qt5PrintSupport >= 5.0.0)
 fi
 
 # Finalise substitution strings
-ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
-ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS"
+ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS $QTPRINT_LIBS -lreadline -lGL -lfreetype"
+ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS" # -DQCUSTOMPLOT_COMPILE_LIBRARY -DQCUSTOMPLOT_USE_LIBRARY"
 ATEN_LDFLAGS="$LDFLAGS"
 if test "$with_nordynamic" = "no"; then
   ATEN_LDFLAGS+=" -rdynamic "
 fi
-ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
+ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS $QTPRINT_CFLAGS -I$RLINCDIR"
 
 # Perform Makefile substitutions
 AC_SUBST(ATEN_LDLIBS)
@@ -157,6 +158,7 @@ src/base/Makefile
 src/command/Makefile
 src/ff/Makefile
 src/gui/Makefile
+src/gui/qcustomplot/Makefile
 src/main/Makefile
 src/math/Makefile
 src/methods/Makefile
@@ -182,10 +184,13 @@ src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
 src/plugins/io_rmcprofile/Makefile
 src/plugins/io_sybylmol2/Makefile
+src/plugins/io_test/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/method_mopac71/Makefile
 src/plugins/method_mopac71/mopac7.1/Makefile
+src/plugins/tool_springs/Makefile
+src/plugins/tool_test/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

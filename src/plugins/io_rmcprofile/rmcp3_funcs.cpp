@@ -1,7 +1,7 @@
 /*
         *** RMCProfile V3 Model Plugin Functions
         *** src/plugins/io_rmcprofile/rmcp3_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -71,6 +71,12 @@ QString RMCProfile3ModelPlugin::name() const
 QString RMCProfile3ModelPlugin::nickname() const
 {
 	return QString("rmcp3???");
+}
+
+// Return whether the plugin is enabled
+bool RMCProfile3ModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

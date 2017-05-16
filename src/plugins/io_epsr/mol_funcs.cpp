@@ -1,7 +1,7 @@
 /*
         *** EPSRMol Model Plugin Functions
         *** src/plugins/io_epsr/mol_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -82,6 +82,12 @@ QString EPSRMolModelPlugin::name() const
 QString EPSRMolModelPlugin::nickname() const
 {
 	return QString("epsrmol");
+}
+
+// Return whether the plugin is enabled
+bool EPSRMolModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin
@@ -314,7 +320,7 @@ bool EPSRMolModelPlugin::exportData()
 	Pattern dummyPattern;
 	dummyPattern.setParent(targetModel());
 	dummyPattern.initialise(0, 0, 1, targetModel()->nAtoms());
-	dummyPattern.findRings();
+	dummyPattern.findRings(prefs.maxRingSize(), -1);
 	for (Bond* b = targetModel()->bonds(); b != NULL; b = b->next)
 	{
 		Atom* i = b->atomI();

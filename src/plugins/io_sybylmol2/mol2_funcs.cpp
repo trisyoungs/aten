@@ -1,7 +1,7 @@
 /*
         *** MOL2 Model Plugin Functions
         *** src/plugins/io_sybylmol2/mol2_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -68,6 +68,12 @@ QString Mol2ModelPlugin::name() const
 QString Mol2ModelPlugin::nickname() const
 {
 	return QString("mol2");
+}
+
+// Return whether the plugin is enabled
+bool Mol2ModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

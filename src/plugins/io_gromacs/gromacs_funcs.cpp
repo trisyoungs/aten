@@ -1,7 +1,7 @@
 /*
         *** GROMACS Model Plugin Functions
         *** src/plugins/io_gromacs/gromacs_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -68,6 +68,12 @@ QString GROMACSModelPlugin::name() const
 QString GROMACSModelPlugin::nickname() const
 {
 	return QString("gromacs");
+}
+
+// Return whether the plugin is enabled
+bool GROMACSModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

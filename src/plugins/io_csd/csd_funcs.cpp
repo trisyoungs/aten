@@ -1,7 +1,7 @@
 /*
         *** CSD Model Plugin Functions
         *** src/plugins/io_csd/csd_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -68,6 +68,12 @@ QString CSDModelPlugin::name() const
 QString CSDModelPlugin::nickname() const
 {
 	return QString("csd");
+}
+
+// Return whether the plugin is enabled
+bool CSDModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

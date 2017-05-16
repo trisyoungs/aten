@@ -1,7 +1,7 @@
 /*
         *** DL_POLY_2 Plugin Functions
         *** src/plugins/io_dlpoly/dlp2_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
         Copyright A. M. Elena 2016-2016
 
         This file is part of Aten.
@@ -81,6 +81,12 @@ QString DLP2ModelPlugin::name() const
 QString DLP2ModelPlugin::nickname() const
 {
     return QString ( "dlpoly2" );
+}
+
+// Return whether the plugin is enabled
+bool DLP2ModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

@@ -1,7 +1,7 @@
 /*
 	*** Main Window
 	*** src/gui/mainwindow.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -113,6 +113,8 @@ class AtenWindow : public QMainWindow
 	void initialUpdateAndShow();
 	// Return whether main window has been shown
 	bool shown();
+
+	public slots:
 	// Refreshes specified (or all) dock widgets
 	void updateWidgets(int targets = AtenWindow::DefaultTarget);
 

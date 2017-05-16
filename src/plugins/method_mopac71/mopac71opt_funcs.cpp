@@ -1,7 +1,7 @@
 /*
         *** MOPAC7.1 Optimisation Plugin Functions
         *** src/plugins/method_mopac71/mopac71opt_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -73,6 +73,12 @@ QString MOPAC71OptimisationPlugin::name() const
 QString MOPAC71OptimisationPlugin::nickname() const
 {
 	return QString("mopac71opt");
+}
+
+// Return whether the plugin is enabled
+bool MOPAC71OptimisationPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

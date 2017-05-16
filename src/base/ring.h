@@ -1,7 +1,7 @@
 /*
 	*** Atom ring
 	*** src/base/ring.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -70,6 +70,8 @@ class Ring : public ListItem<Ring>
 	Pattern* parent();
 	// Return first referenced atom
 	RefListItem<Atom,int>* atoms() const;
+	// Return array of referenced atoms
+	RefListItem<Atom,int>** atomArray();
 	// Return last referenced atom
 	RefListItem<Atom,int>* lastAtom() const;
 	// Return first referenced bond

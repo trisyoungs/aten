@@ -1,7 +1,7 @@
 /*
 	*** MOPAC Control File Export Options Functions
 	*** src/gui/io_mopac/controlexportoptions_funcs.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 

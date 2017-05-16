@@ -1,7 +1,7 @@
 /*
 	*** Undo Event - Glyph Creation
 	*** src/undo/glyph_creation.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 

@@ -1,7 +1,7 @@
 /*
         *** Gaussian Model Plugin Functions
         *** src/plugins/io_gaussian/gaussian_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -68,6 +68,12 @@ QString GaussianModelPlugin::name() const
 QString GaussianModelPlugin::nickname() const
 {
 	return QString("gaussian");
+}
+
+// Return whether the plugin is enabled
+bool GaussianModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

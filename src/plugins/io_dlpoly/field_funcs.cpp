@@ -1,7 +1,7 @@
 /*
         *** DL_POLY Expression Plugin Functions
         *** src/plugins/io_dlpoly/field_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
 
@@ -76,6 +76,12 @@ QString DLPExpressionPlugin::name() const
 QString DLPExpressionPlugin::nickname() const
 {
 	return QString("dlpolyfield");
+}
+
+// Return whether the plugin is enabled
+bool DLPExpressionPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

@@ -1,7 +1,7 @@
 /*
         *** MOPAC7.1 Method Plugin
         *** src/plugins/method_mopac71/mopac71.hui
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -64,6 +64,8 @@ class MOPAC71MethodPlugin : public QObject, public MethodPluginInterface
 	QString name() const;
 	// Return nickname of plugin
 	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
 	// Return description (long name) of plugin
 	QString description() const;
 

@@ -1,7 +1,7 @@
 /*
         *** Method Plugin Interface
         *** src/plugins/interfaces/methodplugin.h
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2007-2017
 
         This file is part of Aten.
     
@@ -185,18 +185,6 @@ class MethodPluginInterface : public BasePluginInterface
 	/*
 	 * Options
 	 */
-	protected:
-	// Options specific to this plugin
-	KVMap pluginOptions_;
-
-	protected:
-	// Return conversion of supplied QString to bool
-	bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
-	}
-
 	public:
 	// Return whether the plugin has options
 	virtual bool hasOptions() = 0;

@@ -1,7 +1,7 @@
 /*
-        *** XYZ Plugin
-        *** src/plugins/io_xyz/xyz.h
-        Copyright T. Youngs 2016-2016
+        *** GAMESS-US Log File Plugin
+        *** src/plugins/io_gamessus/gamessuslog.hui
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_XYZPLUGIN_H
-#define ATEN_XYZPLUGIN_H
+#ifndef ATEN_GAMESSUSMODELPLUGIN_H
+#define ATEN_GAMESSUSMODELPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
 
@@ -29,24 +29,27 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 /* none */
 
-// XYZ Model Import / Export Plugin
-class XYZModelPlugin : public QObject, public FilePluginInterface
+// GAMESS-US Log File Plugin
+class GAMESSUSLogModelPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
 	Q_INTERFACES(AtenSpace::FilePluginInterface)
 
 
-	/*
-	 * Core
-	 */
 	public:
 	// Constructor
-	XYZModelPlugin();
+	GAMESSUSLogModelPlugin();
 	// Destructor
-	~XYZModelPlugin();
+	~GAMESSUSLogModelPlugin();
+
+
+	/*
+	 * Instance Handling
+	 */
+	private:
 	// Return a copy of the plugin object
-	FilePluginInterface* duplicate();
+	BasePluginInterface* makeCopy() const;
 
 
 	/*
@@ -61,6 +64,8 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	QString name() const;
 	// Return nickname of plugin
 	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
 	// Return description (long name) of plugin
 	QString description() const;
 	// Return related file extensions
@@ -76,11 +81,29 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	// Return whether this plugin can import data
 	bool canImport() const;
 	// Import data via the supplied parser
-	bool importData(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool importData();
 	// Return whether this plugin can export data
 	bool canExport() const;
 	// Export data via the supplied parser
-	bool exportData(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool exportData();
+	// Import next partial data chunk
+	bool importNextPart();
+	// Skip next partial data chunk
+	bool skipNextPart();
+
+
+	/*
+	 * Options
+	 */
+	public:
+	// Return whether the plugin has import options
+	bool hasImportOptions() const;
+	// Show import options dialog
+	bool showImportOptionsDialog(KVMap& targetOptions) const;
+	// Return whether the plugin has export options
+	bool hasExportOptions() const;
+	// Show export options dialog
+	bool showExportOptionsDialog(KVMap& targetOptions) const;
 };
 
 ATEN_END_NAMESPACE

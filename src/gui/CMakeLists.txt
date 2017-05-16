@@ -2,7 +2,7 @@
 # the UI file won't be wrapped!
 # Meta-Objects
 SET(gui_MOC_HDRS
-  aboutplugins.h
+  about.h
   colourdialog.h
   disorderoptions.h
   disorderwizard.h
@@ -106,7 +106,7 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 
 # User Interface Files
 SET(gui_UIS
-  aboutplugins.ui
+  about.ui
   colourdialog.ui
   disorderoptions.ui
   disorderwizard.ui
@@ -197,7 +197,7 @@ QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
 set(gui_SRCS
   useractions.h
   useractions.cpp
-  aboutplugins_funcs.cpp
+  about_funcs.cpp
   colourdialog_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
@@ -357,3 +357,5 @@ target_include_directories(treegui PRIVATE
   ${Qt5Widgets_INCLUDE_DIRS}
 )
 target_link_libraries(treegui plugins gui)
+
+add_subdirectory(qcustomplot)

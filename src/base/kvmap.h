@@ -1,7 +1,7 @@
 /*
 	*** Key/Value map class
 	*** src/base/kvmap.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -79,6 +79,10 @@ class KVMap
 	int nPairs() const;
 	// Set (existing) key/value pair
 	void add(QString key, QString value);
+	// Set (existing) key/value pair (from int)
+	void add(QString key, int value);
+	// Set (existing) key/value pair (from double)
+	void add(QString key, double value);
 	// Set (existing) key/value pair from 'option=value' string
 	void add(QString optionEqualsValue);
 	// Return comma-separated list of keys

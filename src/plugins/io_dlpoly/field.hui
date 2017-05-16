@@ -1,7 +1,7 @@
 /*
         *** DL_POLY Expression Plugin
         *** src/plugins/io_dlpoly/field.hui
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -61,6 +61,8 @@ class DLPExpressionPlugin : public QObject, public FilePluginInterface
 	QString name() const;
 	// Return nickname of plugin
 	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
 	// Return description (long name) of plugin
 	QString description() const;
 	// Return related file extensions

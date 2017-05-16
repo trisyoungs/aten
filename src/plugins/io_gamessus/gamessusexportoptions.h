@@ -1,7 +1,7 @@
 /*
 	*** GAMESS-US Export Options Dialog
 	*** src/plugins/io_gamessus/gamessexportoptions.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -30,7 +30,7 @@ ATEN_USING_NAMESPACE
 // Forward Declarations (Aten)
 /* none */
 
-// XYZ Export Options Dialog
+// GAMESS-US Export Options Dialog
 class GAMESSUSExportOptionsDialog : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

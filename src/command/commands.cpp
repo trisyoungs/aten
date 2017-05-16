@@ -1,7 +1,7 @@
 /*
 	*** Command Function Definitions
 	*** src/command/commands.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -1216,6 +1216,11 @@ CommandData Commands::data_[Commands::nCommands] = {
 	{ "version",		"",		VTypes::NoData,
 		"",
 		"Print program version information" },
+
+	// Tool commands
+	{ "runTool",		"C",		VTypes::IntegerData,
+		"string toolName[,option=value,...]",
+		"Run the specified tool, setting options if provided" },
 
 	// Trajectory commands
 	{ "addFrame",		"c",		VTypes::ModelData,

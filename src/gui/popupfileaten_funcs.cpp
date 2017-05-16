@@ -1,7 +1,7 @@
 /*
 	*** Popup Widget - File Aten
 	*** src/gui/popupfileaten_funcs.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -24,7 +24,7 @@
 #include "main/version.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
-#include "gui/aboutplugins.h"
+#include "gui/about.h"
 #include "base/namespace.h"
 #include <QMessageBox>
 
@@ -111,7 +111,7 @@ void FileAtenPopup::on_ReloadPluginsButton_clicked(bool checked)
 
 void FileAtenPopup::on_PluginInfoButton_clicked(bool checked)
 {
-	AtenAboutPlugins aboutPlugins(parent_);
+	AtenAbout aboutPlugins(parent_);
 	
 	aboutPlugins.exec();
 

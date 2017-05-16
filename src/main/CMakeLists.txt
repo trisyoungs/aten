@@ -20,6 +20,7 @@ add_library(main STATIC
   prefs.cpp
   scripts.cpp
   session.cpp
+  tools.cpp
 )
 target_include_directories(main PRIVATE
   ${PROJECT_SOURCE_DIR}/src

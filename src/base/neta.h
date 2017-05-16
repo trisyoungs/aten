@@ -1,7 +1,7 @@
 /*
 	*** NETA Description
 	*** src/base/neta.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -386,11 +386,11 @@ class NetaRingNode : public NetaContextNode
 
 	private:
 	// Current ring under consideration
-	Ring *currentRing_;
+	Ring* currentRing_;
 
 	public:
 	// Retrieve current ring under consideration
-	Ring *currentRing();
+	Ring* currentRing();
 	// Validation function (virtual)
 	int score(Atom* target, RefList<Atom,int>* nbrs, RefList<Ring,int>* rings, NetaContextNode* context, RefList<Atom,int>& path, int level);
 	// Print node contents

@@ -1,7 +1,7 @@
 /*
 	*** String formatter
 	*** src/parser/format.h
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -61,7 +61,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	public:
 	// Return chunktype
 	ChunkType type();
-	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+	// Return C-style format stRing* or* plain text data if chunktype is PlainTextChunk
 	QString cFormat();
 	// Return length of formatted chunk
 	int formatLength();
@@ -151,7 +151,7 @@ class ParseChunk : public ListItem<ParseChunk>
 	public:
 	// Return chunktype
 	ChunkType type();
-	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+	// Return C-style format stRing* or* plain text data if chunktype is PlainTextChunk
 	QString cFormat();
 	// Return length of formatted chunk
 	int formatLength();

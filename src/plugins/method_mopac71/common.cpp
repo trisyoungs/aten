@@ -1,7 +1,7 @@
 /*
         *** Common functions for MOPAC71 plugins
         *** src/plugins/method_mopac71/common.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     

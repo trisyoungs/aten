@@ -1,7 +1,7 @@
 /*
         *** XYZ Plugin Functions
         *** src/plugins/io_xyz/xyz_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -74,6 +74,12 @@ QString XYZModelPlugin::name() const
 QString XYZModelPlugin::nickname() const
 {
 	return QString("xyz");
+}
+
+// Return whether the plugin is enabled
+bool XYZModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

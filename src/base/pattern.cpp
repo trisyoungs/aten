@@ -1,7 +1,7 @@
 /*
 	*** Molecule pattern
 	*** src/base/pattern.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -569,7 +569,7 @@ int Pattern::nRings()
 }
 
 // Returns the first ring in the ring list
-Ring *Pattern::rings()
+Ring* Pattern::rings()
 {
 	return rings_.first();
 }
@@ -580,13 +580,13 @@ bool Pattern::atomsInRing(int id_i, int id_j)
 	if (id_j == -1)
 	{
 		Atom* i = atoms_[id_i]->atom();
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
+		for (Ring* r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
 	}
 	else
 	{
 		Atom* i = atoms_[id_i]->atom();
 		Atom* j = atoms_[id_j]->atom();
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
+		for (Ring* r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
 	}
 	return false;
 }
@@ -596,11 +596,11 @@ bool Pattern::atomsInRing(Atom* i, Atom* j)
 {
 	if (j == NULL)
 	{
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
+		for (Ring* r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
 	}
 	else
 	{
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
+		for (Ring* r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
 	}
 	return false;
 }
@@ -699,7 +699,7 @@ void Pattern::deleteExpression()
 }
 
 // Create connectivity and scaling matrices for molecules in pattern
-void Pattern::createMatrices()
+void Pattern::createMatrices(bool forceFull, bool quiet)
 {
 	Messenger::enter("Pattern::createMatrices");
 	int n, m, a1, a2;
@@ -715,31 +715,34 @@ void Pattern::createMatrices()
 	elecScaleMatrix_ = new double*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 
-	Messenger::print("Connectivity matrix.....initialising....");
+	if (!quiet) Messenger::print("Connectivity matrix.....initialising....");
 	for (n=0; n<nAtoms_; ++n)
 		for (m=0; m<nAtoms_; ++m) conMatrix_[n][m] = 0;
 
-	// Print out the bonding matrix
-/*	printf("Bonding Matrix\n");
-	for (n=0; n<nAtoms_; n++)
-	{
-		for (m=0; m<nAtoms_; m++) printf (" %2i ",conMatrix_[n][m]);
-		printf("\n");
-	} */
-
 	// Since the full transformation to the connectivity matrix is quite intensive, we will only do this for patterns containing less than 1000 atoms
-	if (nAtoms_ < 1000)
+	if (forceFull || (nAtoms_ < 1000))
 	{
-		Messenger::print("seeding.....");
+		if (!quiet) Messenger::print("seeding.....");
 		// First, build up the bond matrix
-		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+		Atom* i = firstAtom_;
+		int ii = i->id();
+		for (n=0; n<nAtoms_; ++n)
 		{
-			conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
-			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
+			for (RefListItem<Bond,int>* ri = i->bonds(); ri != NULL; ri = ri->next)
+			{
+				Atom* j = ri->item->partner(i);
+				conMatrix_[ i->id() - ii ] [ j->id() - ii ] = 1;
+			}
+			i = i->next;
 		}
+// 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+// 		{
+// 			conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
+// 			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
+// 		}
 
 		// Now, transform into the connectivity matrix.
-		Messenger::print("transforming (full).....");
+		if (!quiet) Messenger::print("transforming (full).....");
 		for (a1=0; a1<nAtoms_; a1++)
 		{
 			for (a2=0; a2<nAtoms_; a2++)
@@ -771,7 +774,7 @@ void Pattern::createMatrices()
 	else
 	{
 		// Create minimal transformation matrix, using only bond, angle, and torsion data
-		Messenger::print("transforming (minimal).....");
+		if (!quiet) Messenger::print("transforming (minimal).....");
 
 		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
 		Atom* i = firstAtom_;
@@ -839,7 +842,7 @@ void Pattern::createMatrices()
 			conMatrix_[pb->atomId(3)][pb->atomId(0)] = 3;
 		}
 	}
-	Messenger::print("done.");
+	if (!quiet) Messenger::print("done.");
 
 // 	printf("Connectivity Matrix\n");
 // 	for (n=0; n<nAtoms_; n++)
@@ -920,6 +923,30 @@ void Pattern::updateScaleMatrices()
 // 	}
 
 	Messenger::exit("Pattern::updateScaleMatrices");
+}
+
+// Return connectivity distance between atom indices specified
+int Pattern::connectivity(int i, int j)
+{
+	if (conMatrix_ == NULL)
+	{
+		Messenger::error("Connectivity matrix not yet created.\n");
+		return 0;
+	}
+
+	if ((i < 0) || (i >= nAtoms_))
+	{
+		Messenger::error("Index i for connectivity matrix is out of range (%i)\n", i);
+		return 0;
+	}
+
+	if ((j < 0) || (j >= nAtoms_))
+	{
+		Messenger::error("Index j for connectivity matrix is out of range (%i)\n", j);
+		return 0;
+	}
+	
+	return conMatrix_[i][j];
 }
 
 // Validate pattern
@@ -1238,7 +1265,7 @@ void Pattern::deleteAtomsFromEnd(int count)
  */
 
 // Find rings
-void Pattern::findRings()
+void Pattern::findRings(int maxRingSize, int maxRings)
 {
 	Messenger::enter("Pattern::findRings");
 
@@ -1254,31 +1281,64 @@ void Pattern::findRings()
 		if (i->nBonds() > 1)
 		{
 			// Loop over searches for different ring sizes
-			for (rsize=3; rsize<=prefs.maxRingSize(); rsize++)
+			for (rsize=3; rsize<=maxRingSize; ++rsize)
 			{
 				path.clear();
 				path.setRequestedSize(rsize);
 				// Call the recursive search to extend the path by this atom
-				okay = ringSearch(i,&path);
+				okay = ringSearch(i, &path, maxRings);
 				if (!okay) break;
 			}
 		}
 		i = i->next;
 		if (!okay) break;
 	}
-	if ((!okay) && (rings_.nItems() == prefs.maxRings())) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", prefs.maxRings(), qPrintable(name_));
-	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", qPrintable(name_), rings_.nItems(), prefs.maxRingSize());
+	if ((!okay) && (rings_.nItems() == maxRings)) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", maxRings, qPrintable(name_));
+	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", qPrintable(name_), rings_.nItems(), maxRingSize);
+
+	Messenger::exit("Pattern::findRings");
+}
+
+// Locate ring structures in the pattern from a specific atom
+void Pattern::findRingsFrom(int atomIndex, int maxRingSize, int maxRings)
+{
+	Messenger::enter("Pattern::findRings");
+
+	int n, rsize;
+	bool okay = true;
+	Atom* i;
+	Ring path;
+
+	// Search for rings involving the specified atom
+	i = firstAtom_;
+	for (n=0; n<atomIndex; ++n) i = i->next;
+
+	if (i->nBonds() > 1)
+	{
+		// Loop over searches for different ring sizes
+		for (rsize=3; rsize<=maxRingSize; ++rsize)
+		{
+			path.clear();
+			path.setRequestedSize(rsize);
+			// Call the recursive search to extend the path by this atom
+			okay = ringSearch(i, &path, maxRings);
+			if (!okay) break;
+		}
+	}
+
+	if ((!okay) && (rings_.nItems() == maxRings)) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", maxRings, qPrintable(name_));
+	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", qPrintable(name_), rings_.nItems(), maxRingSize);
 
 	Messenger::exit("Pattern::findRings");
 }
 
 // Ring search
-bool Pattern::ringSearch(Atom* i, Ring *currentpath)
+bool Pattern::ringSearch(Atom* i, Ring* currentpath, int maxRings)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	Messenger::enter("Pattern::ringSearch");
 	RefListItem<Bond,int>* bref;
-	Ring *r;
+	Ring* r;
 	RefListItem<Atom,int>* lastra;
 	bool done, maxreached = false;
 	// Otherwise, add it to the current path
@@ -1308,7 +1368,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 					if (!isRingInList(currentpath))
 					{
 // 						Messenger::print(Messenger::Verbose, " --- Storing current ring.");
-						if (rings_.nItems() == prefs.maxRings()) maxreached = true;
+						if (rings_.nItems() == maxRings) maxreached = true;
 						else
 						{
 							r = rings_.add();
@@ -1324,7 +1384,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 			else
 			{
 				// Current path is not long enough, so extend it
-				if (!ringSearch(bref->item->partner(i),currentpath)) maxreached = true;
+				if (!ringSearch(bref->item->partner(i), currentpath, maxRings)) maxreached = true;
 			}
 			bref = bref->next;
 			if (done || maxreached) break;
@@ -1339,9 +1399,9 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 }
 
 // Search existing ring list for existence of supplied ring
-bool Pattern::isRingInList(Ring *source)
+bool Pattern::isRingInList(Ring* source)
 {
-	for (Ring *r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return true;
+	for (Ring* r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return true;
 	return false;
 }
 
@@ -1516,7 +1576,7 @@ void Pattern::augment()
 			i = i->next;
 		}
 		// First, search for atoms in rings that have a bond order penalty
-		for (Ring *r = rings_.first(); r != NULL; r = r->next)
+		for (Ring* r = rings_.first(); r != NULL; r = r->next)
 		{
 			// Try a straight augmentation of the ring first...
 			for (rb = r->bonds(); rb != NULL; rb = rb->next)
@@ -1606,17 +1666,20 @@ void Pattern::describeAtoms()
 {
 	// 1) Locate ring structures
 	Messenger::print(Messenger::Verbose, "Detecting rings in pattern '%s'...", qPrintable(name_));
-	findRings();
+	findRings(prefs.maxRingSize(), prefs.maxRings());
+
 	// 2) Reset atom environments
 	Messenger::print(Messenger::Verbose, "Determining atom environments in pattern '%s'...", qPrintable(name_));
 	clearEnvironments();
 	printstuff(this);
+
 	// 3) Assign hybridisation types
 	assignEnvironments();
 	printstuff(this);
+
 	// 4) Go through the ring list and see if any are aromatic
 	Messenger::print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...", qPrintable(name_));
-	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
+	for (Ring* r = rings_.first(); r != NULL; r = r->next) r->detectType();
 }
 
 // Clear environment data

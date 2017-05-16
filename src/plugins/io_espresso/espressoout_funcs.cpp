@@ -1,7 +1,7 @@
 /*
         *** QuantumEspresso Output Import Plugin Functions
         *** src/plugins/io_espresso/espressoout_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -62,6 +62,12 @@ QString QEOutModelPlugin::name() const
 QString QEOutModelPlugin::nickname() const
 {
 	return QString("espresso");
+}
+
+// Return whether the plugin is enabled
+bool QEOutModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

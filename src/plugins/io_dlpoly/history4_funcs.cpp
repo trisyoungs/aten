@@ -1,7 +1,7 @@
 /*
         *** DL_POLY_4 Trajectory Plugin Functions
         *** src/plugins/io_dlpoly/history4_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
         Copyright A.M. Elena 2016-2016
 
         This file is part of Aten.
@@ -77,6 +77,12 @@ QString DLP4TrajectoryPlugin::name() const
 QString DLP4TrajectoryPlugin::nickname() const
 {
 	return QString("dlpoly4his");
+}
+
+// Return whether the plugin is enabled
+bool DLP4TrajectoryPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin

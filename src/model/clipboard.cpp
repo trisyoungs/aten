@@ -1,7 +1,7 @@
 /*
 	*** Clipboard
-	*** src/base/clipboard.cpp
-	Copyright T. Youngs 2007-2016
+	*** src/model/clipboard.cpp
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 

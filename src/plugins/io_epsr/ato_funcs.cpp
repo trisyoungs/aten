@@ -1,7 +1,7 @@
 /*
         *** EPSRAto Model Plugin Functions
         *** src/plugins/io_epsr/ato_funcs.cpp
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
 
         This file is part of Aten.
     
@@ -87,6 +87,12 @@ QString EPSRAtoModelPlugin::name() const
 QString EPSRAtoModelPlugin::nickname() const
 {
 	return QString("epsrato");
+}
+
+// Return whether the plugin is enabled
+bool EPSRAtoModelPlugin::enabled() const
+{
+	return true;
 }
 
 // Description (long name) of plugin
@@ -462,7 +468,7 @@ bool EPSRAtoModelPlugin::exportData()
 			if (mol == 0)
 			{
 				// Need ring information for the pattern....
-				p->findRings();
+				p->findRings(prefs.maxRingSize(), -1);
 				for (RefListItem<Bond,int>* ri = uniqueBonds.first(); ri != NULL; ri = ri->next)
 				{
 					Bond* bij = ri->item;

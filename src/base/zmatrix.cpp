@@ -1,7 +1,7 @@
 /*
 	*** ZMatrix Definition
 	*** src/base/zmatrix.cpp
-	Copyright T. Youngs 2007-2016
+	Copyright T. Youngs 2007-2017
 
 	This file is part of Aten.
 
@@ -372,5 +372,57 @@ void ZMatrix::print()
 		Variable* var = torsions_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
+	}
+}
+
+// Print zmatrix to specified LineParser
+void ZMatrix::print(LineParser& parser)
+{
+	Atom* i, *j, *k, *l;
+	for (ZMatrixElement* zel = elements_.first(); zel != NULL; zel = zel->next)
+	{
+		// First atom (the creation target)
+		i = zel->atom(0);
+		// Second atom (distance specifier)
+		j = zel->atom(1);
+		if (j != NULL)
+		{
+			// Third atom (angle specifier)
+			k = zel->atom(2);
+			if (k != NULL)
+			{
+				// Fourth atom (torsion specifier)
+				l = zel->atom(3);
+				if (l != NULL)
+				{
+					parser.writeLineF("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()), l->id()+1, qPrintable(zel->torsionVariable()->name()));
+				}
+				else parser.writeLineF("%-4s %-4i %-6s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()));
+			}
+			else parser.writeLineF("%-4s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()));
+		}
+		else parser.writeLineF("%-4s\n", ElementMap::symbol(i));
+	}
+	parser.writeLineF("\n");
+
+	// Variable list
+	ReturnValue rv;
+	for (int n=0; n<distances_.nVariables(); ++n)
+	{
+		Variable* var = distances_.variable(n);
+		var->execute(rv);
+		parser.writeLineF("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
+	}
+	for (int n=0; n<angles_.nVariables(); ++n)
+	{
+		Variable* var = angles_.variable(n);
+		var->execute(rv);
+		parser.writeLineF("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
+	}
+	for (int n=0; n<torsions_.nVariables(); ++n)
+	{
+		Variable* var = torsions_.variable(n);
+		var->execute(rv);
+		parser.writeLineF("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
 	}
 }

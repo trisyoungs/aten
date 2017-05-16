@@ -1,7 +1,7 @@
 /*
         *** DL_POLY_2 Trajectory Plugin
         *** src/plugins/io_dlpoly/history2.hui
-        Copyright T. Youngs 2016-2016
+        Copyright T. Youngs 2016-2017
         Copyright A.M. Elena 2016-2016
 
         This file is part of Aten.
@@ -63,6 +63,8 @@ class DLP2TrajectoryPlugin : public QObject, public FilePluginInterface
 	QString name() const;
 	// Return nickname of plugin
 	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
 	// Return description (long name) of plugin
 	QString description() const;
 	// Return related file extensions
