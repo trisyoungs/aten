@@ -19,6 +19,7 @@ add_library(gamessus MODULE
   gamessusexportoptions_funcs.cpp
   gamessus_funcs.cpp
   ${gamessus_MOC_SRCS}
+  ${gamessus_UIS_H}
 )
 target_link_libraries(gamessus
   ${PLUGIN_LINK_LIBS}
