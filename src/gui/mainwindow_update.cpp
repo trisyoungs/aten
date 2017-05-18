@@ -135,7 +135,7 @@ void AtenWindow::initialUpdateAndShow()
 		{
 			ToolPluginInterface* toolPlugin = plugin->item;
 
-			// For this plugins groupName see if we have already have a layout set up for it
+			// For this plugin's groupName see if we have already have a layout set up for it
 			QGridLayout* groupLayout = NULL;
 			for (RefListItem<QGridLayout,QString>* ri = groups.first(); ri != NULL; ri = ri->next) if (ri->data == toolPlugin->groupName())
 			{
