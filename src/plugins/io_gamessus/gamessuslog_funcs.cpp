@@ -20,7 +20,6 @@
 */
 
 #include "plugins/io_gamessus/gamessuslog.hui"
-// #include "plugins/io_gamessus/gamessusexportoptions.h"
 #include "model/model.h"
 #include "base/eigenvector.h"
 
@@ -228,17 +227,18 @@ bool GAMESSUSLogModelPlugin::importData()
 	int nStructures = 0;
 
 	// Lines containing 'COORDINATES OF ALL ATOMS ARE' are the beginning of coordinate sections
+	Model* lastFrame = targetModel;
 	while (fileParser_.find("COORDINATES OF ALL ATOMS ARE"))
 	{
 		// Found a set of coordinates. Skip 2 lines and then read coordinates
 		++nStructures;
 		fileParser_.skipLines(2);
-		Model* frame = createFrame();
-		frame->setName(QString("Frame %1").arg(nStructures));
+		lastFrame = createFrame();
+		lastFrame->setName(QString("Frame %1").arg(nStructures));
 		for (int n=0; n<nAtoms; ++n)
 		{
 			if (!fileParser_.parseLine()) return false; 		//readLine(e,discard,rx,ry,rz);
-			createAtom(frame, fileParser_.argc(0), fileParser_.arg3d(2));
+			createAtom(lastFrame, fileParser_.argc(0), fileParser_.arg3d(2));
 		}
 	}
 
@@ -389,7 +389,8 @@ bool GAMESSUSLogModelPlugin::importData()
 		if (fileParser_.find("NET CHARGES"))
 		{
 			fileParser_.skipLines(3);
-			Atom* i = targetModel->atoms();
+			Atom* i = lastFrame->atoms();
+			printf("Adding charges to model %s\n", qPrintable(lastFrame->name()));
 			for (int n = 0; n < nAtoms; ++n, i = i->next)
 			{
 				if (!fileParser_.parseLine()) return false;

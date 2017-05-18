@@ -193,12 +193,12 @@ bool EPSRMolModelPlugin::exportData()
 		// If types are assigned and we find a suitable term in the associated forcefield, set these parameters in our ForcefieldBound
 		if (ffi && ffj && ffi->parent())
 		{
-			// Set the form of the bond to 'harmonic' - doesn't really matter what we set it to, as long as it isn't 'none' for the purposes of a later check
-			ffb->setBondForm(BondFunctions::Harmonic);
-
 			ForcefieldBound* existing = ffi->parent()->findBond(ffi, ffj);
 			if (existing)
 			{
+				// Set the form of the bond to 'harmonic' - doesn't really matter what we set it to, as long as it isn't 'none' for the purposes of a later check
+				ffb->setBondForm(BondFunctions::Harmonic);
+
 				if (existing->bondForm() == BondFunctions::Constraint) ffb->setParameter(BondFunctions::HarmonicEq, existing->parameter(BondFunctions::ConstraintEq));
 				else if (existing->bondForm() == BondFunctions::Harmonic) ffb->setParameter(BondFunctions::HarmonicEq, existing->parameter(BondFunctions::HarmonicEq));
 				else if (existing->bondForm() == BondFunctions::Morse) ffb->setParameter(BondFunctions::HarmonicEq, existing->parameter(BondFunctions::MorseEq));
@@ -254,12 +254,12 @@ bool EPSRMolModelPlugin::exportData()
 				// If types are assigned and we find a suitable term in the associated forcefield, set these parameters in our ForcefieldBound
 				if (ffi && ffj && ffk && ffi->parent())
 				{
-					// Set the form of the angle to 'harmonic' - doesn't really matter what we set it to, as long as it isn't 'none' for the purposes of a later check
-					ffb->setAngleForm(AngleFunctions::Harmonic);
-
 					ForcefieldBound* existing = ffi->parent()->findAngle(ffi, ffj, ffk);
 					if (existing)
 					{
+						// Set the form of the angle to 'harmonic' - doesn't really matter what we set it to, as long as it isn't 'none' for the purposes of a later check
+						ffb->setAngleForm(AngleFunctions::Harmonic);
+
 						if (existing->angleForm() == AngleFunctions::Harmonic) ffb->setParameter(AngleFunctions::HarmonicEq, existing->parameter(AngleFunctions::HarmonicEq));
 						else if (existing->angleForm() == AngleFunctions::Cosine) ffb->setParameter(AngleFunctions::HarmonicEq, existing->parameter(AngleFunctions::CosineEq));
 						else if (existing->angleForm() == AngleFunctions::HarmonicCosine) ffb->setParameter(AngleFunctions::HarmonicEq, existing->parameter(AngleFunctions::HarmonicCosineEq));

@@ -60,8 +60,6 @@ void EPSRMolExportOptionsDialog::on_OKButton_clicked(bool checked)
 // Update and show dialog, setting controls from pluginOptions
 int EPSRMolExportOptionsDialog::updateAndExecute()
 {
-	printf("KJHKJHKJ|N\n");
-	pluginOptions_.dump();
 	// Set controls to reflect current pluginOptions_
 	ui.ECoreSpin->setValue(pluginOptions_.value("eCore").toDouble());
 	ui.DCoreSpin->setValue(pluginOptions_.value("dCore").toDouble());
