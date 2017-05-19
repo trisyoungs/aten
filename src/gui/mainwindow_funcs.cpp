@@ -47,6 +47,7 @@
 #include "gui/popupcellmatrix.h"
 #include "gui/popupcellreplicate.h"
 #include "gui/popupcellscale.h"
+#include "gui/popupchargeaverage.h"
 #include "gui/popupcolour.h"
 #include "gui/popupelementtable.h"
 #include "gui/popupfileaten.h"
@@ -244,10 +245,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.CalculateMeasureAngleButton->setPopupWidget(new MeasureAnglePopup(*this, ui.CalculateMeasureAngleButton));
 	ui.CalculateMeasureTorsionButton->setGroup("UserActions", UserAction::MeasureTorsionAction);
 	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
-
 	// -- Calculate Panel (Geometry)
 	ui.CalculateGeometryCentreButton->setPopupWidget(new GeometryCentrePopup(*this, ui.CalculateGeometryCentreButton));
-	
+	// -- Calculate Panel (Charge)
+	ui.CalculateChargeAverageButton->setPopupWidget(new ChargeAveragePopup(*this, ui.CalculateChargeAverageButton));
+
 	// -- Transform Panel (Set)
 	ui.TransformGeometryDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformGeometryDistanceButton));
 	ui.TransformGeometryAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformGeometryAngleButton));

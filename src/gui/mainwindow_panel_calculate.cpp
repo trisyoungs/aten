@@ -94,6 +94,27 @@ void AtenWindow::on_CalculateChargeTotalButton_clicked(bool checked)
 	updateWidgets();
 }
 
+void AtenWindow::on_CalculateChargeAverageButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	double total = 0.0;
+	if (currentModel->nSelected() == 0)
+	{
+		for (Atom* i = currentModel->atoms(); i != NULL; i = i->next) total += i->charge();
+		Messenger::print("Average charge in model = %f e.", total / currentModel->nAtoms());
+	}
+	else
+	{
+		for (RefListItem<Atom,int>* ri = currentModel->selection(); ri != NULL; ri = ri->next) total += ri->item->charge();
+		Messenger::print("Average charge in selection (%i atoms) = %f e.", currentModel->nSelected(), total / currentModel->nSelected());
+	}
+
+	// Update display
+	updateWidgets();
+}
+
 /*
  * Geometry
  */

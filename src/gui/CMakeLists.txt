@@ -30,6 +30,7 @@ SET(gui_MOC_HDRS
   popupcellreplicate.h
   popupcellscale.h
   popupcellspacegroup.h
+  popupchargeaverage.h
   popupcolour.h
   popupelementtable.h
   popupfileaten.h
@@ -133,6 +134,7 @@ SET(gui_UIS
   popupcellreplicate.ui
   popupcellscale.ui
   popupcellspacegroup.ui
+  popupchargeaverage.ui
   popupcolour.ui
   popupelementtable.ui
   popupfileaten.ui
@@ -249,6 +251,7 @@ set(gui_SRCS
   popupcellreplicate_funcs.cpp
   popupcellscale_funcs.cpp
   popupcellspacegroup_funcs.cpp
+  popupchargeaverage_funcs.cpp
   popupcolour_funcs.cpp
   popupelementtable_funcs.cpp
   popupfileaten_funcs.cpp

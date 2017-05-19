@@ -307,6 +307,7 @@ class AtenWindow : public QMainWindow
 	void on_CalculateMeasureListButton_clicked(bool checked);
 	// Charge
 	void on_CalculateChargeTotalButton_clicked(bool checked);
+	void on_CalculateChargeAverageButton_clicked(bool checked);
 	// Geometry
 	void on_CalculateGeometryCentreButton_clicked(bool checked);
 
