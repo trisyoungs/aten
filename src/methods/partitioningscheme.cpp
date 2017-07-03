@@ -269,6 +269,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 					pd = partitions_.add();
 					pd->setId(pid);
 					pd->setName("Generated partition " + QString::number(pid));
+					pd->setParent(this);
 				}
 				
 				// Add cell to list
@@ -462,7 +463,7 @@ Vec3<int> PartitioningScheme::gridSize()
 }
 
 // Copy data from specified partition
-void PartitioningScheme::copy(PartitioningScheme &source)
+void PartitioningScheme::copy(PartitioningScheme& source)
 {
 	// Clear some things which we cannot copy
 	schemeDefinition_.clear();
@@ -478,14 +479,15 @@ void PartitioningScheme::copy(PartitioningScheme &source)
 	name_ = source.name_;
 	description_ = source.description_;
 	gridSize_ = source.gridSize_;
+	grid_ = source.grid_;
 	
 	// Copy partition data
 	partitions_.clear();
-	PartitionData* newPartition;
-	int *data;
+	PartitionData* newPartitionData;
 	for (PartitionData* pd = source.partitions_.first(); pd != NULL; pd = pd->next)
 	{
-		newPartition = partitions_.add();
-		newPartition->copy(pd);
+		newPartitionData = partitions_.add();
+		newPartitionData->copy(pd);
+		newPartitionData->setParent(this);
 	}
 }

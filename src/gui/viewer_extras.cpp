@@ -47,7 +47,7 @@ void Viewer::renderExtras(Model* sourceModel)
 			int colcount = 0;
 
 			for (PartitionData* pd = ps->partitions(); pd != NULL; pd = pd->next)
-			{                       
+			{
 				if (pd->id() == 0) continue;
 
 				// Use first three bits of colcount to set our colour values

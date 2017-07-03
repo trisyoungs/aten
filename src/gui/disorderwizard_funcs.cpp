@@ -26,6 +26,7 @@
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/sysfunc.h"
+#include "methods/partitiondata.h"
 #include "parser/commandnode.h"
 #include "templates/variantpointer.h"
 
@@ -288,7 +289,8 @@ void DisorderWizard::pageChanged(int id)
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
 			{
-				QString text = QString::number(n+1) + " " + partitioningScheme_->partitionName(n);
+				PartitionData* pd = partitioningScheme_->partition(n);
+				QString text = QString::number(n+1) + " " + pd->name();
 				ui.ComponentTargetPartitionCombo->addItem(text);
 			}
 			refreshing_ = false;
