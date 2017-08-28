@@ -23,7 +23,7 @@
 #define ATEN_GAMESSUSEXPORTOPTIONS_H
 
 #include "base/kvmap.h"
-#include "plugins/io_gamessus/ui_gamessexportoptions.h"
+#include "plugins/io_gamessus/ui_gamessusexportoptions.h"
 
 ATEN_USING_NAMESPACE
 

@@ -193,27 +193,34 @@ bool Commands::function_ListModels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Load model from file
 bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	// Parse the first option so we can get the filter nickname and any filter options
-	LineParser parser;
-	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
-	
-	// First part of argument is nickname
-	const FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, parser.argc(0));
+	KVMap pluginOptions;
+	const FilePluginInterface* plugin = NULL;
 
-	// Check that a suitable format was found
-	if (plugin == NULL)
+	// If it exists, parse the second option so we can get the filter nickname and any filter options
+	if (c->hasArg(1))
 	{
-		// Print list of valid plugin nicknames
-		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin);
-		Messenger::print("Not loaded.");
-		return false;
+		LineParser parser;
+		parser.getArgsDelim(Parser::UseQuotes, c->argc(1));
+
+		// First part of argument is nickname
+		plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, parser.argc(0));
+
+		// Check that a suitable format was found
+		if (plugin == NULL)
+		{
+			// Print list of valid plugin nicknames
+			aten_.pluginStore().showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin);
+			Messenger::print("Not loaded.");
+			return false;
+		}
+
+		// Loop over remaining arguments which are options
+		for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 	}
 
-	// Loop over remaining arguments which are widget/global variable assignments
-	KVMap pluginOptions;
-	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
-
-	bool result = aten_.importModel(c->argc(1), plugin, FilePluginStandardImportOptions(), pluginOptions);
+	
+	bool result = aten_.importModel(c->argc(0), plugin, FilePluginStandardImportOptions(), pluginOptions);
+	if (result) rv.set(VTypes::ModelData, aten_.currentModel());
 
 	return result;
 }
