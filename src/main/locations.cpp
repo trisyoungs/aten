@@ -82,6 +82,9 @@ void Aten::setDirectories()
 	atenDirName_ = ".aten";
 #endif
 
+	// Create .aten dir if it doesn't exist
+	if (!homeDir_.exists(atenDirName_)) homeDir_.mkdir(atenDirName_);
+
 	// Working directory
 	workDir_ = getenv("PWD");
 

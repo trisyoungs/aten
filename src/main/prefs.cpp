@@ -166,8 +166,8 @@ bool Aten::savePrefs(QString fileName)
 	QString line;
 	int n, i;
 	LineParser prefsfile;
-	prefsfile.openOutput(fileName, true);
-	if (prefsfile.isFileGoodForWriting())
+
+	if (prefsfile.openOutput(fileName, true) && prefsfile.isFileGoodForWriting())
 	{
 		dumpElementInfo(prefsfile);
 

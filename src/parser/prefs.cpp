@@ -355,6 +355,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			if (hasArrayIndex) rv.set(Prefs::keyAction( ptr->keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
 			else rv.setArray( VTypes::StringData, ptr->keyActionTexts(), Prefs::nModifierKeys);
 			break;
+		case (PreferencesVariable::LabelDepthScaling):
+			rv.set( ptr->labelDepthScaling() );
+			break;
 		case (PreferencesVariable::LabelSize):
 			rv.set( ptr->labelSize() );
 			break;
@@ -680,6 +683,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 				if ((ka != Prefs::nKeyActions) && result) for (n=0; n<Prefs::nKeyActions; ++n) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
 				else { result = false; break; }
 			}
+			break;
+		case (PreferencesVariable::LabelDepthScaling):
+			ptr->setLabelDepthScaling( newValue.asBool() );
 			break;
 		case (PreferencesVariable::LabelSize):
 			ptr->setLabelSize( newValue.asDouble(result) );
