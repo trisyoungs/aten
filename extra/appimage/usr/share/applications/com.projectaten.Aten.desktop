@@ -1,5 +1,5 @@
 [Desktop Entry]
-Version=2.1.6
+Version=2.1.7
 Encoding=UTF-8
 Comment=Aten - Atomic configuration builder and editor
 Exec=aten %f
