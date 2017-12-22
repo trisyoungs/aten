@@ -438,7 +438,7 @@ bool DLPExpressionPlugin::exportData()
 	// First, write header consisting of title, energy units, and number of molecule types
 	if (!fileParser_.writeLine(targetModel()->name())) return false;
 
-	Prefs::EnergyUnit energyUnit = Prefs::KiloJoules;
+	Prefs::EnergyUnit energyUnit = prefs.energyUnit();
 	if (!fileParser_.writeLineF("units %s", Prefs::energyUnit(energyUnit))) return false;
 
 	// Write number of molecule types (number of patterns)
