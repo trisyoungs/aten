@@ -122,6 +122,7 @@ void AtenOpenTrajectory::updateStandardOptionsFromPlugin()
 	if (!plugin) return;
 
 	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));
+	ui.CacheFramesCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CacheAllSwitch));
 	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch));
 	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch));
 	ui.PreventPackingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventPackingSwitch));
