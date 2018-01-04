@@ -197,7 +197,6 @@ void AtenWindow::contextMenuSetAtomLabel(bool checked)
 void AtenWindow::contextMenuProbeAtom(bool checked)
 {
 	if (contextAtom_ != NULL) contextAtom_->print();
-	aten_.currentModelOrFrame()->setViewOrigin(contextAtom_->r());
 }
 
 // Set view origin
