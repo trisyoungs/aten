@@ -1,17 +1,20 @@
 # Meta-Objects
 set(pdb_MOC_HDRS
   pdb.hui
+  pdbexportoptions.h
   pdbimportoptions.h
 )
 QT5_WRAP_CPP(pdb_MOC_SRCS ${pdb_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(pdb_UIS
+ pdbexportoptions.ui 
  pdbimportoptions.ui 
 )
 QT5_WRAP_UI(pdb_UIS_H ${pdb_UIS})
 
 add_library(pdb MODULE
   pdb_funcs.cpp
+  pdbexportoptions_funcs.cpp
   pdbimportoptions_funcs.cpp
   ${pdb_MOC_SRCS}
   ${pdb_UIS_H}

@@ -20,6 +20,7 @@
 */
 
 #include "plugins/io_pdb/pdb.hui"
+#include "plugins/io_pdb/pdbexportoptions.h"
 #include "plugins/io_pdb/pdbimportoptions.h"
 #include "model/model.h"
 #include "base/pattern.h"
@@ -33,6 +34,7 @@ PDBModelPlugin::PDBModelPlugin()
 
 	// Setup plugin options
 	pluginOptions_.add("strictFormat", "true");
+	pluginOptions_.add("useTypeNames", "false");
 }
 
 // Destructor
@@ -118,8 +120,10 @@ bool PDBModelPlugin::importData()
 	// Create default model
 	createModel("PDB Model");
 
-	// Get strict flag, and define strict formats
+	// Get options
 	bool strict = pluginOptions_.value("strictFormat") == "true";
+
+	// Define formats
 	ParseFormat generalFormat("%-6s%r");
 	ParseFormat crystFormat("%9f%9f%9f%7f%7f%7f");
 	ParseFormat atomFormat("%5i %4s              %8f%8f%8f%22*%2s");
@@ -257,6 +261,9 @@ bool PDBModelPlugin::exportData()
 	int molId, n, m, bondCount;
 	QString s;
 
+	// Get plugin options
+	bool useTypeNames = pluginOptions_.value("useTypeNames") == "true";
+
 	if (!fileParser_.writeLine("REMARK Aten-created PDB")) return false;
 	if (!fileParser_.writeLine("TITLE  " + targetModel()->name())) return false;
 
@@ -280,7 +287,9 @@ bool PDBModelPlugin::exportData()
 			{
 				for (n = 0; n < p->nAtoms(); ++n)
 				{
-					s = QString("%1%2").arg(ElementMap::symbol(i)).arg(n);
+					if (useTypeNames && i->type()) s = QString("%1%2").arg(i->type()->name()).arg(n);
+					else s = QString("%1%2").arg(ElementMap::symbol(i)).arg(n);
+
 					if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, qPrintable(s), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
 					i = i->next;
 				}
@@ -289,7 +298,14 @@ bool PDBModelPlugin::exportData()
 	}
 	else for (i = targetModel()->atoms(); i != NULL; i = i->next)
 	{
-		if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, ElementMap::symbol(i), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
+		if (useTypeNames && i->type())
+		{
+			if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, qPrintable(i->type()->name()), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
+		}
+		else
+		{
+			if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, ElementMap::symbol(i), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
+		}
 	}
 
 	// Loop over atoms and write bond information
@@ -365,12 +381,14 @@ bool PDBModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 // Return whether the plugin has export options
 bool PDBModelPlugin::hasExportOptions() const
 {
-	return false;
+	return true;
 }
 
 // Show export options dialog
 bool PDBModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	return false;
+	PDBExportOptionsDialog optionsDialog(targetOptions);
+
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
  
