@@ -338,6 +338,27 @@ class FilePluginInterface : public BasePluginInterface
 
 		return i;
 	}
+	// Set element of specified Atom from supplied string, obeying current zmapping / conversion rules
+	int setAtomElement(Model* model, Atom* i, QString name)
+	{
+		// Find element in elements map
+		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
+
+		// Set data in atom
+		i->setData(qPrintable(name));
+
+		// KeepNames and KeepTypes standard options
+		ForcefieldAtom* ffa = NULL;
+		if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch)) ffa = model->addAtomName(el, name);
+		else if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch)) ffa = ElementMap::forcefieldAtom(name);
+		if (ffa != NULL)
+		{
+			i->setType(ffa);
+			i->setTypeFixed(true);
+		}
+
+		return el;
+	}
 	// Clear any created data
 	void clearCreatedData()
 	{

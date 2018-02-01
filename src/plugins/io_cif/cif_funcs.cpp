@@ -159,7 +159,7 @@ bool CIFModelPlugin::importData()
 						case (CIFModelPlugin::AtomSiteTypeSymbol):
 						case (CIFModelPlugin::AtomSiteLabel):
 						case (CIFModelPlugin::ChemCompAtomTypeSymbol):
-							if (i->element() == 0) i->setElement(ElementMap::find(fileParser_.argc(n)));
+							if (i->element() == 0) setAtomElement(targetModel(), i, fileParser_.argc(n));
 							break;
 						case (CIFModelPlugin::AtomSiteFractX):
 						case (CIFModelPlugin::AtomSiteFractY):
