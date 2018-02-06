@@ -7,13 +7,12 @@ COMMITMSG="none"
 COMMITTYPE="none"
 BUMP="false"
 PUSH="false"
-ALL="false"
-FLAGS="-a"
+ALL="true"
 
 # Parse CLI arguments / options
-USAGE1="commit [-F <filename>] [-m <text>] [-p] [-b]"
+USAGE1="commit [-F <filename>] [-m <text>] [-p] [-b] [-o]"
 
-while getopts "F:m:bpn" options; do
+while getopts "F:m:bpo" options; do
   case $options in
     F ) COMMITFILE=$OPTARG
 	COMMITTYPE="file"
@@ -23,16 +22,23 @@ while getopts "F:m:bpn" options; do
         echo "Using supplied text for commit message.";;
     b ) BUMP="true"
 	echo "Version (patch) number will be bumped.";;
+    o ) ALL="false"
+	echo "Only specific changes will be committed.";;
     p ) PUSH="true"
 	echo "Files will be committed and local changes pushed to server.";;
-    n ) FLAGS=""
-	echo "Manual mode enabled - no changes will be added automatically to the commit.";;
     \? ) echo -e $USAGE1
          exit 1;;
     * ) echo -e $USAGE1
         exit 1;;
   esac
 done
+
+# Set up flags to pass
+FLAGS=""
+if [ "$ALL" = "true" ]
+then
+  FLAGS="$FLAGS -a"
+fi
 
 # Check that a commit type was given
 if [ "$COMMITTYPE" = "none" ]
