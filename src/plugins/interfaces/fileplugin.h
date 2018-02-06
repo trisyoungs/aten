@@ -344,6 +344,8 @@ class FilePluginInterface : public BasePluginInterface
 		// Find element in elements map
 		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
 
+		model->transmuteAtom(i, el);
+
 		// Set data in atom
 		i->setData(qPrintable(name));
 
