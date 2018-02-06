@@ -286,6 +286,7 @@ bool Atom::copy(Atom* source)
 	fixedPosition_ = source->fixedPosition_;
 	for (int n=0; n<4; ++n) colour_[n] = source->colour_[n];
 	hidden_ = source->hidden_;
+	setData(source->data_);
 	// Do NOT copy selection or marked state (set to false)
 	selected_ = false;
 	marked_ = false;
