@@ -1,7 +1,7 @@
 /*
 	*** DL_POLY_4 Import Options Dialog
 	*** src/plugins/io_dlpoly/dlp4importoptions.h
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
   Copyright A. M. Elena 2016-2016
 
 	This file is part of Aten.

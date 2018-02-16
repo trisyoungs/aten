@@ -1,7 +1,7 @@
 /*
         *** MOL2 Model Plugin Functions
         *** src/plugins/io_sybylmol2/mol2_funcs.cpp
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

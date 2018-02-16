@@ -1,7 +1,7 @@
 /*
 	*** Partition Cell DataScheme
 	*** src/methods/partitioncelldata.h
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
 
 	This file is part of Aten.
 

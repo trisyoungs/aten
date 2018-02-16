@@ -1,7 +1,7 @@
 /*
 	*** Popup Widget - Transmute Functions
 	*** src/gui/popupbuildtransmute_funcs.cpp
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
 
 	This file is part of Aten.
 

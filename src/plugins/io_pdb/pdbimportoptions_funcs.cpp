@@ -1,7 +1,7 @@
 /*
 	*** PDB Import Options Functions
 	*** src/gui/io_pdb/pdbimportoptions_funcs.cpp
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
 
 	This file is part of Aten.
 

@@ -1,7 +1,7 @@
 /*
         *** MOPAC7.1 Method Plugin Functions
         *** src/plugins/method_mopac71/mopac71_funcs.cpp
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

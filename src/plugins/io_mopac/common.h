@@ -1,7 +1,7 @@
 /*
         *** Common functions for MOPAC plugins
         *** src/plugins/io_mopac/common.h
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

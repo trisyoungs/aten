@@ -1,7 +1,7 @@
 /*
         *** CSD Model Plugin Functions
         *** src/plugins/io_csd/csd_funcs.cpp
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

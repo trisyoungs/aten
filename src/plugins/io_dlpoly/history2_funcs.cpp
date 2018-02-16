@@ -1,7 +1,7 @@
 /*
 	*** DL_POLY_2 Trajectory Plugin Functions
 	*** src/plugins/io_dlpoly/history2_funcs.cpp
-	Copyright T. Youngs 2016-2017
+	Copyright T. Youngs 2016-2018
 	Copyright A.M. Elena 2016-2016
 
 	This file is part of Aten.

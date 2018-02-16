@@ -1,7 +1,7 @@
 /*
         *** RMCProfile V6 Bonds File Plugin Functions
         *** src/plugins/io_rmcprofile/rmcp6bonds_funcs.cpp
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

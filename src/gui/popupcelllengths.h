@@ -1,7 +1,7 @@
 /*
 	*** Popup Widget - Cell Lengths
 	*** src/gui/popupcelllengths.h
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
 
 	This file is part of Aten.
 

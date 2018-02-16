@@ -1,7 +1,7 @@
 /*
 	*** Popup Widget - Grid Colour Select
 	*** src/gui/popupgridcolour.h
-	Copyright T. Youngs 2016-2017
+	Copyright T. Youngs 2016-2018
 
 	This file is part of Aten.
 

@@ -1,7 +1,7 @@
 /*
 	*** Popup Widget - Forcefields Assign Functions
 	*** src/gui/popupforcefieldsassign_funcs.cpp
-	Copyright T. Youngs 2007-2017
+	Copyright T. Youngs 2007-2018
 
 	This file is part of Aten.
 

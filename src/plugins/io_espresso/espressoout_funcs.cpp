@@ -1,7 +1,7 @@
 /*
         *** QuantumEspresso Output Import Plugin Functions
         *** src/plugins/io_espresso/espressoout_funcs.cpp
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     

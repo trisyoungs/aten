@@ -1,7 +1,7 @@
 /*
         *** Plugin Base Interface
         *** src/plugins/interfaces/baseplugin.h
-        Copyright T. Youngs 2016-2017
+        Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
     
