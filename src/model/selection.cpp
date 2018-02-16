@@ -321,7 +321,7 @@ void Model::reorderSelectedAtoms()
 
 		// Create a basic NETA description for this atom, with a 10 degree tolerance on the torsions
 		neta = rj->data.add();
-		neta->createBasic(rj->item, false, 10.0);
+		neta->createBasic(rj->item, true, 10.0);
 	}
 
 	// Test the atom types...
@@ -395,7 +395,7 @@ void Model::reorderSelectedAtoms()
 						else
 						{
 							neta = rj->data.add();
-							neta->createBasic(rj->item, false, rj->data.nItems() * 10.0);
+							neta->createBasic(rj->item, true, rj->data.nItems() * 10.0);
 							Messenger::print("Created neta for reference atom %i with torsion tolerance of %f", referenceId, rj->data.nItems()*10.0);
 						}
 					}
