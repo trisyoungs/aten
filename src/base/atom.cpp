@@ -492,6 +492,9 @@ void Atom::setData(const char* data)
 	// Delete any old data and set new
 	if (data_ != NULL) delete[] data_;
 	data_ = NULL;
+	if (data == NULL) return;
+
+	// Now copy data
 	int len = strlen(data);
 	if (len == 0) return;
 	data_ = new char[len+1];
