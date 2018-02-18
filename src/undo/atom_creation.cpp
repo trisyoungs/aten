@@ -56,6 +56,7 @@ void AtomCreationEvent::undo(Model* m)
 	Messenger::enter("AtomCreationEvent::undo");
 	Atom** modelatoms = m->atomArray();
 	int id;
+
 	// Atom creation (UndoEvent::Redo) and deletion (UndoEvent::Undo)
 	if (direction_ == UndoEvent::Undo)
 	{

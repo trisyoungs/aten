@@ -253,12 +253,7 @@ Atom** Model::atomArray()
 void Model::clearAtoms()
 {
 	Messenger::enter("Model::clearAtoms");
-	Atom* i = atoms_.first();
-	while (i != NULL)
-	{
-		deleteAtom(i, true);
-		i = atoms_.first();
-	}
+	while (Atom *i = atoms_.last()) deleteAtom(i, true);
 	Messenger::exit("Model::clearAtoms");
 }
 

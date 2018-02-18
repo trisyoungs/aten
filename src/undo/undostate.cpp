@@ -118,5 +118,5 @@ bool UndoState::doLogsDiffer() const
 // Print changes in state
 void UndoState::print() const
 {
-	for (UndoEvent* u = events_.first(); u != NULL; u = u->prev) u->print();
+	for (UndoEvent* u = events_.first(); u != NULL; u = u->next) u->print();
 }

@@ -506,6 +506,7 @@ void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>&
 	}
 
 	logChange(Log::Structure);
+
 	Messenger::exit("Model::replicateCell");
 }
 
