@@ -29,7 +29,7 @@ _Syntax:_
 
 [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **addAngle** ( **string** _form_, **string** _type_i_, **string** _type_j_, **string** _type_k_, **double** _data1_>, ... )
 
-Create a new angle definition in the forcefield. See the [angleDef](/aten/docs/scripting/commands/ff/angledef) command for a full description.
+Create a new angle definition in the forcefield. See the [angleDef](/aten/docs/scripting/commands/ff#angledef) command for a full description.
 
 ---
 
@@ -39,7 +39,7 @@ _Syntax:_
 
 [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **addBond** ( **string** _form_, **string** _type_i_, **string** _type_j_, **double** _data1_, ... ) 
 
-Create a new bond definition in the forcefield. See the [bondDef](/aten/docs/scripting/commands/ff/bonddef) command for a full description.
+Create a new bond definition in the forcefield. See the [bondDef](/aten/docs/scripting/commands/ff#bonddef) command for a full description.
 
 ---
 
@@ -49,7 +49,7 @@ _Syntax:_
 
 [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **addInter** ( **string** _form_, **int** _typeid_, **double** _charge_, **double** _data1_, ... ) 
 
-Create a new interatomic definition in the forcefield. See the [interDef](/aten/docs/scripting/commands/ff/interdef) command for a full description.
+Create a new interatomic definition in the forcefield. See the [interDef](/aten/docs/scripting/commands/ff#interdef) command for a full description.
 
 ---
 
@@ -59,7 +59,7 @@ _Syntax:_
 
 [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **addTorsion** ( **string** _form_, **string** _type_i_, **string** _type_j_, **string** _type_k_, **string** _type_l_, **double** _data1_, ... ) 
 
-Create a new torsion definition in the forcefield. See the [torsionDef](/aten/docs/scripting/commands/ff/torsiondef) command for a full description.
+Create a new torsion definition in the forcefield. See the [torsionDef](/aten/docs/scripting/commands/ff#torsiondef) command for a full description.
 
 ---
 
@@ -69,7 +69,7 @@ _Syntax:_
 
 [**FFAtom**](/aten/docs/scripting/variabletypes/ffatom) **addType** ( **int** _typeid_, **string** _name_, **string** _equiv_, **string|int** _element_, **string** _neta_, **string** _description_ = &quot;&quot; ) 
 
-Create a new type definition in the forcefield. See the [typeDef](/aten/docs/scripting/commands/ff/typedef) command for a full description.
+Create a new type definition in the forcefield. See the [typeDef](/aten/docs/scripting/commands/ff#typedef) command for a full description.
 
 ---
 
@@ -79,7 +79,7 @@ _Syntax:_
 
 **void** **finalise** ( )
 
-Finalise the forcefield. See the [finaliseFF](/aten/docs/scripting/commands/ff/finaliseff) command for a full description.
+Finalise the forcefield. See the [finaliseFF](/aten/docs/scripting/commands/ff#finaliseff) command for a full description.
 
 ---
 
