@@ -38,6 +38,8 @@ PlotData& PlotData::operator=(const PlotData& source)
 	title_ = source.title_;
 	x_ = source.x_;
 	y_ = source.y_;
+
+	return (*this) ;
 }
 
 // Set titles for data and axes

@@ -98,6 +98,8 @@ QCPGraph* TPlotWidget::addData(PlotData& source, PlotDataStyle::DataStyle style)
 	graph->setBrush(brush);
 
 	plot_->replot();
+
+	return graph;
 }
 
 // Add the specified data source as a bar chart to the QCustomPlot
@@ -124,6 +126,8 @@ QCPBars* TPlotWidget::addBarsData(PlotData& source, bool group, PlotDataStyle::D
 	}
 
 	plot_->replot();
+
+	return graph;
 }
 
 /*
