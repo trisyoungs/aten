@@ -91,6 +91,12 @@ class FileParser
 		variable = parser_.line();
 		return (result == 0);
 	}
+	// Read next delimited argument from file
+	bool readArg(QString& variable)
+	{
+		if (!parser_.getNextArg(Parser::Defaults, variable)) return false;
+		return true;
+	}
 	// Read next line from file into the variable supplied, and parse it as well
 	bool readAndParseLine(QString& variable)
 	{
