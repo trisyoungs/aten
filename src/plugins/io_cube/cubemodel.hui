@@ -1,6 +1,6 @@
 /*
-        *** Cube Grid File Plugin
-        *** src/plugins/io_cube/cube.hui
+        *** Cube Model File Plugin
+        *** src/plugins/io_cube/cubemodel.hui
         Copyright T. Youngs 2016-2018
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CUBEGRIDPLUGIN_H
-#define ATEN_CUBEGRIDPLUGIN_H
+#ifndef ATEN_CUBEMODELPLUGIN_H
+#define ATEN_CUBEMODELPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
 
@@ -29,8 +29,8 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 /* none */
 
-// Cube Grid Plugin
-class CubeGridPlugin : public QObject, public FilePluginInterface
+// Cube Model Plugin
+class CubeModelPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
@@ -39,9 +39,9 @@ class CubeGridPlugin : public QObject, public FilePluginInterface
 
 	public:
 	// Constructor
-	CubeGridPlugin();
+	CubeModelPlugin();
 	// Destructor
-	~CubeGridPlugin();
+	~CubeModelPlugin();
 
 
 	/*

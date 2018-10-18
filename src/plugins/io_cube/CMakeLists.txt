@@ -1,3 +1,26 @@
+### Cube Model
+
+# Meta-Objects
+set(cubemodel_MOC_HDRS
+  cubemodel.hui
+)
+QT5_WRAP_CPP(cubemodel_MOC_SRCS ${cubemodel_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+add_library(cubemodel MODULE
+  cubemodel_funcs.cpp
+  ${cube_MOC_SRCS}
+)
+target_link_libraries(cubemodel
+  ${PLUGIN_LINK_LIBS}
+)
+set_target_properties(cubemodel PROPERTIES
+   LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
+   COMPILE_DEFINITIONS "QT_PLUGIN"
+   PREFIX ""
+)
+
+#### Cube
+
 # Meta-Objects
 set(cube_MOC_HDRS
   cube.hui
@@ -17,6 +40,9 @@ set_target_properties(cube PROPERTIES
    PREFIX ""
 )
 
+# Install Targets
+
+# Install Targets
 if(UNIX AND NOT APPLE)
 install(TARGETS cube
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
