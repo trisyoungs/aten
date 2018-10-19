@@ -22,6 +22,6 @@
 #ifndef ATEN_VERSION_H
 #define ATEN_VERSION_H
 
-#define ATENVERSION "2.1.8"
+#define ATENVERSION "2.1.9"
 
 #endif
