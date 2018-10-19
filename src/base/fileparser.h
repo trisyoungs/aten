@@ -92,9 +92,21 @@ class FileParser
 		return (result == 0);
 	}
 	// Read next delimited argument from file
-	bool readArg(QString& variable)
+	bool readNextArg(QString& variable)
 	{
+		// If we are at the end of the current line, read in the next...
+		if (parser_.atEndOfLine())
+		{
+			if (parser_.readNextLine(Parser::Defaults) != 0)
+			{
+				variable.clear();
+				return false;
+			}
+		}
+
+		// Get next argument from current line
 		if (!parser_.getNextArg(Parser::Defaults, variable)) return false;
+
 		return true;
 	}
 	// Read next line from file into the variable supplied, and parse it as well
