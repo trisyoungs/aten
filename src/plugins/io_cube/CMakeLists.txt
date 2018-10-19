@@ -19,6 +19,12 @@ set_target_properties(cubemodel PROPERTIES
    PREFIX ""
 )
 
+target_include_directories(cubemodel PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
+
 #### Cube
 
 # Meta-Objects
@@ -52,7 +58,6 @@ endif(UNIX AND NOT APPLE)
 
 target_include_directories(cube PRIVATE
   ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
 )
