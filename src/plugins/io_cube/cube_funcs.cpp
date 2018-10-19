@@ -1,5 +1,5 @@
 /*
-        *** CUBE Model Plugin Functions
+        *** Cube Plugin Functions
         *** src/plugins/io_cube/cube_funcs.cpp
         Copyright T. Youngs 2016-2018
 
@@ -23,12 +23,12 @@
 #include "model/model.h"
 
 // Constructor
-CUBEModelPlugin::CUBEModelPlugin()
+CubeGridPlugin::CubeGridPlugin()
 {
 }
 
 // Destructor
-CUBEModelPlugin::~CUBEModelPlugin()
+CubeGridPlugin::~CubeGridPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ CUBEModelPlugin::~CUBEModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* CUBEModelPlugin::makeCopy() const
+BasePluginInterface* CubeGridPlugin::makeCopy() const
 {
-	return new CUBEModelPlugin;
+	return new CubeGridPlugin;
 }
 
 /*
@@ -47,49 +47,49 @@ BasePluginInterface* CUBEModelPlugin::makeCopy() const
  */
 
 // Return type of plugin
-PluginTypes::PluginType CUBEModelPlugin::type() const
+PluginTypes::PluginType CubeGridPlugin::type() const
 {
 	return PluginTypes::FilePlugin;
 }
 
 // Return category of plugin
-int CUBEModelPlugin::category() const
+int CubeGridPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
-QString CUBEModelPlugin::name() const
+QString CubeGridPlugin::name() const
 {
-	return QString("CUBE (dlputils) 3D probability density");
+	return QString("Cube (dlputils) 3D probability density");
 }
 
 // Nickname of plugin
-QString CUBEModelPlugin::nickname() const
+QString CubeGridPlugin::nickname() const
 {
 	return QString("cube");
 }
 
 // Return whether the plugin is enabled
-bool CUBEModelPlugin::enabled() const
+bool CubeGridPlugin::enabled() const
 {
 	return true;
 }
 
 // Description (long name) of plugin
-QString CUBEModelPlugin::description() const
+QString CubeGridPlugin::description() const
 {
-	return QString("Import/export for dlputils CUBE files");
+	return QString("Import/export for cube files");
 }
 
 // Related file extensions
-QStringList CUBEModelPlugin::extensions() const
+QStringList CubeGridPlugin::extensions() const
 {
 	return QStringList() << "cube";
 }
 
 // Exact names
-QStringList CUBEModelPlugin::exactNames() const
+QStringList CubeGridPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -99,15 +99,15 @@ QStringList CUBEModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool CUBEModelPlugin::canImport() const
+bool CubeGridPlugin::canImport() const
 {
 	return true;
 }
 
 // Import data from the specified file
-bool CUBEModelPlugin::importData()
+bool CubeGridPlugin::importData()
 {
-//filter(type="importmodel", name="Gaussian CUBE", nickname="cube", extension="cube", glob="*.cube", zmap="numeric")
+//filter(type="importmodel", name="Gaussian Cube", nickname="cube", extension="cube", glob="*.cube", zmap="numeric")
 //{
 //	# Variable declaration
 //	string e,title;
@@ -163,7 +163,7 @@ bool CUBEModelPlugin::importData()
 //	finaliseGrid();
 //}
 //
-//filter(type="importgrid", name="Gaussian CUBE", nickname="cube", extension="cube", glob="*.cube", zmap="numeric", id=1)
+//filter(type="importgrid", name="Gaussian Cube", nickname="cube", extension="cube", glob="*.cube", zmap="numeric", id=1)
 //{
 //	# Variable declaration
 //	string e,title;
@@ -213,25 +213,25 @@ bool CUBEModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool CUBEModelPlugin::canExport() const
+bool CubeGridPlugin::canExport() const
 {
 	return false;
 }
 
 // Export data to the specified file
-bool CUBEModelPlugin::exportData()
+bool CubeGridPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool CUBEModelPlugin::importNextPart()
+bool CubeGridPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool CUBEModelPlugin::skipNextPart()
+bool CubeGridPlugin::skipNextPart()
 {
 	return false;
 }
@@ -241,25 +241,25 @@ bool CUBEModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool CUBEModelPlugin::hasImportOptions() const
+bool CubeGridPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool CUBEModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
+bool CubeGridPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool CUBEModelPlugin::hasExportOptions() const
+bool CubeGridPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool CUBEModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
+bool CubeGridPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

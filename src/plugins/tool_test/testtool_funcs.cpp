@@ -144,6 +144,8 @@ bool TestToolPlugin::showDialog()
 	}
 	testToolDialog->applyPluginOptions();
 	testToolDialog->exec();
+
+	return true;
 }
 
 // Run the tool with the current settings

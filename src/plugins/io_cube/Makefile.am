@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = cube.la
+pluginexec_LTLIBRARIES = cube.la cubemodel.la
 
 # Rules
 .ui.lo:
@@ -18,8 +18,12 @@ pluginexec_LTLIBRARIES = cube.la
 clean-local:
 	-rm -f cube.cpp
 
-# AKF Model plugin
+# Cube Model plugin
 cube_la_SOURCES = cube_funcs.cpp cube.hui
 cube_la_LDFLAGS = -module -shared -avoid-version
+
+# Cube Model plugin
+cubemodel_la_SOURCES = cubemodel_funcs.cpp cubemodel.hui
+cubemodel_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
