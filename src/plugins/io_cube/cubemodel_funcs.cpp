@@ -61,7 +61,7 @@ int CubeModelPlugin::category() const
 // Name of plugin
 QString CubeModelPlugin::name() const
 {
-	return QString("Cube (dlputils) 3D probability density");
+	return QString("Gaussian cube file (including atomic coordinate data)");
 }
 
 // Nickname of plugin
@@ -79,7 +79,7 @@ bool CubeModelPlugin::enabled() const
 // Description (long name) of plugin
 QString CubeModelPlugin::description() const
 {
-	return QString("Import/export for dlputils Cube files");
+	return QString("Import/export for Gaussian-format cube files");
 }
 
 // Related file extensions
@@ -123,9 +123,11 @@ bool CubeModelPlugin::importData()
 	nXYZ.x = fileParser_.argi(0);
 	double xFactor = nXYZ.x < 0 ? 1.0 : ANGBOHR;
 	Vec3<double> xAxis = fileParser_.arg3d(1);
+	if (!fileParser_.parseLine()) return false;
 	nXYZ.y = fileParser_.argi(0);
 	double yFactor = nXYZ.y < 0 ? 1.0 : ANGBOHR;
 	Vec3<double> yAxis = fileParser_.arg3d(1);
+	if (!fileParser_.parseLine()) return false;
 	nXYZ.z  = fileParser_.argi(0);
 	double zFactor = nXYZ.z < 0 ? 1.0 : ANGBOHR;
 	Vec3<double> zAxis = fileParser_.arg3d(1);
@@ -140,7 +142,7 @@ bool CubeModelPlugin::importData()
 	{
 		if (!fileParser_.parseLine()) return false;
 
-		r = fileParser_.arg3d(1);
+		r = fileParser_.arg3d(2);
 		r.x *= xFactor;
 		r.y *= yFactor;
 		r.z *= zFactor;
@@ -165,6 +167,7 @@ bool CubeModelPlugin::importData()
 	axes.setColumn(1, yAxis * yFactor, 0.0);
 	axes.setColumn(2, zAxis * zFactor, 0.0);
 	grid->setAxes(axes);
+	axes.print();
 
 	// Read in volumetric data
 	QString arg;
@@ -174,7 +177,7 @@ bool CubeModelPlugin::importData()
 		{
 			for (int k=0; k<nXYZ.z; ++k)
 			{
-				if (!fileParser_.readArg(arg))
+				if (!fileParser_.readNextArg(arg))
 				{
 					Messenger::error("Failed to read grid point (%i,%i,%i) from cube file.\n", i+1, j+1, k+1);
 					return false;

@@ -55,13 +55,13 @@ PluginTypes::PluginType CubeGridPlugin::type() const
 // Return category of plugin
 int CubeGridPlugin::category() const
 {
-	return PluginTypes::ModelFilePlugin;
+	return PluginTypes::GridFilePlugin;
 }
 
 // Name of plugin
 QString CubeGridPlugin::name() const
 {
-	return QString("Cube (dlputils) 3D probability density");
+	return QString("Gaussian cube");
 }
 
 // Nickname of plugin
@@ -79,7 +79,7 @@ bool CubeGridPlugin::enabled() const
 // Description (long name) of plugin
 QString CubeGridPlugin::description() const
 {
-	return QString("Import/export for cube files");
+	return QString("Import for Gaussian cube files");
 }
 
 // Related file extensions
@@ -107,108 +107,66 @@ bool CubeGridPlugin::canImport() const
 // Import data from the specified file
 bool CubeGridPlugin::importData()
 {
-//filter(type="importmodel", name="Gaussian Cube", nickname="cube", extension="cube", glob="*.cube", zmap="numeric")
-//{
-//	# Variable declaration
-//	string e,title;
-//	int natoms,nx,ny,nz,i,j,k;
-//	vector origin, x,y,z;
-//	double rx,ry,rz,data;
-//
-//	# Since we must create the model first, and then set all grid date afterwards,
-//	# store all grid-related values for later until we've finalised the model.
-//
-//	# Lines 1-2: Comments (use first as title)
-//	getLine(title);
-//	skipLine();
-//
-//	# Line 3: Number of atoms and coordinate origin of surface
-//	readLine(natoms, origin.x, origin.y, origin.z);
-//
-//	# Lines 4-6: Number of voxels and axis vector
-//	readLine(nx, x.x, x.y, x.z);
-//	readLine(ny, y.x, y.y, y.z);
-//	readLine(nz, z.x, z.y, z.z);
-//
-//	# Lines 7-(7+natoms) Molecule Definition
-//	newModel(title);
-//	for (i=0; i<natoms; ++i)
-//	{
-//		readLineF("%s%*%f%f%f", e, rx ,ry ,rz);
-//		newAtom(e, rx, ry, rz);
-//	}
-//	finaliseModel();
-//	rebond();
-//
-//	# Create a grid associated to this model, and set it up with data we read previously
-//	newGrid(title);
-//	initGrid("regularxyz",nx,ny,nz);
-//	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
-//	printf("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
-//	gridOrigin(origin.x, origin.y, origin.z);
-//	gridAxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
-//
-//	# Volumetric data (five points per line)
-//	for (i=1; i<=nx; ++i)
-//	{
-//		for (j=1; j<=ny; ++j)
-//		{
-//			for (k=1; k<=nz; ++k)
-//			{
-//				if (!nextArg(data)) error("Error reading point {%i,%i,%i} from file.\n", i,j,k);
-//				addGridPoint(i, j, k, data);
-//			}
-//		}
-//	}
-//	finaliseGrid();
-//}
-//
-//filter(type="importgrid", name="Gaussian Cube", nickname="cube", extension="cube", glob="*.cube", zmap="numeric", id=1)
-//{
-//	# Variable declaration
-//	string e,title;
-//	int natoms,nx,ny,nz,i,j,k;
-//	vector origin, x,y,z;
-//	double data;
-//
-//	# Lines 1-2: Comments (use first as title)
-//	getLine(title);
-//	skipLine();
-//
-//	# Line 3: Number of atoms and coordinate origin of surface
-//	readLine(natoms, origin.x, origin.y, origin.z);
-//
-//	# Lines 4-6: Number of voxels and axis vector
-//	readLine(nx, x.x, x.y, x.z);
-//	readLine(ny, y.x, y.y, y.z);
-//	readLine(nz, z.x, z.y, z.z);
-//
-//	# Lines 7-(7+natoms) Molecule Definition
-//	skipLine(natoms);
-//
-//	# Create a grid associated to this model, and set it up with data we read previously
-//	newGrid(title);
-//	initGrid("regularxyz",nx,ny,nz);
-//	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
-//	printf("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
-//	gridOrigin(origin.x, origin.y, origin.z);
-//	gridAxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
-//
-//	# Volumetric data (five points per line)
-//	for (i=1; i<=nx; ++i)
-//	{
-//		for (j=1; j<=ny; ++j)
-//		{
-//			for (k=1; k<=nz; ++k)
-//			{
-//				if (!nextArg(data)) error("Error reading point {%i,%i,%i} from file.\n", i,j,k);
-//				addGridPoint(i, j, k, data);
-//			}
-//		}
-//	}
-//	finaliseGrid();
-//}
-//
+	// Lines 1-2: Comments (use first as title)
+	QString name;
+	if (!fileParser_.readLine(name)) return false;
+	fileParser_.skipLines(1);
+
+	// Line 3: Number of atoms and coordinate origin of surface
+	if (!fileParser_.parseLine()) return false;
+	int nAtoms = fileParser_.argi(0);
+	Vec3<double> origin = fileParser_.arg3d(1);
+
+	// Lines 4-6: Number of voxels and axis vector
+	Vec3<int> nXYZ;
+	if (!fileParser_.parseLine()) return false;
+	nXYZ.x = fileParser_.argi(0);
+	double xFactor = nXYZ.x < 0 ? 1.0 : ANGBOHR;
+	Vec3<double> xAxis = fileParser_.arg3d(1);
+	nXYZ.y = fileParser_.argi(0);
+	double yFactor = nXYZ.y < 0 ? 1.0 : ANGBOHR;
+	Vec3<double> yAxis = fileParser_.arg3d(1);
+	nXYZ.z  = fileParser_.argi(0);
+	double zFactor = nXYZ.z < 0 ? 1.0 : ANGBOHR;
+	Vec3<double> zAxis = fileParser_.arg3d(1);
+
+	// Lines 7-(7+natoms) Molecule Definition (SKIP)
+	fileParser_.skipLines(nAtoms);
+
+	// Create new grid in the target model
+	Grid* grid = createGrid(targetModel());
+	grid->setName(fileParser_.filename());
+
+	grid->initialise(Grid::RegularXYZData, nXYZ);
+	Messenger::print("Grid size (points) is : {%i,%i,%i}\n", nXYZ.x, nXYZ.y, nXYZ.z);
+	Messenger::print("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
+
+	grid->setOrigin(origin);
+	Matrix axes;
+	axes.setColumn(0, xAxis * xFactor, 0.0);
+	axes.setColumn(1, yAxis * yFactor, 0.0);
+	axes.setColumn(2, zAxis * zFactor, 0.0);
+	grid->setAxes(axes);
+
+	// Read in volumetric data
+	QString arg;
+	for (int i=0; i<nXYZ.x; ++i)
+	{
+		for (int j=0; j<nXYZ.y; ++j)
+		{
+			for (int k=0; k<nXYZ.z; ++k)
+			{
+				if (!fileParser_.readNextArg(arg))
+				{
+					Messenger::error("Failed to read grid point (%i,%i,%i) from cube file.\n", i+1, j+1, k+1);
+					return false;
+				}
+
+				grid->setNextData(arg.toDouble());
+			}
+		}
+	}
+
 	return true;
 }
 
