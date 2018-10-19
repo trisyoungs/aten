@@ -202,6 +202,8 @@ class LineParser
 	float argf(int i);
 	// Returns whether the specified argument exists
 	bool hasArg(int i) const;
+	// Return whether we are at the end of the current line
+	bool atEndOfLine() const;
 };
 
 ATEN_END_NAMESPACE

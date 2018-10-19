@@ -389,12 +389,6 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 	// Clear destination argument
 	destArg.clear();
 
-	if (endOfLine_)
-	{
-// 		printf("Lineparser is at end of line - returning...\n");
-		return true;
-	}
-
 	while (linePos_ < lineLength_)
 	{
 		c = line_.at(linePos_).toLatin1();
@@ -1222,4 +1216,10 @@ bool LineParser::hasArg(int i) const
 {
 	if ((i < 0) || (i >= nArgs())) return false;
 	return true;
+}
+
+// Return whether we are at the end of the current line
+bool LineParser::atEndOfLine() const
+{
+	return endOfLine_;
 }
