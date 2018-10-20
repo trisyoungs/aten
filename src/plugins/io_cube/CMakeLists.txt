@@ -8,7 +8,7 @@ QT5_WRAP_CPP(cubemodel_MOC_SRCS ${cubemodel_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE
 
 add_library(cubemodel MODULE
   cubemodel_funcs.cpp
-  ${cube_MOC_SRCS}
+  ${cubemodel_MOC_SRCS}
 )
 target_link_libraries(cubemodel
   ${PLUGIN_LINK_LIBS}
