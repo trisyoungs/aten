@@ -8,7 +8,7 @@ QT5_WRAP_CPP(cubemodel_MOC_SRCS ${cubemodel_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE
 
 add_library(cubemodel MODULE
   cubemodel_funcs.cpp
-  ${cube_MOC_SRCS}
+  ${cubemodel_MOC_SRCS}
 )
 target_link_libraries(cubemodel
   ${PLUGIN_LINK_LIBS}
@@ -17,6 +17,12 @@ set_target_properties(cubemodel PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
    PREFIX ""
+)
+
+target_include_directories(cubemodel PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
 )
 
 #### Cube
@@ -52,7 +58,6 @@ endif(UNIX AND NOT APPLE)
 
 target_include_directories(cube PRIVATE
   ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
 )
