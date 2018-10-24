@@ -108,12 +108,12 @@ echo -n "        aten.iss (Output Filename) : "
 grep 'OutputBaseFilename' extra/Win32/aten.iss | sed -e 's/OutputBaseFilename=Aten-\([0-9\.]*\)/\1/g'
 
 # AppImage build files
-if [ "$TEST" = "false" ]
-then
-  sed -i -e "s/Version=[0-9\.]*/Version=$MAJOR.$MINOR.$PATCH/g" extra/appimage/usr/share/applications/com.projectaten.Aten.desktop
-fi
-echo -n "appimage.desktop (Program Version) : "
-grep 'Version=' extra/appimage/usr/share/applications/com.projectaten.Aten.desktop | sed -e 's/Version=\([0-9\.]*\)/\1/g'
+#if [ "$TEST" = "false" ]
+#then
+#  sed -i -e "s/Version=[0-9\.]*/Version=$MAJOR.$MINOR.$PATCH/g" extra/appimage/usr/share/applications/com.projectaten.Aten.desktop
+#fi
+#echo -n "appimage.desktop (Program Version) : "
+#grep 'Version=' extra/appimage/usr/share/applications/com.projectaten.Aten.desktop | sed -e 's/Version=\([0-9\.]*\)/\1/g'
 
 exit 0
 
