@@ -150,6 +150,7 @@ bool CubeGridPlugin::importData()
 
 	// Read in volumetric data
 	QString arg;
+	grid->setLoopOrder("zyx");
 	for (int i=0; i<nXYZ.x; ++i)
 	{
 		for (int j=0; j<nXYZ.y; ++j)
