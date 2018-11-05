@@ -104,8 +104,16 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 				range = false;
 				from = parser.argc(arg);
 				if (!from.contains('+')) plus = 0;
-				else if (from.at(0) == '+') plus = -1;
-				else if (from.at(from.length()-1) == '+') plus = 1;
+				else if (from.at(0) == '+')
+				{
+					plus = -1;
+					from.remove(0,1);
+				}
+				else if (from.at(from.size()-1) == '+')
+				{
+					plus = 1;
+					from.chop(1);
+				}
 				else
 				{
 					if (!testQuietly) Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.", qPrintable(from));
@@ -124,8 +132,8 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 					if (!testQuietly)
 					{
 						if (plus == 0) (deselect ? deselectAtom(i-1) : selectAtom(i-1));
-						else if (plus == -1) for (n=0; n < i; n++) (deselect ? deselectAtom(n) : selectAtom(n));
-						else if (plus == 1) for (n=i-1; n < nAtoms(); n++) (deselect ? deselectAtom(n) : selectAtom(n));
+						else if (plus == -1) for (n=0; n<i; n++) (deselect ? deselectAtom(n) : selectAtom(n));
+						else if (plus == 1) for (n=i-1; n <nAtoms(); n++) (deselect ? deselectAtom(n) : selectAtom(n));
 					}
 				}
 				else
@@ -152,7 +160,7 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 				{
 					i = from.toInt();
 					j = to.toInt();
-					if (!testQuietly) for (n=i-1; n<j; n++) (deselect ? deselectAtom(n) : selectAtom(n));
+					if (!testQuietly) for (n=i; n<=j; n++) (deselect ? deselectAtom(n) : selectAtom(n));
 				}
 				else
 				{
