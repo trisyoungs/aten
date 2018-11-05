@@ -1038,7 +1038,7 @@ CommandData Commands::data_[Commands::nCommands] = {
 	{ "deSelect",		"Z*",		VTypes::IntegerData,
 		"string|int|Element atom(s) ...",
 		"Deselect specific atoms / ranges in the current model" },
-	{ "deselectAll",	"",		VTypes::NoData,
+	{ "deSelectAll",	"",		VTypes::NoData,
 		"",
 		"Deselect all atoms in the current model" },
 	{ "deSelectCode",	"C",		VTypes::IntegerData,
