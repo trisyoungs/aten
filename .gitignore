@@ -26,7 +26,17 @@ src/aten
 Aten.desktop
 .kdev4/
 build/
+bin
 
 # Miscellaneous
 *swp
 changes
+
+#CMake
+cmake_install.cmake
+CMakeFiles
+CMakeCache.txt
+
+# QRC
+*.qrc.depends
+qrc_*.cpp

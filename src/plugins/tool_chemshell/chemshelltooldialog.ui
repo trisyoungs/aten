@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<!--you.lu@stfc.ac.uk-->
+<!--08/2019-->
+<class>ChemShellToolDialog</class>
+<widget class="QDialog" name="ChemShellToolDialog">
+    <property name="geometry">
+    <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>792</width>
+    <height>414</height>
+    </rect>
+    </property>
+    <property name="font">
+    <font>
+        <pointsize>8</pointsize>
+    </font>
+    </property>
+    <property name="windowTitle">
+        <string>ChemShell Tool</string>
+    </property>
+    <property name="windowIcon">
+        <iconset resource="chemshelltool_icons.qrc">
+        <normaloff>:/chemshelltool_icons/icon.svg</normaloff>:/chemshelltool_icons/icon.svg</iconset>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="leftMargin">
+            <number>4</number>
+        </property>
+        <property name="topMargin">
+            <number>4</number>
+        </property>
+        <property name="rightMargin">
+            <number>4</number>
+        </property>
+        <property name="bottomMargin">
+            <number>4</number>
+        </property>
+        <item>
+            <widget class="QLabel" name="label">
+                <property name="text">
+                    <string>This tool helps generate a template input script for Py-ChemShell</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </item>
+        <item>
+            <widget class="QLabel" name="label">
+                <property name="text">
+                    <string>Py-ChemShell is a computational chemistry environment: www.chemshell.org (J. Chem. Theory Comput. 2019, 15, 1317-1328)</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </item>
+        <item>
+            <layout class="QHBoxLayout" name="hLayout">
+                <item>
+                    <layout class="QGridLayout" name="gridLayout">
+                        <item row="0" column="0">
+                            <widget class="QLabel" name="filename_label">
+                                <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Specify a filename for input script:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="1" colspan="2">
+                            <widget class="QLineEdit" name="filename">
+                                <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>my_input.py</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="1" column="0">
+                            <layout class="QVBoxLayout" name="SuffixBox" stretch="1,0,0,0">
+                                <item>
+                                    <widget class="QLabel" name="suffix_label">
+                                        <property name="text">
+                                            <string>Relabel selected atoms by attaching:</string>
+                                        </property>
+                                        <property name="wordWrap">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QCheckBox" name="replace_suffix">
+                                        <property name="text">
+                                            <string>Replace existing labels:</string>
+                                        </property>
+                                        <property name="ToolTip">
+                                            <string>Tick to replace with given new label if selected atoms are already labelled (e.g., "O2" will become "O1", given 1). Specified label will be directly attached to the end if this option is unticked (e.g, "O2" will become "O21", given 1).</string>
+                                        </property>
+                                        <property name="FixedSize">
+                                            <size>
+                                                <width>145</width>
+                                                <height>30</height>
+                                            </size>
+                                        </property>
+                                    </widget>
+                                </item>
+                            </layout>
+                        </item>
+                        <item row="1" column="1" colspan="2">
+                            <layout class="QHBoxLayout" name="RenameBox" stretch="1,0,0,0">
+                                <item>
+                                    <layout class="QVBoxLayout" name="SuffixBox" stretch="1,0,0,0">
+                                        <item>
+                                            <widget class="QLineEdit" name="type_suffix">
+                                                <property name="sizePolicy">
+                                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                                        <horstretch>1</horstretch>
+                                                        <verstretch>1</verstretch>
+                                                    </sizepolicy>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="FixedSize">
+                                                    <size>
+                                                        <width>140</width>
+                                                        <height>30</height>
+                                                    </size>
+                                                </property>
+                                                <property name="ToolTip">
+                                                    <string>Typically a region label is an integer to be attached to atoms' names (e.g., "O" will be labelled as "O1", given 1).</string>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <widget class="QLineEdit" name="regex">
+                                                <property name="sizePolicy">
+                                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                                        <horstretch>1</horstretch>
+                                                        <verstretch>1</verstretch>
+                                                    </sizepolicy>
+                                                </property>
+                                                <property name="text">
+                                                    <string>[0-9]+</string>
+                                                </property>
+                                                <property name="FixedSize">
+                                                    <size>
+                                                        <width>140</width>
+                                                        <height>30</height>
+                                                    </size>
+                                                </property>
+                                                <property name="ToolTip">
+                                                    <string>Optional: define your own regular expression for existing region label to replace. default: digits (i.e., "123" from "O_123" will be replaced). Either Qt4 or Qt5 is supported.</string>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                    </layout>
+                                </item>
+                                <item>
+                                    <layout class="QVBoxLayout" name="SuffixBox" stretch="1,0,0,0">
+                                        <item>
+                                            <layout class="QHBoxLayout" name="RenameBox" stretch="1,0,0,0">
+                                                <item>
+                                                    <widget class="QLabel" name="new_punch_label">
+                                                        <property name="text">
+                                                            <string>And save to:</string>
+                                                        </property>
+                                                        <property name="wordWrap">
+                                                            <bool>true</bool>
+                                                        </property>
+                                                        <property name="alignment">
+                                                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                                                        </property>
+                                                    </widget>
+                                                </item>
+                                                <item>
+                                                   <widget class="QLineEdit" name="new_punch">
+                                                       <property name="sizePolicy">
+                                                           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                                               <horstretch>1</horstretch>
+                                                               <verstretch>1</verstretch>
+                                                           </sizepolicy>
+                                                       </property>
+                                                       <property name="FixedSize">
+                                                           <size>
+                                                               <width>280</width>
+                                                               <height>30</height>
+                                                           </size>
+                                                       </property>
+                                                       <property name="ToolTip">
+                                                           <string>Specify a filename to save the edited model. This will be used as the input fragment for your Py-ChemShell script to generate (by clicking the "Save" button below).</string>
+                                                       </property>
+                                                   </widget>
+                                                </item>
+                                            </layout>
+                                        </item>
+                                        <item>
+                                            <layout class="QHBoxLayout" name="RelabelButtonBox" stretch="1,0,0,0">
+                                                <item>
+                                                    <widget class="QLabel" name="place_holder">
+                                                        <property name="FixedSize">
+                                                            <size>
+                                                                <width>250</width>
+                                                                <height>30</height>
+                                                            </size>
+                                                        </property>
+                                                    </widget>
+                                                </item>
+                                                <item>
+                                                    <widget class="QPushButton" name="RelabelButton">
+                                                        <property name="font">
+                                                            <font>
+                                                                <weight>75</weight>
+                                                                <bold>true</bold>
+                                                            </font>
+                                                        </property>
+                                                        <property name="text">
+                                                            <string>&amp;Click to Relabel and Save</string>
+                                                        </property>
+                                                        <property name="autoDefault">
+                                                            <bool>false</bool>
+                                                        </property>
+                                                        <property name="default">
+                                                            <bool>true</bool>
+                                                        </property>
+                                                        <property name="Flat">
+                                                            <bool>false</bool>
+                                                        </property>
+                                                        <property name="ToolTip">
+                                                            <string>Relabelling can be done multiple times and the saved punch file contains the final form.</string>
+                                                        </property>
+                                                        <property name="FixedSize">
+                                                            <size>
+                                                                <width>150</width>
+                                                                <height>30</height>
+                                                            </size>
+                                                        </property>
+                                                        <property name="sizePolicy">
+                                                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                                                <horstretch>1</horstretch>
+                                                                <verstretch>0</verstretch>
+                                                            </sizepolicy>
+                                                        </property>
+                                                    </widget>
+                                                </item>
+                                            </layout>
+                                        </item>
+                                    </layout>
+                                </item>
+                            </layout>
+                        </item>
+                        <item row="3" column="0" colspan="1">
+                            <widget class="QLabel" name="theory_label">
+                                <property name="text">
+                                    <string>Select theory:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="3" column="1" colspan="1">
+                            <widget class="QLabel" name="qm_theory_label">
+                                <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Select QM theory:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="3" column="2" colspan="1">
+                            <widget class="QLabel" name="mm_theory_label">
+                                <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Select MM theory:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="4" column="0" colspan="1">
+                            <widget class="QComboBox" name="theory">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="4" column="1" colspan="1">
+                            <widget class="QComboBox" name="qm_theory">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="4" column="2" colspan="1">
+                            <widget class="QComboBox" name="mm_theory">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="5" column="0" colspan="1">
+                            <widget class="QLabel" name="qmmm_embedding_label">
+                                <property name="text">
+                                    <string>Select embedding method:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="5" column="1" colspan="1">
+                            <widget class="QLabel" name="qm_method_label">
+                                <property name="text">
+                                    <string>Select QM method:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="5" column="2" colspan="1">
+                            <widget class="QLabel" name="mm_ff_label">
+                                <property name="text">
+                                    <string>Select forcefield:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="6" column="0" colspan="1">
+                            <widget class="QComboBox" name="qmmm_embedding">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="6" column="1" colspan="1">
+                            <widget class="QComboBox" name="qm_method">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="6" column="2" colspan="1">
+                            <widget class="QComboBox" name="mm_ff">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                                <property name="Editable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="ToolTip">
+                                    <string>Input your forcefield filename or choose a predefined scheme to let DL_FIELD generate the forcefield.</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="7" column="0" colspan="1">
+                            <widget class="QLabel" name="qmmm_coupling_label">
+                                <property name="text">
+                                    <string>Select coupling method:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="7" column="1" colspan="1">
+                            <widget class="QLabel" name="qm_functional_label">
+                                <property name="text">
+                                    <string>Select DFT functional:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="8" column="0" colspan="1">
+                            <widget class="QComboBox" name="qmmm_coupling">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="8" column="1" colspan="1">
+                            <widget class="QComboBox" name="qm_functional">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                                <property name="Editable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="ToolTip">
+                                    <string>Input your functional name or choose one from the list.</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="9" column="0" colspan="1">
+                            <widget class="QLabel" name="qmmm_scheme_label">
+                                <property name="text">
+                                    <string>Select scheme:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="9" column="1" colspan="1">
+                            <widget class="QLabel" name="qm_basis_label">
+                                <property name="text">
+                                    <string>Select basis set:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="10" column="0" colspan="1">
+                            <widget class="QComboBox" name="qmmm_scheme">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="10" column="1" colspan="1">
+                            <widget class="QComboBox" name="qm_basis">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                                <property name="Editable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="ToolTip">
+                                    <string>Input your basis set filename or choose a predefined one from the list.</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="11" column="0" colspan="1">
+                            <widget class="QLabel" name="task_label">
+                                <property name="text">
+                                    <string>Select the task:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="11" column="1" colspan="1">
+                            <widget class="QLabel" name="active_radius_label">
+                                <property name="text">
+                                    <string>Choose active region's radius (a.u.):</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="12" column="0" colspan="1">
+                            <widget class="QComboBox" name="task">
+                                <property name="sizeAdjustPolicy">
+                                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="12" column="1" colspan="1">
+                            <widget class="QDoubleSpinBox" name="active_radius"/>
+                        </item>
+                        <item row="15" column="0" colspan="3">
+                            <layout class="QHBoxLayout" name="RelabelButtonBox" stretch="1,0,0,0">
+                                <item>
+                                    <widget class="QLabel" name="task_label">
+                                        <property name="text">
+                                            <string>Way to define QM region:</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QRadioButton" name="selected_as_qm">
+                                        <property name="text">
+                                            <string>Selected atoms</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QRadioButton" name="labelled_as_qm">
+                                        <property name="text">
+                                            <string>Atoms labelled with</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QLineEdit" name="qm_label">
+                                        <property name="sizePolicy">
+                                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                                <horstretch>1</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="FixedSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>30</height>
+                                            </size>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QRadioButton" name="radius_as_qm">
+                                        <property name="text">
+                                            <string>Atoms within radius (a.u.)</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QDoubleSpinBox" name="qm_radius"/>
+                                </item>
+                            </layout>
+                        </item>
+                        <item>
+                            <spacer name="horizontalSpacer_3">
+                                <property name="orientation">
+                                    <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                    <size>
+                                        <width>37</width>
+                                        <height>24</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </item>
+        <item>
+            <widget class="Line" name="line">
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+            </widget>
+        </item>
+        <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                    <spacer name="horizontalSpacer">
+                        <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                            <size>
+                                <width>40</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </item>
+                <item>
+                    <widget class="QPushButton" name="RunButton">
+                        <property name="font">
+                            <font>
+                                <weight>75</weight>
+                                <bold>true</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Save</string>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="default">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </item>
+                <item>
+                    <widget class="QPushButton" name="CloseButton">
+                        <property name="font">
+                            <font>
+                                <weight>75</weight>
+                                <bold>true</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Close</string>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="default">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </item>
+    </layout>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>TPlotWidget</class>
+        <extends>QWidget</extends>
+        <header>gui/qcustomplot/tplotwidget.hui</header>
+        <container>1</container>
+        </customwidget>
+    </customwidgets>
+    <resources>
+        <include location="chemshelltool_icons.qrc"/>
+    </resources>
+</ui>
