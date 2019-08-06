@@ -85,6 +85,9 @@
                                 <property name="text">
                                     <string>my_input.py</string>
                                 </property>
+                                <property name="ToolTip">
+                                    <string>Input a desired filename.</string>
+                                </property>
                             </widget>
                         </item>
                         <item row="1" column="0">
@@ -449,6 +452,9 @@
                                 <property name="sizeAdjustPolicy">
                                     <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
                                 </property>
+                                <property name="ToolTip">
+                                    <string>Default orgin: centroid of the whole fragment. Edit the generated input script to change to, e.g., an atom's index.</string>
+                                </property>
                             </widget>
                         </item>
                         <item row="12" column="1" colspan="1">
@@ -468,12 +474,18 @@
                                         <property name="text">
                                             <string>Selected atoms</string>
                                         </property>
+                                        <property name="ToolTip">
+                                            <string>Selected atoms are used for QM region.</string>
+                                        </property>
                                     </widget>
                                 </item>
                                 <item>
                                     <widget class="QRadioButton" name="labelled_as_qm">
                                         <property name="text">
                                             <string>Atoms labelled with</string>
+                                        </property>
+                                        <property name="ToolTip">
+                                            <string>Atoms labelled with given suffix are used as QM region (e.g., all O2 atoms given 2).</string>
                                         </property>
                                     </widget>
                                 </item>
@@ -500,6 +512,9 @@
                                     <widget class="QRadioButton" name="radius_as_qm">
                                         <property name="text">
                                             <string>Atoms within radius (a.u.)</string>
+                                        </property>
+                                        <property name="ToolTip">
+                                            <string>Default orgin: centroid of the whole fragment. Edit the generated input script to change to, e.g., an atom's index.</string>
                                         </property>
                                     </widget>
                                 </item>

@@ -1,7 +1,8 @@
 /*
-	*** SPRings Tool Dialog Functions
+	*** Py-ChemShell Tool Dialog Functions
 	*** src/gui/tool_chemshell/chemshelltooldialog_funcs.cpp
-	Copyright T. Youngs 2007-2018
+    Copyright T. Youngs 2007-2019
+    Copyright Y. Lu 2019
 
 	This file is part of Aten.
 
@@ -17,6 +18,10 @@
 
 	You should have received a copy of the GNU General Public License
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+This plugin was written by You Lu, Aug. 2019
+you.lu@stfc.ac.uk
 */
 
 #include "plugins/tool_chemshell/chemshelltooldialog.h"

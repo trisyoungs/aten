@@ -1,3 +1,7 @@
+# This plugin was written by You Lu, Aug. 2019
+# you.lu@stfc.ac.uk
+
+
 # Meta-Objects
 set(chemshelltool_MOC_HDRS
   chemshelltool.hui

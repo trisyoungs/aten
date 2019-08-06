@@ -1,28 +1,33 @@
 /*
-        *** ChemShell Tool Functions
-        *** src/plugins/tool_chemshell/chemshelltool_funcs.cpp
-        Copyright T. Youngs 2016-2018
+    *** Py-ChemShell Tool Functions
+    *** src/plugins/tool_chemshell/chemshelltool_funcs.cpp
 
-        This file is part of Aten.
-    
-        Aten is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or 
-        (at your option) any later version.
-                               
-        Aten is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
+    Copyright T. Youngs 2016-2019
+    Copyright Y. Lu 2019
 
-        You should have received a copy of the GNU General Public License
-        along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+    This file is part of Aten.
+
+    Aten is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or 
+    (at your option) any later version.
+                           
+    Aten is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+This plugin was written by You Lu, Aug. 2019
+you.lu@stfc.ac.uk
 */
 
 #include "plugins/tool_chemshell/chemshelltool.hui"
 #include "plugins/io_chemshell/chemshell.hui"
 #include "plugins/tool_chemshell/chemshelltooldialog.h"
-#include "gui/qcustomplot/qcustomplot.hui"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "base/pattern.h"
@@ -37,6 +42,7 @@ ChemShellToolPlugin::ChemShellToolPlugin() {
 	// Setup plugin options
     pluginOptions_.add("selected_as_qm", "true");
     pluginOptions_.add("replace_suffix", "true");
+    pluginOptions_.add("_punch_saved"  , "false");
 
 
 	// Create dialog if the tool has one
@@ -171,26 +177,27 @@ bool ChemShellToolPlugin::showDialog() {
 }
 
 
+// YL 06/08/2019: not in use as not suitable to select atoms in plugin
 // Select by QM/MM region number ('selecttype <el> <typedesc>')
-bool Commands::function_SelectRegion(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-    if (obj.notifyNull(Bundle::ModelPointer)) return false;
-    int nselected = obj.rs()->nSelected();
-
-    QRegExp re("*["+c->argc(0)+"]");
-    re.setPatternSyntax(QRegExp::Wildcard);
-
-    obj.rs()->beginUndoState("Select atoms by QM/MM region number");
-    for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
-    {
-        if (!i->type()) continue;
-        if (re.exactMatch(i->type()->name())) obj.rs()->selectAtom(i);
-    }
-    obj.rs()->endUndoState();
-
-    rv.set(obj.rs()->nSelected() - nselected);
-    return true;
-}
+//bool Commands::function_SelectRegion(CommandNode* c, Bundle& obj, ReturnValue& rv)
+//{
+//    if (obj.notifyNull(Bundle::ModelPointer)) return false;
+//    int nselected = obj.rs()->nSelected();
+//
+//    QRegExp re("*["+c->argc(0)+"]");
+//    re.setPatternSyntax(QRegExp::Wildcard);
+//
+//    obj.rs()->beginUndoState("Select atoms by QM/MM region number");
+//    for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
+//    {
+//        if (!i->type()) continue;
+//        if (re.exactMatch(i->type()->name())) obj.rs()->selectAtom(i);
+//    }
+//    obj.rs()->endUndoState();
+//
+//    rv.set(obj.rs()->nSelected() - nselected);
+//    return true;
+//}
 
 void ChemShellToolPlugin::renameKeywords() {
     if(pluginOptions_.value("qm_theory") == "GAMESS-UK") {
@@ -300,6 +307,10 @@ bool ChemShellToolPlugin::runTool() {
 
 	    for (RefListItem<Model,bool>* ri = targets.first(); ri != NULL; ri = ri->next) {
 	    	Model* sourceModel = ri->item;
+
+            // start of undo
+            sourceModel->beginUndoState("Relabel selected atoms");
+
             const int nselected = sourceModel->nSelected();
             Atom* selected[nselected];
             if(nselected == 0) {
@@ -341,6 +352,9 @@ bool ChemShellToolPlugin::runTool() {
                 }
             }
 
+            // end of undo
+            sourceModel->endUndoState();
+
             // write to punch
             const FilePluginInterface* plugin = pluginStore_->findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, QString("chemshell"));
             if(plugin != NULL) {
@@ -362,6 +376,7 @@ bool ChemShellToolPlugin::runTool() {
                 }
             }
         }
+        pluginOptions_.add("_punch_saved", "true");
 	    // Update the display
         emit(updateWidgets(0));
         return true;
@@ -423,7 +438,13 @@ bool ChemShellToolPlugin::runTool() {
    
             // fragment
             QString frag_strbuff = "";
-            frag_strbuff.append(QString("my_frag = Fragment(coords='%1')\n\n").arg(pluginOptions_.value("new_punch")));
+            // use new punch file
+            if(pluginOptions_.value("_punch_saved") == "true") {
+                frag_strbuff.append(QString("my_frag = Fragment(coords='%1')\n\n").arg(pluginOptions_.value("new_punch")));
+            // use old punch file
+            } else {
+                frag_strbuff.append(QString("my_frag = Fragment(coords='%1')\n\n").arg(sourceModel->filename()));
+            }
             // pass to io_chemshell
             IOPluginOptions.add("_frag", frag_strbuff);
  
@@ -452,11 +473,13 @@ bool ChemShellToolPlugin::runTool() {
     
             // MM
             QString mm_method_strbuff = "";
-            if(pluginOptions_.value("mm_ff_custom") == "false" && pluginOptions_.value("theory") != "QM") {
-                strbuff.append(QString("my_ff = DL_FIELD(ff='%1')\n\n").arg(pluginOptions_.value("mm_ff")));
-                mm_method_strbuff.append(QString("my_ff"));
-            } else {
-                mm_method_strbuff.append(pluginOptions_.value("mm_ff"));
+            if(pluginOptions_.value("theory") != "QM") {
+                if(pluginOptions_.value("mm_ff_custom") == "false") {
+                    strbuff.append(QString("my_ff = DL_FIELD(ff='%1')\n\n").arg(pluginOptions_.value("mm_ff")));
+                    mm_method_strbuff.append(QString("my_ff"));
+                } else {
+                    mm_method_strbuff.append(QString("'%1'").arg(pluginOptions_.value("mm_ff")));
+                }
             }
    
             // 
@@ -464,7 +487,7 @@ bool ChemShellToolPlugin::runTool() {
             if(pluginOptions_.value("theory") == "QM/MM") {
                 my_theory.append("my_qmmm");
                 strbuff.append(QString("my_qm = %1(method=%2").arg(pluginOptions_.value("qm_theory")).arg(qm_method_strbuff));
-                strbuff.append(QString("my_mm = %1(ff='%2')\n\n").arg(pluginOptions_.value("mm_theory")).arg(pluginOptions_.value("mm_ff")));
+                strbuff.append(QString("my_mm = %1(ff=%2)\n\n").arg(pluginOptions_.value("mm_theory")).arg(mm_method_strbuff));
                 strbuff.append("my_qmmm = QMMM(frag=my_frag,\n");
                 strbuff.append("               qm_regiom=qm_region,\n");
                 strbuff.append("               qm=my_qm,\n");
@@ -481,7 +504,7 @@ bool ChemShellToolPlugin::runTool() {
                 strbuff.append(QString("my_qm = %1(method=%2").arg(pluginOptions_.value("qm_theory")).arg(qm_method_strbuff));
             } else if(pluginOptions_.value("theory") == "MM") {
                 my_theory.append("my_mm");
-                strbuff.append(QString("my_mm = %1(ff='%2')\n\n").arg(pluginOptions_.value("mm_theory")).arg(mm_method_strbuff));
+                strbuff.append(QString("my_mm = %1(ff=%2)\n\n").arg(pluginOptions_.value("mm_theory")).arg(mm_method_strbuff));
             }
             // pass to io_chemshell
             IOPluginOptions.add("_theory", strbuff);
