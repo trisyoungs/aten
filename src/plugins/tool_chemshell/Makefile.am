@@ -24,7 +24,7 @@ SUFFIXES: .ui .hui .qrc
 clean-local:
 	-rm -f chemshelltool.cpp chemshelltool_icons.cpp ui_*
 
-# SP Rings Tool Plugin
+# Py-ChemShell Tool Plugin
 chemshelltool_la_SOURCES = chemshelltool_icons.qrc chemshelltooldialog.ui chemshelltooldialog_funcs.cpp chemshelltool_funcs.cpp chemshelltool.hui
 chemshelltool_la_LDFLAGS = -module -shared -avoid-version
 
