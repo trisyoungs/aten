@@ -191,6 +191,7 @@ src/plugins/method_mopac71/Makefile
 src/plugins/method_mopac71/mopac7.1/Makefile
 src/plugins/tool_springs/Makefile
 src/plugins/tool_test/Makefile
+src/plugins/tool_chemshell/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

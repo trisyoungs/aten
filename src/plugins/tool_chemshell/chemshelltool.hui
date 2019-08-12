@@ -1,0 +1,132 @@
+/*
+    *** Py-ChemShell Tool Plugin
+    *** src/plugins/tool_chemshell/chemshelltool.hui
+    Copyright T. Youngs 2016-2019
+    Copyright Y. Lu 2019
+
+    This file is part of Aten.
+    
+    Aten is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or 
+    (at your option) any later version.
+                           
+    Aten is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+This plugin was written by You Lu, Aug. 2019
+you.lu@stfc.ac.uk
+*/
+
+#ifndef ATEN_CHEMSHELLPLUGIN_H
+#define ATEN_CHEMSHELLPLUGIN_H
+
+#include "plugins/interfaces/toolplugin.h"
+#include "plugins/interfaces/fileplugin.h"
+#include "gui/mainwindow.h"
+#include "main/aten.h"
+#include <QDir>
+#include "base/kvmap.h"
+#include "base/prefs.h"
+#include "base/encoderdefinition.h"
+#include "model/bundle.h"
+#include "model/fragment.h"
+#include "model/fragmentgroup.h"
+#include "templates/list.h"
+#include "parser/program.h"
+#include "parser/variablelist.h"
+#include "methods/partitioningscheme.h"
+#include "gui/useractions.h"
+#include "plugins/pluginstore.h"
+#include "base/namespace.h"
+
+// forward declarations
+class AtenWindow;
+class FileParser;
+
+ATEN_BEGIN_NAMESPACE
+
+// ChemShell Tool Plugin
+class ChemShellToolPlugin : public QObject, public ToolPluginInterface
+{
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.CSToolPluginInterface.v1")
+	Q_INTERFACES(AtenSpace::ToolPluginInterface)
+
+
+	public:
+	// Constructor
+	ChemShellToolPlugin();
+	// Destructor
+	~ChemShellToolPlugin();
+
+
+    private:
+    AtenWindow* atenWindow();
+
+	/*
+	 * Instance Handling
+	 */
+	private:
+	// Return a copy of the plugin object
+    BasePluginInterface* makeCopy() const;
+    void renameKeywords();
+
+
+	/*
+	 * Definition
+	 */
+	public:
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
+ 	// Return category of plugin
+	int category() const;
+	// Return name of plugin
+	QString name() const;
+	// Return nickname of plugin
+	QString nickname() const;
+	// Return whether plugin is enabled
+	bool enabled() const;
+	// Return description (long name) of plugin
+	QString description() const;
+
+
+	/*
+	 * Tool Definition
+	 */
+	public:
+	// Return button label to use in GUI
+	QString buttonLabel() const;
+	// Return icon for button in GUI
+	QIcon buttonIcon() const;
+	// Return group name for tool (used to group similar tools together)
+	QString groupName() const;
+	// Return whether the tool is enabled (appears in the GUI)
+	bool isEnabled() const;
+	// Return whether the tool has a dialog
+	bool hasDialog() const;
+	// Show the dialog for the tool
+	bool showDialog();
+	// Run the tool with the current settings
+	bool runTool();
+
+	/*
+	 * QObject / Signals
+	 */
+	public:
+	// Return interface as QObject
+	QObject* object();
+
+	signals:
+	void updateWidgets(int);
+};
+
+ATEN_END_NAMESPACE
+
+#endif

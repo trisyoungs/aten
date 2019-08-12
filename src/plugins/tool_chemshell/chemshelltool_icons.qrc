@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="chemshelltool_icons">
+    <file>icon.svg</file>
+  </qresource>
+</RCC>
