@@ -1,0 +1,11 @@
+# Known Issues
+- Rendering of measurements (esp. angles) is wrong
+- Rendering of multiple bonds is inconsistent
+- FF -> Manage : List allows multiple selection?
+- Ff -> Assign : Doesn't print message?
+- Save expression doesn't auto-detect format
+- Add SPC-FW ff
+- Tiled image saving is broken?
+- Secondary surface controls not working 
+- Primitive quality preference seems to have no effect when changed from GUI
+- No undo/redo on setGeometry calls
