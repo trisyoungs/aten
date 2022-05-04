@@ -12390,7 +12390,7 @@
   <customwidget>
    <class>TExponentialSpin</class>
    <extends>QDoubleSpinBox</extends>
-   <header>texponentialspin.hui</header>
+   <header>gui/texponentialspin.hui</header>
   </customwidget>
   <customwidget>
    <class>Viewer</class>
@@ -12401,7 +12401,7 @@
   <customwidget>
    <class>TMenuButton</class>
    <extends>QToolButton</extends>
-   <header>tmenubutton.hui</header>
+   <header>gui/tmenubutton.hui</header>
   </customwidget>
   <customwidget>
    <class>TTabWidget</class>
@@ -12412,7 +12412,7 @@
   <customwidget>
    <class>TTableWidget</class>
    <extends>QTableWidget</extends>
-   <header>ttablewidget.hui</header>
+   <header>gui/ttablewidget.hui</header>
   </customwidget>
   <customwidget>
    <class>TDynamicWidget</class>
