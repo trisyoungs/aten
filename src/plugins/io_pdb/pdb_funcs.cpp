@@ -274,7 +274,7 @@ bool PDBModelPlugin::exportData()
 		Vec3<double> angles = targetModel()->cell().angles();
 		if (!fileParser_.writeLineF("CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %11s%4i\n", lengths.x, lengths.y, lengths.z, angles.x, angles.y, angles.z, Spacegroups[targetModel()->cell().spacegroupId()].name, 1)) return false;
 	}
-	else if (!fileParser_.writeLineF("CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %11s%4i\n", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0, "P 1", 1)) return false;
+	//else if (!fileParser_.writeLineF("CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %11s%4i\n", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0, "P 1", 1)) return false;
 
 	// Write atom information (using patterns if possible)
 	if (targetModel()->createPatterns())
@@ -323,11 +323,11 @@ bool PDBModelPlugin::exportData()
 				// Write entry line if necessary
 				if (bondCount == 0)
 				{
-					if (!fileParser_.writeF("CONECT%5i", i->id())) return false;
+					if (!fileParser_.writeF("CONECT%5i", i->id() + 1)) return false;
 				}
 
 				// Write bond partner
-				if (!fileParser_.writeF("%5i", j->id())) return false;
+				if (!fileParser_.writeF("%5i", j->id() + 1)) return false;
 				++bondCount;
 
 				// If bondCount == 4 write new line (only four bound partners per line)
